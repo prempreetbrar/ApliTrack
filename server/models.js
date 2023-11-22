@@ -1,15 +1,17 @@
 // SQLite does not have an explicit DATE datatype; we are storing dates as text
 
-const { catchAsync } = require("./utils/errorHandling");
-
 function createUserTable(database) {
   database.run(`CREATE TABLE IF NOT EXISTS USER(
     Username TEXT PRIMARY KEY NOT NULL,
     Password TEXT NOT NULL,
     Fname TEXT,
     Lname TEXT,
-    IsActive BOOLEAN NOT NULL CHECK (IsActive IN (0, 1))
+    IsActive BOOLEAN NOT NULL DEFAULT 1 CHECK (IsActive IN (0, 1))
   )`);
+}
+
+function dropUserTable(database) {
+  database.run(`DROP TABLE USER`);
 }
 
 function createApplicantTable(database) {
@@ -81,9 +83,14 @@ function createApplicationTable(database) {
 }
 
 function createInterviewTable(database) {
+  /*
+  no autoincrement on InterviewID because SQLite only allows
+  autoincrementing on primary keys. We will get around this by incrementing
+  ourselves when inserting.
+  */
   database.run(`
   CREATE TABLE IF NOT EXISTS INTERVIEW(
-    InterviewID INTEGER AUTOINCREMENT,
+    InterviewID INTEGER,
     ApplicantUsername TEXT NOT NULL,
     Stage TEXT,
     DateTime TEXT NOT NULL,
@@ -201,11 +208,10 @@ function createOfferTable(database) {
 function createContactTable(database) {
   database.run(`
   CREATE TABLE IF NOT EXISTS CONTACT(
-    ContactID INTEGER AUTOINCREMENT,
+    ContactID INTEGER PRIMARY KEY AUTOINCREMENT,
     LinkedInURL TEXT NULL,
     Fname TEXT NOT NULL,
-    Lname TEXT NOT NULL,
-    PRIMARY KEY(ContactID)
+    Lname TEXT NOT NULL
   )`);
 }
 
@@ -377,4 +383,9 @@ function createAllTables(database) {
   createAttendsTable(database);
 }
 
+function dropAllTables(database) {
+  dropUserTable(database);
+}
+
 exports.createAllTables = createAllTables;
+exports.dropAllTables = dropAllTables;
