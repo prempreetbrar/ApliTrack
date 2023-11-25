@@ -6,7 +6,7 @@ Running the server:
 1. Install NPM and NodeJS online (just look for an install)
 2. `cd` into the  `Apli-Track/server` directory
 3. Run `npm install`
-4. Run `npm start:dev` to start the server up. You're now able to send requests to localhost:3000/URL (where `URL`)
+4. Run `npm run start:dev` to start the server up. You're now able to send requests to localhost:3000/URL (where `URL`)
    is the URL of one of the endpoints in our application. For example, localhost:3000/api/auth.
 
 Install the following VSCode Extensions:
