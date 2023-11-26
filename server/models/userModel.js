@@ -67,5 +67,9 @@ User.prototype.isPasswordCorrect = async function (
   return await bcrypt.compare(candidatePassword, actualPassword);
 };
 
+/*
+  If any changes occurred to the model, sequelize.sync just ensures that they are
+  applied to the database.
+*/
 sequelize.sync();
 module.exports = User;

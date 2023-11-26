@@ -1,3 +1,7 @@
+/*
+  This class is to create a more verbose/informative error; it is a "quality-of-life"
+  class. Even without it, the program would function.
+*/
 exports.AppError = class AppError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -24,7 +28,12 @@ exports.catchAsync = (asyncFunc) => {
   };
 };
 
-// will explain later
+/*
+  This handleUncaught function gracefully closes the process when dealing with
+  uncaught exceptions or rejections. While it may not make a difference here 
+  (on such a small scale application), this is best practice (so we are still 
+  implementing it).
+*/
 exports.handleUncaught = (event, server) => {
   process.on(event, (error) => {
     console.error(error.name, error.message);

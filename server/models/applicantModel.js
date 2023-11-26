@@ -120,6 +120,10 @@ ApplicantCertification.belongsTo(Applicant, {
 
 // ------------------------------------------------------------------------------------------------------------------
 
+/*
+  If any changes occurred to the model, sequelize.sync just ensures that they are
+  applied to the database.
+*/
 sequelize.sync();
 exports.Applicant = Applicant;
 exports.ApplicantExperience = ApplicantExperience;

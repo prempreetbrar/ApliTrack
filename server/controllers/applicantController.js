@@ -1,4 +1,4 @@
 const factory = require("./controllerFactory");
 const Applicant = require("../models/applicantModel");
 
-exports.createApplicant = factory.createOne(Applicant);
+exports.createApplicant = factory.createOne(Applicant.Applicant);

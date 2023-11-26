@@ -4,6 +4,12 @@ const util = require("util");
 const User = require("../models/userModel");
 const errorHandling = require("../utils/errorHandling");
 
+/*
+  We sign the token according to the user's username. Since
+  username is unique, this ensures that no two people have the same token.
+  Therefore, when we receive a token, we can easily check if it is valid
+  (by checking if it matches a username in our database when we decrypt it).
+*/
 function signToken(username) {
   return jwt.sign(
     {
@@ -16,9 +22,14 @@ function signToken(username) {
   );
 }
 
+/*
+  This function creates the JWT token that allows us
+  to authenticate a user.
+*/
 function createSendToken(user, statusCode, request, response) {
   const token = signToken(user.Username);
-  // we don't want the user to be logged in forever.
+
+  // we don't want the user to be logged in forever, so we set an expiry date
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -35,7 +46,7 @@ function createSendToken(user, statusCode, request, response) {
     we didn't do user.save(). 
 
     In other words, we have a user "object" (separate from the actual
-    row in the db). We are clearing the password on this "object."
+    row in the db). We are clearing the password on this "object." 
   */
   user.Password = undefined;
 
@@ -68,6 +79,12 @@ exports.loginUser = errorHandling.catchAsync(async (request, response) => {
     );
   }
 
+  /*
+    In our user model, we excluded password from being included in a query. However,
+    this is an exception where we need the user's password (to compare it for login).
+    Therefore, we explicitly include it. Sequelize will follow our "rules" specified
+    in a query OVER those defined in the model.
+  */
   const user = await User.findByPk(request.body.Username, {
     attributes: { include: ["Password"] },
   });
@@ -83,7 +100,7 @@ exports.loginUser = errorHandling.catchAsync(async (request, response) => {
 
 exports.checkIfLoggedIn = errorHandling.catchAsync(
   async (request, response) => {
-    // 1) check if the JWT token exists
+    // 1) check if the JWT token was sent with the request
     let token;
     if (
       request.headers.authorization &&
@@ -100,13 +117,19 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
         401
       );
 
-    // 2) is valid
+    /*
+       2) check if the JWT token is valid. We use promisify because
+       it allows us to use await (rather than have a messy try catch block).
+    */
     const decodedPayload = await util.promisify(jwt.verify)(
       token,
       process.env.JWT_SECRET
     );
 
-    // 3) check if user has been deleted in the meantime or is inactive
+    /*
+      3) check if user has been deleted or is inactive. If so, they shouldn't be
+      able to interact with our database.
+    */
     const user = await User.findByPk(decodedPayload.id);
     if (!user || !user.IsActive)
       throw new errorHandling.AppError(
@@ -114,7 +137,13 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
         401
       );
 
-    // 5) Grant access to protected route
+    /*
+        Add the user onto the request object. This allows anything afterwards in the middleware
+        stack to access the user (by doing request.user). For example, if you need to create
+        an application for a user, you could do router.post("/application", checkIfLoggedIn, createApplication),
+        which would allow your createApplication function (which comes after checkIfLoggedIn in the middleware
+        stack) to access the user (and the user's attributes).
+    */
     request.user = user;
     next();
   }

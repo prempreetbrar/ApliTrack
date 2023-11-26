@@ -6,6 +6,15 @@ dotenv.config({ path: ENV });
 const PORT = process.env.PORT || 3000;
 
 /*
+  We listen for unhandledExceptions on our process (running program). This is so
+  our app does not unexpectedly terminate (without giving us info on the issue).
+  We want to be able to listen for these so we can see what the issue is (ie. maybe
+  we forgot to catch an error in one of our controllers).
+*/
+const errorHandling = require("./utils/errorHandling");
+errorHandling.handleUncaught("unhandledException");
+
+/*
 Telling sequelize that we are using sqlite (so that it knows
 what to do behind the scenes). We also tell it the file location
 of our database, and we tell it to freezeTableName because we don't
@@ -46,3 +55,9 @@ const app = require("./app");
 const server = app.listen(PORT, () => {
   console.log(`App running on port ${PORT}...`);
 });
+/*
+  The server listens to requests and sends responses; this involves
+  lots of promises. If any promise is rejected and unhandled, we want to close
+  the server before terminating the program (leaving it open is not best practice).
+*/
+errorHandling.handleUncaught("unhandledRejection", server);

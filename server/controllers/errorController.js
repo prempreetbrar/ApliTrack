@@ -1,5 +1,14 @@
-const errorHandling = require("../utils/errorHandling");
+/*
+  This is our error-handling middleware. Notice that other middleware
+  in other files (like controller files) only take request and response (or
+  request, response, next). 
 
+  This middleware is special because it has 4 arguments (the error is the first one).
+  This is how Express knows to "jump" to this middleware function in our middleware 
+  "pile" or "stack" whenever it encounters an error.
+
+  Again, we are simply producing a more detailed status message to make our errorHandling easier.
+*/
 module.exports = (error, request, response, next) => {
   let detailedError = { ...error };
   detailedError.message = error.message;
@@ -10,17 +19,11 @@ module.exports = (error, request, response, next) => {
   sendError(detailedError, request, response);
 };
 
-function handleJSONWebTokenError() {
-  return new errorHandling.AppError("Invalid token. Please log in again!", 401);
-}
-
-function handleJSONTokenExpiredError() {
-  return new errorHandling.AppError(
-    "Your token has expired. Please log in again!",
-    401
-  );
-}
-
+/*
+  Allow the error to be sent back to the individual making the request, but
+  also print it in the console (so that if you're working on a local development
+  environment you can see it).
+*/
 function sendError(error, request, response) {
   console.error("Error: ", error);
 
