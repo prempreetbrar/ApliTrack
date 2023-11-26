@@ -7,7 +7,7 @@ module.exports = (error, request, response, next) => {
   detailedError.statusCode = error.statusCode || 500;
   detailedError.status = error.status || "error";
 
-  sendError(detailedError);
+  sendError(detailedError, request, response);
 };
 
 function handleJSONWebTokenError() {

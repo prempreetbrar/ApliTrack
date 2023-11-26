@@ -9,12 +9,22 @@ exports.AppError = class AppError extends Error {
   }
 };
 
+/*
+  What's this doing? It's taking a function (usually a controller that's
+  handling a request) and wrapping it. If the controller throws an error,
+  then the .catch(next) will be invoked, passing the error into the "next"
+  ERROR-HANDLING middleware in the stack (not the next "regular" middleware). 
+
+  This prevents us from needing to put try-catch blocks everywhere in our code;
+  we have this generic wrapper that "try-catches" all of our controllers for us.
+*/
 exports.catchAsync = (asyncFunc) => {
   return function wrapper(request, response, next) {
     asyncFunc(request, response, next).catch(next);
   };
 };
 
+// will explain later
 exports.handleUncaught = (event, server) => {
   process.on(event, (error) => {
     console.error(error.name, error.message);
