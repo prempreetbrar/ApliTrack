@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const util = require("util");
 
 const User = require("../models/userModel");
 const errorHandling = require("../utils/errorHandling");
@@ -67,7 +68,9 @@ exports.loginUser = errorHandling.catchAsync(async (request, response) => {
     );
   }
 
-  const user = await User.findByPk(request.body.Username);
+  const user = await User.findByPk(request.body.Username, {
+    attributes: { include: ["Password"] },
+  });
   if (
     !user ||
     !(await user.isPasswordCorrect(request.body.Password, user.Password))
@@ -77,3 +80,42 @@ exports.loginUser = errorHandling.catchAsync(async (request, response) => {
 
   createSendToken(user, 200, request, response);
 });
+
+exports.checkIfLoggedIn = errorHandling.catchAsync(
+  async (request, response) => {
+    // 1) check if the JWT token exists
+    let token;
+    if (
+      request.headers.authorization &&
+      request.headers.authorization.startsWith("Bearer")
+    ) {
+      token = request.headers.authorization.split(" ")[1];
+    } else if (request.cookies.jwt) {
+      token = request.cookies.jwt;
+    }
+
+    if (!token)
+      throw new errorHandling.AppError(
+        "You are not logged in. Please log in to get access.",
+        401
+      );
+
+    // 2) is valid
+    const decodedPayload = await util.promisify(jwt.verify)(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    // 3) check if user has been deleted in the meantime or is inactive
+    const user = await User.findByPk(decodedPayload.id);
+    if (!user || !user.IsActive)
+      throw new errorHandling.AppError(
+        "The user belonging to this token no longer exists or has deactivated their account",
+        401
+      );
+
+    // 5) Grant access to protected route
+    request.user = user;
+    next();
+  }
+);

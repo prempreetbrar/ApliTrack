@@ -39,6 +39,14 @@ const User = sequelize.define(
   },
   {
     timestamps: false, // we don't need to store the time of creation or updation
+    /*
+      We don't want to be returning the password through queries unless needed in specific
+      cases (like checking login or authentication). In those cases, we'll manually override this.
+      Why? Returning passwords from a query (even hashed) is a security risk.
+    */
+    defaultScope: {
+      attributes: { exclude: ["Password"] },
+    },
   }
 );
 
