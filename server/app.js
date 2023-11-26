@@ -14,6 +14,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 const authRouter = require("./routes/authRoutes");
+const applicantRouter = require("./routes/applicantRoutes");
 const errorController = require("./controllers/errorController");
 
 app.use(cors());
@@ -35,6 +36,7 @@ app.use(express.json());
   it is CORS, ... , lastRoute, errorController.
 */
 app.use("/api/auth", authRouter);
+app.use("/api/applicants", applicantRouter);
 app.use(errorController);
 
 module.exports = app;
