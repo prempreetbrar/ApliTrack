@@ -72,6 +72,7 @@ exports.signUpUser = errorHandling.catchAsync(async (request, response) => {
 });
 
 exports.loginUser = errorHandling.catchAsync(async (request, response) => {
+  console.log(request.body);
   if (!request.body.Username || !request.body.Password) {
     throw new errorHandling.AppError(
       "Please provide both a username and password!",
