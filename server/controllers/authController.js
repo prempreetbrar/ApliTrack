@@ -58,3 +58,22 @@ exports.signUpUser = errorHandling.catchAsync(async (request, response) => {
 
   createSendToken(newUser, 201, request, response);
 });
+
+exports.loginUser = errorHandling.catchAsync(async (request, response) => {
+  if (!request.body.Username || !request.body.Password) {
+    throw new errorHandling.AppError(
+      "Please provide both a username and password!",
+      400
+    );
+  }
+
+  const user = await User.findByPk(request.body.Username);
+  if (
+    !user ||
+    !(await user.isPasswordCorrect(request.body.Password, user.Password))
+  ) {
+    throw new errorHandling.AppError("Incorrect username or password", 401);
+  }
+
+  createSendToken(user, 200, request, response);
+});

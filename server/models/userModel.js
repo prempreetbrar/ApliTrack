@@ -52,5 +52,12 @@ User.beforeCreate(async (user, options) => {
   user.PasswordConfirm = undefined;
 });
 
+User.prototype.isPasswordCorrect = async function (
+  candidatePassword,
+  actualPassword
+) {
+  return await bcrypt.compare(candidatePassword, actualPassword);
+};
+
 sequelize.sync();
 module.exports = User;
