@@ -2,11 +2,13 @@ const errorHandling = require("../utils/errorHandling");
 
 exports.deleteOneInterview = (Model) => {
     return errorHandling.catchAsync(async (request, response) => {
-      const keyObj = request.body["InterviewID"];
+      const interviewPK = request.body["InterviewID"];
+      const applicantPK = request.body["ApplicantUsername"];
       
       await Model.destroy({
         where: {
-            "InterviewID": keyObj
+            "InterviewID": interviewPK,
+            "ApplicantUsername": applicantPK
         }
       });
   
@@ -14,4 +16,8 @@ exports.deleteOneInterview = (Model) => {
         status: "success",
       });
     });
-  }
+  };
+
+exports.updateOneInterview = (Model) => {
+
+};
