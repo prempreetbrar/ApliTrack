@@ -5,7 +5,7 @@ const authController = require("../controllers/authController");
 const router = express.Router();
 router.post(
   "/get-started",
-  authController.checkIfLoggedIn,
+  //authController.checkIfLoggedIn, //TODO: check later
   applicantController.createApplicant
 );
 
