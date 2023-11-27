@@ -15,6 +15,7 @@ const app = express();
 
 const authRouter = require("./routes/authRoutes");
 const applicantRouter = require("./routes/applicantRoutes");
+const interviewRouter = require("./routes/interviewRoutes");
 const errorController = require("./controllers/errorController");
 
 app.use(cors());
@@ -37,6 +38,7 @@ app.use(express.json());
 */
 app.use("/api/auth", authRouter);
 app.use("/api/applicants", applicantRouter);
+app.use("/api/interviews", interviewRouter);
 app.use(errorController);
 
 module.exports = app;

@@ -22,5 +22,7 @@ exports.createOne = (Model) => {
         [Model.TableName]: document,
       },
     });
+
+    console.log(document.toJSON());
   });
 };
