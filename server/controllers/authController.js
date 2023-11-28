@@ -3,6 +3,7 @@ const util = require("util");
 
 const User = require("../models/userModel");
 const errorHandling = require("../utils/errorHandling");
+const { Applicant } = require("../models/applicantModel");
 
 /*
   We sign the token according to the user's username. Since
@@ -67,12 +68,14 @@ exports.signUpUser = errorHandling.catchAsync(async (request, response) => {
     Fname: request.body.Fname || "",
     Lname: request.body.Lname || "",
   });
+  const newApplicant = await Applicant.create({
+    Username: request.body.Username,
+  });
 
   createSendToken(newUser, 201, request, response);
 });
 
 exports.loginUser = errorHandling.catchAsync(async (request, response) => {
-  console.log(request.body);
   if (!request.body.Username || !request.body.Password) {
     throw new errorHandling.AppError(
       "Please provide both a username and password!",
@@ -100,7 +103,7 @@ exports.loginUser = errorHandling.catchAsync(async (request, response) => {
 });
 
 exports.checkIfLoggedIn = errorHandling.catchAsync(
-  async (request, response) => {
+  async (request, response, next) => {
     // 1) check if the JWT token was sent with the request
     let token;
     if (
@@ -140,12 +143,13 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
 
     /*
         Add the user onto the request object. This allows anything afterwards in the middleware
-        stack to access the user (by doing request.user). For example, if you need to create
+        stack to access the user (by doing request.body.user). For example, if you need to create
         an application for a user, you could do router.post("/application", checkIfLoggedIn, createApplication),
         which would allow your createApplication function (which comes after checkIfLoggedIn in the middleware
         stack) to access the user (and the user's attributes).
     */
-    request.user = user;
+    request.body.user = user;
+    request.body.ApplicantUsername = user.Username;
     next();
   }
 );

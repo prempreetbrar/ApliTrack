@@ -19,7 +19,7 @@ exports.createOne = (Model) => {
     response.status(201).json({
       status: "success",
       data: {
-        [Model.TableName]: document,
+        [Model.name.toLowerCase()]: document,
       },
     });
   });
