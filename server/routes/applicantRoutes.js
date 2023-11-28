@@ -9,6 +9,13 @@ router.post(
   applicantController.createApplicant
 );
 
+router.get(
+  "/profile",
+  authController.checkIfLoggedIn,
+  applicantController.addFilter,
+  applicantController.getApplicant
+);
+
 router.post(
   "/certifications",
   authController.checkIfLoggedIn,
