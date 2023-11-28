@@ -208,3 +208,4 @@ exports.ApplicantExperience = ApplicantExperience;
 exports.ApplicantProject = ApplicantProject;
 exports.ApplicantCertification = ApplicantCertification;
 exports.ApplicantSkill = ApplicantSkill;
+exports.ApplicantCompetition = ApplicantCompetition;

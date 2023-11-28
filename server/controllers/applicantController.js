@@ -35,7 +35,7 @@ exports.getApplicant = factory.getOne(Applicant.Applicant);
 exports.addFilter = errorHandling.catchAsync(
   async (request, response, next) => {
     request.body.filter = {
-      Username: request.body.user.Username,
+      Username: request.body.Username,
     };
     next();
   }

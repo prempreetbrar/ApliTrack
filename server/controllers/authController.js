@@ -149,6 +149,7 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
         stack) to access the user (and the user's attributes).
     */
     request.body.user = user;
+    request.body.Username = user.Username;
     request.body.ApplicantUsername = user.Username;
     next();
   }
