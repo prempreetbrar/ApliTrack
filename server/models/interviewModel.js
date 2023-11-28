@@ -35,10 +35,14 @@ const Interview = sequelize.define(
     }
   );
 
+  //Applicant has a one-to-many relationship with Interview
   Applicant.hasMany(Interview, {
     foreignKey: 'ApplicantUsername',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+  });
+  Interview.belongsTo(Applicant, {
+    foreignKey: 'ApplicantUsername',
   });
 
   //TODO: add this schema later
