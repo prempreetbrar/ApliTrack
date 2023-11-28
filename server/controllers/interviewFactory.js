@@ -17,7 +17,3 @@ exports.deleteOneInterview = (Model) => {
       });
     });
   };
-
-exports.updateOneInterview = (Model) => {
-
-};

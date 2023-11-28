@@ -4,5 +4,6 @@ const interviewController = require("../controllers/interviewController");
 const router = express.Router();
 router.post("/schedule", interviewController.createInterview);
 router.delete("/delete-interview", interviewController.deleteInterview);
+router.post("/update-interview", interviewController.updateInterview);
 
 module.exports = router;
