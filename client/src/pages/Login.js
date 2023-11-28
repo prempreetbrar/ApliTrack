@@ -12,7 +12,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useSignup } from "../hooks/useSignup";
+import { useLogin } from "../hooks/useLogin";
 import { useSnackbar } from "notistack";
 
 /**
@@ -38,21 +38,16 @@ export default function Signup() {
     },
   });
   const password = register("Password", { required: "Password is required." });
-  const passwordConfirm = register("PasswordConfirm", {
-    required: "You must confirm your password.",
-  });
-  const firstName = register("Fname");
-  const lastName = register("Lname");
 
-  const { signup, error, isLoading } = useSignup();
+  const { login, error, isLoading } = useLogin();
 
   /*
-    When the user submits the form, try to sign them up. If it succeeds, let them know!
+    When the user submits the form, try to log them in. If it succeeds, let them know!
   */
   const onSubmit = async (data) => {
-    const success = await signup(data);
+    const success = await login(data);
     if (success) {
-      enqueueSnackbar("Signup succeeded!", {
+      enqueueSnackbar("Login succeeded!", {
         variant: "success",
         autoHideDuration: 3000,
       });
@@ -100,7 +95,7 @@ export default function Signup() {
           ApliTrack
         </Typography>
         <Typography component="h1" variant="h5">
-          Sign up
+          Log in
         </Typography>
         <Box
           component="form"
@@ -109,28 +104,6 @@ export default function Signup() {
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="given-name"
-                required
-                fullWidth
-                name={firstName.name}
-                label="First Name"
-                inputRef={firstName.ref}
-                onChange={firstName.onChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                autoComplete="family-name"
-                name={lastName.name}
-                label="Last Name"
-                inputRef={lastName.ref}
-                onChange={lastName.onChange}
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 name={username.name}
@@ -153,31 +126,20 @@ export default function Signup() {
                 onChange={password.onChange}
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                name={passwordConfirm.name}
-                label="Confirm Password"
-                type="password"
-                inputRef={passwordConfirm.ref}
-                onChange={passwordConfirm.onChange}
-                fullWidth
-                required
-              />
-            </Grid>
           </Grid>
           <Button
-            type="submit"
             disabled={isLoading}
+            type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign Up
+            Log in
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="http://localhost:3001/login" variant="body2">
-                Already have an account? Sign in
+              <Link href="http://localhost:3001/signup" variant="body2">
+                Don't have an account? Sign up
               </Link>
             </Grid>
           </Grid>
