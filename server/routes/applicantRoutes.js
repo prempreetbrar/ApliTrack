@@ -9,4 +9,10 @@ router.post(
   applicantController.createApplicant
 );
 
+router.post(
+  "/certifications",
+  authController.checkIfLoggedIn,
+  applicantController.createCertification
+);
+
 module.exports = router;

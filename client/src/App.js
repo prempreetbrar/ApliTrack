@@ -4,6 +4,8 @@ import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import { useLogout } from "./hooks/useLogout";
 
 function App() {
   return (
@@ -12,7 +14,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/signup" element={<Signup />} />
-            {/* <Route path="/login" element={<Login />} /> */}
+            <Route path="/login" element={<Login />} />
           </Routes>
         </Router>
       </AuthProvider>
