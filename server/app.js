@@ -8,6 +8,7 @@
   and afterwards we register all of our routes (our urls).
 */
 
+const morgan = require("morgan");
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -19,6 +20,7 @@ const interviewRouter = require("./routes/interviewRoutes");
 const documentRouter = require("./routes/documentRoutes");
 const errorController = require("./controllers/errorController");
 
+app.use(morgan("dev"));
 app.use(cors());
 app.options("*", cors());
 app.use(cookieParser());

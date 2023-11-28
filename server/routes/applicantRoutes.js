@@ -5,10 +5,22 @@ const authController = require("../controllers/authController");
 const router = express.Router();
 router.post(
   "/get-started",
-  //authController.checkIfLoggedIn, 
+  authController.checkIfLoggedIn,
   applicantController.createApplicant
 );
 
 router.delete("/delete-applicant", applicantController.deleteApplicant);
+router.get(
+  "/profile",
+  authController.checkIfLoggedIn,
+  applicantController.addFilter,
+  applicantController.getApplicant
+);
+
+router.post(
+  "/certifications",
+  authController.checkIfLoggedIn,
+  applicantController.createCertification
+);
 
 module.exports = router;

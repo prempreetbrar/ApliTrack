@@ -19,6 +19,10 @@ const Applicant = sequelize.define(
   }
 );
 
+User.hasMany(Applicant, {
+  foreignKey: "Username",
+});
+
 // Define the foreign key relationship
 Applicant.belongsTo(User, {
   foreignKey: "Username",
@@ -50,6 +54,10 @@ const ApplicantExperience = sequelize.define(
     timestamps: false,
   }
 );
+
+Applicant.hasMany(ApplicantExperience, {
+  foreignKey: "ApplicantUsername",
+});
 
 // Define the foreign key relationship
 ApplicantExperience.belongsTo(Applicant, {
@@ -83,6 +91,10 @@ const ApplicantProject = sequelize.define(
   }
 );
 
+Applicant.hasMany(ApplicantProject, {
+  foreignKey: "ApplicantUsername",
+});
+
 // Define the foreign key relationship
 ApplicantProject.belongsTo(Applicant, {
   foreignKey: "ApplicantUsername",
@@ -111,6 +123,10 @@ const ApplicantCertification = sequelize.define(
   }
 );
 
+Applicant.hasMany(ApplicantCertification, {
+  foreignKey: "ApplicantUsername",
+});
+
 // Define the foreign key relationship
 ApplicantCertification.belongsTo(Applicant, {
   foreignKey: "ApplicantUsername",
@@ -119,6 +135,68 @@ ApplicantCertification.belongsTo(Applicant, {
 });
 
 // ------------------------------------------------------------------------------------------------------------------
+
+const ApplicantSkill = sequelize.define(
+  "APPLICANT_SKILL",
+  {
+    ApplicantUsername: {
+      type: DataTypes.STRING(32),
+      primaryKey: true,
+      allowNull: false,
+    },
+    Skill: {
+      type: DataTypes.STRING(32),
+      primaryKey: true,
+      allowNull: false,
+    },
+  },
+  {
+    timestamps: false,
+  }
+);
+
+Applicant.hasMany(ApplicantSkill, {
+  foreignKey: "ApplicantUsername",
+});
+
+// Define the foreign key relationship
+ApplicantSkill.belongsTo(Applicant, {
+  foreignKey: "ApplicantUsername",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+// ------------------------------------------------------------------------------------------------------------------
+
+const ApplicantCompetition = sequelize.define(
+  "APPLICANT_COMPETITION",
+  {
+    ApplicantUsername: {
+      type: DataTypes.STRING(32),
+      primaryKey: true,
+      allowNull: false,
+    },
+    Competition: {
+      type: DataTypes.STRING(32),
+      primaryKey: true,
+      allowNull: false,
+    },
+  },
+  {
+    timestamps: false,
+  }
+);
+
+Applicant.hasMany(ApplicantCompetition, {
+  foreignKey: "ApplicantUsername",
+});
+
+// Define the foreign key relationship
+ApplicantCompetition.belongsTo(Applicant, {
+  foreignKey: "ApplicantUsername",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 /*
   If any changes occurred to the model, sequelize.sync just ensures that they are
@@ -129,3 +207,5 @@ exports.Applicant = Applicant;
 exports.ApplicantExperience = ApplicantExperience;
 exports.ApplicantProject = ApplicantProject;
 exports.ApplicantCertification = ApplicantCertification;
+exports.ApplicantSkill = ApplicantSkill;
+exports.ApplicantCompetition = ApplicantCompetition;
