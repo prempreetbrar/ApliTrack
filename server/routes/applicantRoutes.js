@@ -5,8 +5,10 @@ const authController = require("../controllers/authController");
 const router = express.Router();
 router.post(
   "/get-started",
-  //authController.checkIfLoggedIn, //TODO: check later
+  //authController.checkIfLoggedIn, 
   applicantController.createApplicant
 );
+
+router.delete("/delete-applicant", applicantController.deleteApplicant);
 
 module.exports = router;
