@@ -22,7 +22,7 @@ const Interview = sequelize.define(
         allowNull: true,
       },
       DateTime: {
-        type: DataTypes.TEXT,
+        type: DataTypes.TEXT, //change maybde to date only
         allowNull: false,
       },
     //   ApplicationName: {
