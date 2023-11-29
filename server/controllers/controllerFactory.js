@@ -117,7 +117,7 @@ exports.deleteInstance = (Model) => {
       where: keys,
     });
 
-    response.status(201).json({
+    response.status(204).json({
       status: "success",
     });
   });

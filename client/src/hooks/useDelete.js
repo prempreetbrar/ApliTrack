@@ -13,17 +13,12 @@ export const useDelete = () => {
     let flag = false;
 
     await axios
-      .delete(
-        url,
-        {
-          data: { ...data },
+      .delete(url, {
+        data: { ...data },
+        headers: {
+          Authorization: `Bearer ${user.token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      )
+      })
       .then((response) => {
         setIsLoading(false);
         setError(null);
