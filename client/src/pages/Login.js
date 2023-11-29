@@ -69,7 +69,7 @@ export default function Login() {
         });
       });
     } else if (error) {
-      console.log(error);
+      console.error(error);
       enqueueSnackbar(error.message, {
         variant: "error",
         autoHideDuration: 3000,

@@ -16,20 +16,19 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Textarea from "@mui/joy/Textarea";
+import axios from "axios";
+
 import React from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import useAuthContext from "../hooks/useAuthContext";
 import { useCreate } from "../hooks/useCreate";
 import { useUpdate } from "../hooks/useUpdate";
 import { useDelete } from "../hooks/useDelete";
 import { useSnackbar } from "notistack";
-
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const { user } = useAuthContext();
-  const { update, error, isLoading } = useUpdate();
   const [applicantInfo, setApplicantInfo] = React.useState(null);
 
   const {
@@ -41,7 +40,28 @@ export default function Profile() {
   } = useForm();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const {
+    create,
+    error: createError,
+    isLoading: createIsLoading,
+  } = useCreate();
+  const {
+    deleteItem,
+    error: deleteError,
+    isLoading: deleteIsLoading,
+  } = useDelete();
+  const {
+    update,
+    error: updateError,
+    isLoading: updateIsLoading,
+  } = useUpdate();
 
+  /*
+    Get the applicant's info upon loading the page (and anytime
+    the user themselves changes, for example if someone goes into
+    the backend and changes a column themselves).  
+    )
+  */
   React.useEffect(() => {
     const fetchApplicantInfo = async () => {
       const response = await axios.get(
@@ -53,10 +73,6 @@ export default function Profile() {
         }
       );
       setApplicantInfo(response.data.data.applicant);
-      setValue("Education", response.data.data.applicant?.Education);
-      console.log(response);
-      setValue("Fname", response.data.data.applicant?.User?.Fname);
-      setValue("Lname", response.data.data.applicant?.User?.Lname);
     };
 
     if (user) {
@@ -64,6 +80,10 @@ export default function Profile() {
     }
   }, [user, setValue]);
 
+  /*
+    Any time the user makes a change, refresh the page
+    if the change succeeded.
+  */
   function snackbarLogic(method, success) {
     const refreshPage = () => {
       navigate(0);
@@ -85,20 +105,20 @@ export default function Profile() {
     }
   }
 
-  async function updateEducation(data) {
-    const success = await update(
-      data,
-      "http://localhost:3000/api/applicants/education"
-    );
+  async function updateInstance(data, url) {
+    const success = await update(data, url);
     snackbarLogic("Update", success);
   }
 
-  async function updateName(data) {
-    const success = await update(data, "http://localhost:3000/api/users/");
-    snackbarLogic("Update", success);
+  async function createInstance(data, url) {
+    const success = await create(data, url);
+    snackbarLogic("Insert", success);
   }
 
-  console.log(applicantInfo);
+  async function deleteInstance(data, url) {
+    const success = await deleteItem(data, url);
+    snackbarLogic("Delete", success);
+  }
 
   return (
     <Box
@@ -110,6 +130,91 @@ export default function Profile() {
       }}
     >
       {/* YOU */}
+      <UserSection
+        applicantInfo={applicantInfo}
+        updateInstance={updateInstance}
+        updateIsLoading={updateIsLoading}
+      />
+      {/* EXPERIENCES */}
+      <FormSection
+        sectionName={"EXPERIENCES"}
+        sectionURL={"http://localhost:3000/api/applicants/experiences"}
+        sectionArray={applicantInfo?.Experiences}
+        attributeName="Experience"
+        attributeDescName="ExperienceDesc"
+        createInstance={createInstance}
+        deleteInstance={deleteInstance}
+        updateInstance={updateInstance}
+        createIsLoading={createIsLoading}
+      />
+      {/* CERTIFICATIONS */}
+      <SimpleSection
+        sectionName={"CERTIFICATIONS"}
+        sectionURL={"http://localhost:3000/api/applicants/certifications"}
+        sectionArray={applicantInfo?.Certifications}
+        attributeName="Certification"
+        createInstance={createInstance}
+        deleteInstance={deleteInstance}
+        createIsLoading={createIsLoading}
+      />
+      {/* SKILLS */}
+      <SimpleSection
+        sectionName={"SKILLS"}
+        sectionURL={"http://localhost:3000/api/applicants/skills"}
+        sectionArray={applicantInfo?.Skills}
+        attributeName="Skill"
+        createInstance={createInstance}
+        deleteInstance={deleteInstance}
+        createIsLoading={createIsLoading}
+      />
+      {/* COMPETITION */}
+      <SimpleSection
+        sectionName={"COMPETITIONS"}
+        sectionURL={"http://localhost:3000/api/applicants/competitions"}
+        sectionArray={applicantInfo?.Competitions}
+        attributeName="Competition"
+        createInstance={createInstance}
+        deleteInstance={deleteInstance}
+        createIsLoading={createIsLoading}
+      />
+    </Box>
+  );
+}
+
+function UserSection({ applicantInfo, updateInstance, updateIsLoading }) {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    getValues,
+  } = useForm();
+
+  React.useEffect(() => {
+    /*
+        We have forms that the user can change. However, we want to prepopulate them
+        with their current values from the database.
+      */
+    setValue("Education", applicantInfo?.Education);
+    setValue("Fname", applicantInfo?.User?.Fname);
+    setValue("Lname", applicantInfo?.User?.Lname);
+  }, [
+    applicantInfo?.Education,
+    applicantInfo?.User?.Fname,
+    applicantInfo?.User?.Lname,
+    setValue,
+  ]);
+
+  function updateEducation(data) {
+    updateInstance(data, "http://localhost:3000/api/applicants/education");
+  }
+
+  function updateName(data) {
+    updateInstance(data, "http://localhost:3000/api/users/");
+  }
+
+  return (
+    <>
       <Paper
         sx={{
           display: "flex",
@@ -146,7 +251,7 @@ export default function Profile() {
             type="submit"
             variant="outlined"
             sx={{ mt: 3, mb: 2 }}
-            disabled={isLoading}
+            disabled={updateIsLoading}
           >
             Update
           </Button>
@@ -170,78 +275,25 @@ export default function Profile() {
             type="submit"
             variant="outlined"
             sx={{ mt: 3, mb: 2 }}
-            disabled={isLoading}
+            disabled={updateIsLoading}
           >
             Update
           </Button>
         </Box>
       </Paper>
-
-      {/* EXPERIENCES */}
-      <FormSection
-        sectionName={"EXPERIENCES"}
-        sectionURL={"http://localhost:3000/api/applicants/experiences"}
-        sectionArray={applicantInfo?.Experiences}
-        attributeName="Experience"
-        attributeDescName="ExperienceDesc"
-        snackbarLogic={snackbarLogic}
-      />
-      {/* CERTIFICATIONS */}
-      <ProfileSection
-        sectionName={"CERTIFICATIONS"}
-        sectionURL={"http://localhost:3000/api/applicants/certifications"}
-        sectionArray={applicantInfo?.Certifications}
-        attributeName="Certification"
-        snackbarLogic={snackbarLogic}
-      />
-      {/* SKILLS */}
-      <ProfileSection
-        sectionName={"SKILLS"}
-        sectionURL={"http://localhost:3000/api/applicants/skills"}
-        sectionArray={applicantInfo?.Skills}
-        attributeName="Skill"
-        snackbarLogic={snackbarLogic}
-      />
-      {/* COMPETITION */}
-      <ProfileSection
-        sectionName={"COMPETITIONS"}
-        sectionURL={"http://localhost:3000/api/applicants/competitions"}
-        sectionArray={applicantInfo?.Competitions}
-        attributeName="Competition"
-        snackbarLogic={snackbarLogic}
-      />
-    </Box>
+    </>
   );
 }
 
-function ProfileSection({
+function SimpleSection({
   sectionName,
   sectionURL,
   sectionArray,
   attributeName,
-  snackbarLogic,
+  createInstance,
+  deleteInstance,
+  createIsLoading,
 }) {
-  const {
-    create,
-    error: createError,
-    isLoading: createIsLoading,
-  } = useCreate();
-  const {
-    deleteItem,
-    error: deleteError,
-    isLoading: deleteIsLoading,
-  } = useDelete();
-
-  async function createSomething(data, url) {
-    const success = await create(data, url);
-    snackbarLogic("Insert", success);
-  }
-
-  async function deleteSomething(data, url) {
-    const success = await deleteItem(data, url);
-    snackbarLogic("Delete", success);
-  }
-
   const {
     register,
     handleSubmit,
@@ -263,6 +315,7 @@ function ProfileSection({
         <Typography fontWeight="bold" sx={{ paddingBottom: "25px" }}>
           {sectionName}
         </Typography>
+        {/* Display all of the user's current data */}
         <Stack direction="row" spacing={2}>
           {sectionArray &&
             sectionArray.map((entity, index) => (
@@ -270,7 +323,7 @@ function ProfileSection({
                 key={index}
                 label={entity[attributeName]}
                 onDelete={() =>
-                  deleteSomething(
+                  deleteInstance(
                     { [attributeName]: entity[attributeName] },
                     sectionURL
                   )
@@ -279,6 +332,7 @@ function ProfileSection({
             ))}
         </Stack>
 
+        {/* Allow the user to enter new data. */}
         <Box display="flex" marginTop="2rem" alignItems="center">
           <TextField
             {...register(attributeName)}
@@ -287,7 +341,7 @@ function ProfileSection({
           />
           <Button
             onClick={() =>
-              createSomething(
+              createInstance(
                 { [attributeName]: getValues(attributeName) },
                 sectionURL
               )
@@ -309,41 +363,17 @@ function FormSection({
   sectionArray,
   attributeName,
   attributeDescName,
-  snackbarLogic,
+  deleteInstance,
+  createInstance,
+  updateInstance,
+  createIsLoading,
 }) {
-  const {
-    create,
-    error: createError,
-    isLoading: createIsLoading,
-  } = useCreate();
-  const {
-    deleteItem,
-    error: deleteError,
-    isLoading: deleteIsLoading,
-  } = useDelete();
-
   const [editExperienceDialogOpen, setEditExperienceDialogOpen] =
     React.useState(false);
   const [selectedExperience, setSelectedExperience] = React.useState(null);
-
-  const { update, error, isLoading } = useUpdate();
-
-  async function createSomething(data, url) {
-    console.log(data);
-    const success = await create(data, url);
-    snackbarLogic("Insert", success);
-  }
-
-  async function deleteSomething(data, url) {
-    const success = await deleteItem(data, url);
-    snackbarLogic("Delete", success);
-  }
-
-  async function updateSomething(data, url) {
-    console.log(data);
-    const success = await update(data, url);
-    snackbarLogic("Update", success);
-  }
+  const [selectedItemToDelete, setSelectedItemToDelete] = React.useState(null);
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
+    React.useState(false);
 
   const handleOpenEditExperienceDialog = (experience) => {
     setSelectedExperience(experience);
@@ -352,6 +382,16 @@ function FormSection({
 
   const handleCloseEditExperienceDialog = () => {
     setEditExperienceDialogOpen(false);
+  };
+
+  const handleOpenDeleteConfirmationDialog = (item) => {
+    setSelectedItemToDelete(item);
+    setDeleteConfirmationDialogOpen(true);
+  };
+
+  const handleCloseDeleteConfirmationDialog = () => {
+    setSelectedItemToDelete(null);
+    setDeleteConfirmationDialogOpen(false);
   };
 
   const {
@@ -375,6 +415,7 @@ function FormSection({
         {sectionName}
       </Typography>
 
+      {/* Existing data */}
       {sectionArray &&
         sectionArray.map((entity, index) => (
           <Box
@@ -396,18 +437,14 @@ function FormSection({
             </IconButton>
             <IconButton
               aria-label="delete"
-              onClick={() =>
-                deleteSomething(
-                  { [attributeName]: entity[attributeName] },
-                  sectionURL
-                )
-              }
+              onClick={() => handleOpenDeleteConfirmationDialog(entity)}
             >
               <DeleteIcon />
             </IconButton>
           </Box>
         ))}
 
+      {/* Form for new data */}
       <Box
         display="flex"
         marginTop="2rem"
@@ -431,10 +468,9 @@ function FormSection({
             placeholder={`Enter description of new ${attributeName}`}
           />
         </Box>
-
         <Button
           onClick={() =>
-            createSomething(
+            createInstance(
               {
                 [attributeName]: getValues(attributeName),
                 [attributeDescName]: getValues(attributeDescName),
@@ -448,13 +484,29 @@ function FormSection({
           +
         </Button>
       </Box>
+
+      {/* Editing existing data */}
       <EditExperienceForm
         open={editExperienceDialogOpen}
         handleClose={handleCloseEditExperienceDialog}
         experienceTitle={selectedExperience?.[attributeName]}
         experienceDesc={selectedExperience?.[attributeDescName]}
-        onSubmit={updateSomething}
+        onSubmit={updateInstance}
       />
+
+      {deleteConfirmationDialogOpen && (
+        <DeleteConfirmationDialog
+          open={deleteConfirmationDialogOpen}
+          handleClose={handleCloseDeleteConfirmationDialog}
+          handleConfirm={() =>
+            deleteInstance(
+              { [attributeName]: selectedItemToDelete[attributeName] },
+              sectionURL
+            )
+          }
+          itemName={selectedItemToDelete?.[attributeName]}
+        />
+      )}
     </Paper>
   );
 }
@@ -513,6 +565,34 @@ function EditExperienceForm({
         <Button onClick={handleClose}>Cancel</Button>
         <Button type="submit" onClick={handleSubmit(handleFormSubmit)}>
           Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+function DeleteConfirmationDialog({
+  open,
+  handleClose,
+  handleConfirm,
+  itemName,
+}) {
+  return (
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>{`Delete ${itemName}?`}</DialogTitle>
+      <DialogContent>
+        <Typography>Are you sure you want to delete {itemName}?</Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button
+          onClick={() => {
+            handleConfirm();
+            handleClose();
+          }}
+          color="error"
+        >
+          Confirm Delete
         </Button>
       </DialogActions>
     </Dialog>
