@@ -23,18 +23,29 @@ router.put(
 );
 
 router
+  .route("/experiences")
+  .post(authController.checkIfLoggedIn, applicantController.createExperience);
+// .put(authController.checkIfLoggedIn, authController.updateExperience);
+
+router
   .route("/certifications")
   .post(authController.checkIfLoggedIn, applicantController.createCertification)
-  .delete(applicantController.deleteCertification);
+  .delete(
+    authController.checkIfLoggedIn,
+    applicantController.deleteCertification
+  );
 
 router
   .route("/skills")
   .post(authController.checkIfLoggedIn, applicantController.createSkill)
-  .delete(applicantController.deleteSkill);
+  .delete(authController.checkIfLoggedIn, applicantController.deleteSkill);
 
 router
   .route("/competitions")
   .post(authController.checkIfLoggedIn, applicantController.createCompetition)
-  .delete(applicantController.deleteCompetition);
+  .delete(
+    authController.checkIfLoggedIn,
+    applicantController.deleteCompetition
+  );
 
 module.exports = router;

@@ -7,6 +7,7 @@ import {
   Chip,
   Stack,
 } from "@mui/material";
+import Textarea from "@mui/joy/Textarea";
 import React from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -120,11 +121,12 @@ export default function Profile() {
         </Box>
       </Paper>
       {/* EXPERIENCES */}
-      <ProfileSection
+      <FormSection
         sectionName={"EXPERIENCES"}
         sectionURL={"http://localhost:3000/api/applicants/experiences"}
         sectionArray={applicantInfo?.Experiences}
         attributeName="Experience"
+        attributeDescName="ExperienceDesc"
         snackbarLogic={snackbarLogic}
       />
       {/* CERTIFICATIONS */}
@@ -241,5 +243,118 @@ function ProfileSection({
         </Box>
       </Paper>
     </>
+  );
+}
+
+function FormSection({
+  sectionName,
+  sectionURL,
+  sectionArray,
+  attributeName,
+  attributeDescName,
+  snackbarLogic,
+}) {
+  const {
+    create,
+    error: createError,
+    isLoading: createIsLoading,
+  } = useCreate();
+  const {
+    deleteItem,
+    error: deleteError,
+    isLoading: deleteIsLoading,
+  } = useDelete();
+
+  async function createSomething(data, url) {
+    console.log(data);
+    const success = await create(data, url);
+    snackbarLogic("Insert", success);
+  }
+
+  async function deleteSomething(data, url) {
+    const success = await deleteItem(data, url);
+    snackbarLogic("Delete", success);
+  }
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    getValues,
+  } = useForm();
+
+  return (
+    <Paper
+      display="flex"
+      flexDirection="column"
+      sx={{
+        padding: "1rem",
+        marginBottom: "2rem",
+      }}
+    >
+      <Typography fontWeight="bold" sx={{ paddingBottom: "25px" }}>
+        {sectionName}
+      </Typography>
+
+      {sectionArray &&
+        sectionArray.map((entity, index) => (
+          <Box sx={{ padding: "1rem" }}>
+            <Typography fontWeight="bold">{entity[attributeName]}</Typography>
+            <Typography>{entity[attributeDescName]}</Typography>
+          </Box>
+          // <Chip
+          //   key={index}
+          //   label={entity[attributeName]}
+          //   onDelete={() =>
+          //     deleteSomething(
+          //       { [attributeName]: entity[attributeName] },
+          //       sectionURL
+          //     )
+          //   }
+          // />
+        ))}
+
+      <Box
+        display="flex"
+        marginTop="2rem"
+        flexDirection="row"
+        alignItems="center"
+        padding="1rem"
+      >
+        <Box display="flex" flexGrow="1" flexDirection="column">
+          <TextField
+            {...register(attributeName)}
+            placeholder={`Enter Title of New ${attributeName} (Max 32 Characters)`}
+            fullWidth
+            sx={{
+              marginBottom: "1rem",
+            }}
+          />
+          <Textarea
+            {...register(attributeDescName)}
+            minRows={4}
+            variant="soft"
+            placeholder={`Enter description of new ${attributeName}`}
+          />
+        </Box>
+
+        <Button
+          onClick={() =>
+            createSomething(
+              {
+                [attributeName]: getValues(attributeName),
+                [attributeDescName]: getValues(attributeDescName),
+              },
+              sectionURL
+            )
+          }
+          sx={{ ml: 1, fontSize: "1.5rem" }}
+          disabled={createIsLoading}
+        >
+          +
+        </Button>
+      </Box>
+    </Paper>
   );
 }
