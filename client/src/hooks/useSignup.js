@@ -1,11 +1,13 @@
 import React from "react";
 import useAuthContext from "./useAuthContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const useSignup = () => {
   const [error, setError] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(null);
   const { dispatch } = useAuthContext();
+  const navigate = useNavigate();
 
   const signup = async (data) => {
     setIsLoading(true);
@@ -23,6 +25,12 @@ export const useSignup = () => {
         setIsLoading(false);
         setError(null);
         flag = true;
+
+        /*
+          wait 1 second before redirecting the user (just so they
+          can see the success message)
+        */
+        setTimeout(() => navigate("/applicants/profile"), 1000);
       })
       .catch((error) => {
         setIsLoading(false);

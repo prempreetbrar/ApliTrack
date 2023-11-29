@@ -16,9 +16,9 @@ import { useLogin } from "../hooks/useLogin";
 import { useSnackbar } from "notistack";
 
 /**
- * Signup component responsible for taking in username/password inputs and signing a user up.
+ * Login component
  */
-export default function Signup() {
+export default function Login() {
   /*
     register allows us to track the user input implicitly (without defining state). HandleSubmit
     validates any specified requirements (ie. minLength, in this case we have none) 
