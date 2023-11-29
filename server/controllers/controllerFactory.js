@@ -5,7 +5,7 @@ const errorHandling = require("../utils/errorHandling");
   simply sending a create request to the database (with the
   request body). Rather than duplicating this across every
   controller, we simply abstract it to a factory function that
-  takes in a model. This way, you can create several models
+  takes in a model. This way, you can create several controller functions
   with a single line.
 
   If custom logic is needed for creation, we would either
@@ -86,8 +86,39 @@ exports.updateInstance = (Model) => {
     response.status(200).json({
       status: "success",
       data: {
-        [Model.name.toLowerCase()]: document,
+        [Model.name.toLowerCase()]: instance,
       },
+    });
+  });
+};
+
+exports.deleteInstance = (Model) => {
+  return errorHandling.catchAsync(async (request, response) => {
+    //get a list of the model's primary key attributes
+    const pkAttributes = Model.primaryKeyAttributes;
+
+    //get the keys and the new values of the request
+    var keys = {};
+    console.log(request.body);
+    for (let x in request.body) {
+      var obj = { [x]: request.body[x] };
+
+      if (pkAttributes.includes(x)) {
+        Object.assign(keys, obj);
+      }
+    }
+
+    //debug output
+    console.log("KEYS:");
+    console.log(keys);
+
+    //delete the instance
+    await Model.destroy({
+      where: keys,
+    });
+
+    response.status(201).json({
+      status: "success",
     });
   });
 };

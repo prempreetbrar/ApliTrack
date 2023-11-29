@@ -57,6 +57,11 @@ const ApplicantExperience = sequelize.define(
 
 Applicant.hasMany(ApplicantExperience, {
   foreignKey: "ApplicantUsername",
+  /*
+    When we're doing the join and returning to the frontend, we don't want the applicant prefix.
+    Defining an alias avoids that.
+  */
+  as: "Experiences",
 });
 
 // Define the foreign key relationship
@@ -93,6 +98,7 @@ const ApplicantProject = sequelize.define(
 
 Applicant.hasMany(ApplicantProject, {
   foreignKey: "ApplicantUsername",
+  as: "Projects",
 });
 
 // Define the foreign key relationship
@@ -125,6 +131,7 @@ const ApplicantCertification = sequelize.define(
 
 Applicant.hasMany(ApplicantCertification, {
   foreignKey: "ApplicantUsername",
+  as: "Certifications",
 });
 
 // Define the foreign key relationship
@@ -157,6 +164,7 @@ const ApplicantSkill = sequelize.define(
 
 Applicant.hasMany(ApplicantSkill, {
   foreignKey: "ApplicantUsername",
+  as: "Skills",
 });
 
 // Define the foreign key relationship
@@ -189,6 +197,7 @@ const ApplicantCompetition = sequelize.define(
 
 Applicant.hasMany(ApplicantCompetition, {
   foreignKey: "ApplicantUsername",
+  as: "Competitions",
 });
 
 // Define the foreign key relationship

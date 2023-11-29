@@ -16,10 +16,25 @@ router.get(
   applicantController.getApplicant
 );
 
-router.post(
-  "/certifications",
+router.put(
+  "/education",
   authController.checkIfLoggedIn,
-  applicantController.createCertification
+  applicantController.updateEducation
 );
+
+router
+  .route("/certifications")
+  .post(authController.checkIfLoggedIn, applicantController.createCertification)
+  .delete(applicantController.deleteCertification);
+
+router
+  .route("/skills")
+  .post(authController.checkIfLoggedIn, applicantController.createSkill)
+  .delete(applicantController.deleteSkill);
+
+router
+  .route("/competitions")
+  .post(authController.checkIfLoggedIn, applicantController.createCompetition)
+  .delete(applicantController.deleteCompetition);
 
 module.exports = router;
