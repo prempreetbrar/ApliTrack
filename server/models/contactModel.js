@@ -27,22 +27,6 @@ const Contact = sequelize.define(
     }
   );
 
-  // Define the foreign key relationships
-  // these were causing errors for some reason...commented out for now
-  /*
-  Contact.hasMany(ContactEmail, {
-    foreignKey: "ContactID",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  });
-  
-  Contact.hasMany(ContactPhone, {
-    foreignKey: "ContactID",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  });
-*/
-
 // ---
 
   const ContactEmail = sequelize.define(
@@ -77,6 +61,12 @@ const Contact = sequelize.define(
     onUpdate: "CASCADE",
   });
 
+  Contact.hasMany(ContactEmail, {
+    foreignKey: "ContactID",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+
 // ---
 
   const ContactPhone = sequelize.define(
@@ -106,6 +96,12 @@ const Contact = sequelize.define(
 
   // Define the foreign key relationship
   ContactPhone.belongsTo(Contact, {
+    foreignKey: "ContactID",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+
+  Contact.hasMany(ContactPhone, {
     foreignKey: "ContactID",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",

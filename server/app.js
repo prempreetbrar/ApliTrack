@@ -18,6 +18,7 @@ const authRouter = require("./routes/authRoutes");
 const applicantRouter = require("./routes/applicantRoutes");
 const contactRouter = require("./routes/contactRoutes");
 const companyRouter = require("./routes/companyRoutes");
+const jobRouter = require("./routes/jobRoutes");
 const errorController = require("./controllers/errorController");
 
 app.use(morgan("dev"));
@@ -43,6 +44,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/applicants", applicantRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/company", companyRouter);
+app.use("/api/job", jobRouter);
 app.use(errorController);
 
 module.exports = app;
