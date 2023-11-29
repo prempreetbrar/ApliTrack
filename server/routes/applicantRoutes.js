@@ -3,6 +3,7 @@ const applicantController = require("../controllers/applicantController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
+
 router.post(
   "/get-started",
   authController.checkIfLoggedIn,
@@ -24,7 +25,8 @@ router.put(
 
 router
   .route("/experiences")
-  .post(authController.checkIfLoggedIn, applicantController.createExperience);
+  .post(authController.checkIfLoggedIn, applicantController.createExperience)
+  .delete(authController.checkIfLoggedIn, applicantController.deleteExperience);
 // .put(authController.checkIfLoggedIn, authController.updateExperience);
 
 router

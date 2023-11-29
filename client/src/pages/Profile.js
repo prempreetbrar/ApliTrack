@@ -6,7 +6,9 @@ import {
   Paper,
   Chip,
   Stack,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Textarea from "@mui/joy/Textarea";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -299,20 +301,29 @@ function FormSection({
 
       {sectionArray &&
         sectionArray.map((entity, index) => (
-          <Box sx={{ padding: "1rem" }}>
-            <Typography fontWeight="bold">{entity[attributeName]}</Typography>
-            <Typography>{entity[attributeDescName]}</Typography>
+          <Box
+            key={index}
+            display="flex"
+            alignItems="flex-start"
+            sx={{ padding: "1rem" }}
+          >
+            <Box flexGrow="1">
+              <Typography fontWeight="bold">{entity[attributeName]}</Typography>
+              <Typography>{entity[attributeDescName]}</Typography>
+            </Box>
+
+            <IconButton
+              aria-label="delete"
+              onClick={() =>
+                deleteSomething(
+                  { [attributeName]: entity[attributeName] },
+                  sectionURL
+                )
+              }
+            >
+              <DeleteIcon />
+            </IconButton>
           </Box>
-          // <Chip
-          //   key={index}
-          //   label={entity[attributeName]}
-          //   onDelete={() =>
-          //     deleteSomething(
-          //       { [attributeName]: entity[attributeName] },
-          //       sectionURL
-          //     )
-          //   }
-          // />
         ))}
 
       <Box

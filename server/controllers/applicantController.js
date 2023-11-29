@@ -15,6 +15,9 @@ exports.getApplicant = factory.getOne(Applicant.Applicant);
 
 exports.updateEducation = factory.updateInstance(Applicant.Applicant);
 
+exports.deleteExperience = factory.deleteInstance(
+  Applicant.ApplicantExperience
+);
 exports.deleteCertification = factory.deleteInstance(
   Applicant.ApplicantCertification
 );

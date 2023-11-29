@@ -106,6 +106,7 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
   async (request, response, next) => {
     // 1) check if the JWT token was sent with the request
     let token;
+
     if (
       request.headers.authorization &&
       request.headers.authorization.startsWith("Bearer")
