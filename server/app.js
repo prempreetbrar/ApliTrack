@@ -18,6 +18,7 @@ const authRouter = require("./routes/authRoutes");
 const applicantRouter = require("./routes/applicantRoutes");
 const interviewRouter = require("./routes/interviewRoutes");
 const documentRouter = require("./routes/documentRoutes");
+const applicationRouter = require("./routes/applicationRoutes");
 const errorController = require("./controllers/errorController");
 
 app.use(morgan("dev"));
@@ -43,6 +44,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/applicants", applicantRouter);
 app.use("/api/interviews", interviewRouter);
 app.use("/api/documents", documentRouter);
+app.use("/api/applications", applicationRouter);
+
 app.use(errorController);
 
 module.exports = app;
