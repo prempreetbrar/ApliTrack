@@ -14,10 +14,12 @@ const Job = sequelize.define(
       CompName: {
         type: DataTypes.STRING(64),
         allowNull: false,
+        unique: 'uniqueTag',
       },
       PositionName: {
         type: DataTypes.STRING(64),
         allowNull: false,
+        unique: 'uniqueTag',
       },
       Description: {
         type: DataTypes.TEXT,
@@ -38,8 +40,7 @@ const Job = sequelize.define(
     },
     {
       timestamps: false,
-    }
-  );
+    });
 
   Job.belongsTo(Company, {
     foreignKey: "CompName",
