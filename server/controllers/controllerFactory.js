@@ -5,7 +5,7 @@ const errorHandling = require("../utils/errorHandling");
   simply sending a create request to the database (with the
   request body). Rather than duplicating this across every
   controller, we simply abstract it to a factory function that
-  takes in a model. This way, you can create several models
+  takes in a model. This way, you can create several controller functions
   with a single line.
 
   If custom logic is needed for creation, we would either
@@ -25,6 +25,30 @@ exports.createOne = (Model) => {
   });
 };
 
+/*
+  Add the filter using ANOTHER middleware function. See how applicant
+  adds its filter for getApplicant for more details.
+*/
+exports.getOne = (Model) => {
+  return errorHandling.catchAsync(async (request, response) => {
+    const document = await Model.findOne({
+      where: request.body.filter,
+      include: {
+        all: true,
+        required: false,
+        nested: false,
+      },
+    });
+
+    response.status(201).json({
+      status: "success",
+      data: {
+        [Model.name.toLowerCase()]: document,
+      },
+    });
+  });
+};
+
 exports.updateInstance = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
     //get a list of the model's primary key attributes
@@ -33,13 +57,12 @@ exports.updateInstance = (Model) => {
     //get the keys and the new values of the request
     var keys = {};
     var newValues = {};
-    for(let x in request.body) {
-      var obj = {[x]: request.body[x]};
+    for (let x in request.body) {
+      var obj = { [x]: request.body[x] };
 
-      if(pkAttributes.includes(x)) {
+      if (pkAttributes.includes(x)) {
         Object.assign(keys, obj);
-      }
-      else {
+      } else {
         Object.assign(newValues, obj);
       }
     }
@@ -53,18 +76,19 @@ exports.updateInstance = (Model) => {
 
     //find the instance
     const instance = await Model.findOne({
-      where: keys
+      where: keys,
     });
 
     //update the instance
     await instance.update(newValues);
 
-    response.status(201).json({
+    // response code 200 (since 201 is for creation but we aren't creating here, we're updating)
+    response.status(200).json({
       status: "success",
+      data: {
+        [Model.name.toLowerCase()]: instance,
+      },
     });
-
-    console.log("\nNEW INSTANCE")
-    console.log(instance.toJSON());
   });
 };
 
@@ -75,10 +99,11 @@ exports.deleteInstance = (Model) => {
 
     //get the keys and the new values of the request
     var keys = {};
-    for(let x in request.body) {
-      var obj = {[x]: request.body[x]};
+    console.log(request.body);
+    for (let x in request.body) {
+      var obj = { [x]: request.body[x] };
 
-      if(pkAttributes.includes(x)) {
+      if (pkAttributes.includes(x)) {
         Object.assign(keys, obj);
       }
     }
@@ -89,10 +114,10 @@ exports.deleteInstance = (Model) => {
 
     //delete the instance
     await Model.destroy({
-      where: keys
+      where: keys,
     });
 
-    response.status(201).json({
+    response.status(204).json({
       status: "success",
     });
   });

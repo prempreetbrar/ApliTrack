@@ -106,6 +106,7 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
   async (request, response, next) => {
     // 1) check if the JWT token was sent with the request
     let token;
+
     if (
       request.headers.authorization &&
       request.headers.authorization.startsWith("Bearer")
@@ -149,6 +150,7 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
         stack) to access the user (and the user's attributes).
     */
     request.body.user = user;
+    request.body.Username = user.Username;
     request.body.ApplicantUsername = user.Username;
     next();
   }
