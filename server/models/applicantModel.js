@@ -25,6 +25,7 @@ User.hasMany(Applicant, {
 
 // Define the foreign key relationship
 Applicant.belongsTo(User, {
+  as: "User",
   foreignKey: "Username",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",

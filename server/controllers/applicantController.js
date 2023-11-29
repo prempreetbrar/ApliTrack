@@ -14,6 +14,9 @@ exports.createExperience = factory.createOne(Applicant.ApplicantExperience);
 exports.getApplicant = factory.getOne(Applicant.Applicant);
 
 exports.updateEducation = factory.updateInstance(Applicant.Applicant);
+exports.updateExperience = factory.updateInstance(
+  Applicant.ApplicantExperience
+);
 
 exports.deleteExperience = factory.deleteInstance(
   Applicant.ApplicantExperience

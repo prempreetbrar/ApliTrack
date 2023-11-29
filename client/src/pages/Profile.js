@@ -7,8 +7,14 @@ import {
   Chip,
   Stack,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Avatar,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import Textarea from "@mui/joy/Textarea";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -48,6 +54,9 @@ export default function Profile() {
       );
       setApplicantInfo(response.data.data.applicant);
       setValue("Education", response.data.data.applicant?.Education);
+      console.log(response);
+      setValue("Fname", response.data.data.applicant.User?.Fname);
+      setValue("Lname", response.data.data.applicant.User?.Lname);
     };
 
     if (user) {
@@ -84,6 +93,11 @@ export default function Profile() {
     snackbarLogic("Update", success);
   }
 
+  async function updateName(data) {
+    const success = await update(data, "http://localhost:3000/api/users/");
+    snackbarLogic("Update", success);
+  }
+
   console.log(applicantInfo);
 
   return (
@@ -95,6 +109,50 @@ export default function Profile() {
         backgroundColor: "rgb(249, 250, 251)",
       }}
     >
+      {/* YOU */}
+      <Paper
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "2rem",
+          padding: "1rem",
+          backgroundColor: "white",
+          height: "17.5rem",
+        }}
+      >
+        <Avatar src="/broken-image.jpg" sx={{ width: 100, height: 100 }} />
+        <Typography fontWeight="bold">YOU</Typography>
+        <Box display="flex" alignItems="center">
+          <TextField
+            InputLabelProps={{ shrink: true }}
+            {...register("Fname")}
+            label="First Name"
+            sx={{
+              marginRight: "1rem",
+            }}
+          />
+          <TextField
+            InputLabelProps={{ shrink: true }}
+            {...register("Lname")}
+            label="Last Name"
+            sx={{
+              marginRight: "1rem",
+            }}
+          />
+          <Button
+            onClick={handleSubmit(updateName)}
+            type="submit"
+            variant="outlined"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={isLoading}
+          >
+            Update
+          </Button>
+        </Box>
+      </Paper>
+
       {/* EDUCATION */}
       <Paper
         sx={{
@@ -267,6 +325,12 @@ function FormSection({
     isLoading: deleteIsLoading,
   } = useDelete();
 
+  const [editExperienceDialogOpen, setEditExperienceDialogOpen] =
+    React.useState(false);
+  const [selectedExperience, setSelectedExperience] = React.useState(null);
+
+  const { update, error, isLoading } = useUpdate();
+
   async function createSomething(data, url) {
     console.log(data);
     const success = await create(data, url);
@@ -277,6 +341,21 @@ function FormSection({
     const success = await deleteItem(data, url);
     snackbarLogic("Delete", success);
   }
+
+  async function updateSomething(data, url) {
+    console.log(data);
+    const success = await update(data, url);
+    snackbarLogic("Update", success);
+  }
+
+  const handleOpenEditExperienceDialog = (experience) => {
+    setSelectedExperience(experience);
+    setEditExperienceDialogOpen(true);
+  };
+
+  const handleCloseEditExperienceDialog = () => {
+    setEditExperienceDialogOpen(false);
+  };
 
   const {
     register,
@@ -312,6 +391,12 @@ function FormSection({
               <Typography>{entity[attributeDescName]}</Typography>
             </Box>
 
+            <IconButton
+              aria-label="edit"
+              onClick={() => handleOpenEditExperienceDialog(entity)}
+            >
+              <EditIcon />
+            </IconButton>
             <IconButton
               aria-label="delete"
               onClick={() =>
@@ -366,6 +451,73 @@ function FormSection({
           +
         </Button>
       </Box>
+      <EditExperienceForm
+        open={editExperienceDialogOpen}
+        handleClose={handleCloseEditExperienceDialog}
+        experienceTitle={selectedExperience?.[attributeName]}
+        experienceDesc={selectedExperience?.[attributeDescName]}
+        onSubmit={updateSomething}
+      />
     </Paper>
+  );
+}
+
+function EditExperienceForm({
+  open,
+  handleClose,
+  experienceTitle,
+  experienceDesc,
+  onSubmit,
+}) {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
+  React.useEffect(() => {
+    // Set initial form values when the experience changes
+    setValue("Experience", experienceTitle);
+    setValue("ExperienceDesc", experienceDesc);
+  }, [experienceTitle, experienceDesc, setValue]);
+
+  const handleFormSubmit = (data) => {
+    onSubmit(data, "http://localhost:3000/api/applicants/experiences");
+    handleClose();
+  };
+
+  return (
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Edit Experience</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
+          <TextField
+            margin="dense"
+            label="Title"
+            {...register("Experience", { required: "Title is required" })}
+            fullWidth
+            error={!!errors.Experience}
+            helperText={errors.Experience?.message}
+            sx={{
+              paddingBottom: "1rem",
+            }}
+          />
+          <TextField
+            label="Description"
+            {...register("ExperienceDesc")}
+            fullWidth
+            multiline
+            rows={4}
+          />
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button type="submit" onClick={handleSubmit(handleFormSubmit)}>
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

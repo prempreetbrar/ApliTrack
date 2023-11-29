@@ -26,8 +26,8 @@ router.put(
 router
   .route("/experiences")
   .post(authController.checkIfLoggedIn, applicantController.createExperience)
+  .put(authController.checkIfLoggedIn, applicantController.updateExperience)
   .delete(authController.checkIfLoggedIn, applicantController.deleteExperience);
-// .put(authController.checkIfLoggedIn, authController.updateExperience);
 
 router
   .route("/certifications")
