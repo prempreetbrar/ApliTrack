@@ -119,7 +119,7 @@ export default function Profile() {
           marginBottom: "2rem",
           padding: "1rem",
           backgroundColor: "white",
-          height: "17.5rem",
+          height: "22.5rem",
         }}
       >
         <Avatar src="/broken-image.jpg" sx={{ width: 100, height: 100 }} />
@@ -151,20 +151,15 @@ export default function Profile() {
             Update
           </Button>
         </Box>
-      </Paper>
-
-      {/* EDUCATION */}
-      <Paper
-        sx={{
-          marginBottom: "2rem",
-          padding: "1rem",
-          backgroundColor: "white",
-        }}
-      >
-        <Typography fontWeight="bold">EDUCATION</Typography>
-        <Box display="flex" alignItems="center">
+        <Box
+          display="flex"
+          width="100%"
+          justifyContent="center"
+          alignItems="center"
+        >
           <TextField
             {...register("Education")}
+            label="Education"
             sx={{
               marginRight: "1rem",
             }}
@@ -180,6 +175,7 @@ export default function Profile() {
           </Button>
         </Box>
       </Paper>
+
       {/* EXPERIENCES */}
       <FormSection
         sectionName={"EXPERIENCES"}
