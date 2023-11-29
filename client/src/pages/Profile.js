@@ -55,8 +55,8 @@ export default function Profile() {
       setApplicantInfo(response.data.data.applicant);
       setValue("Education", response.data.data.applicant?.Education);
       console.log(response);
-      setValue("Fname", response.data.data.applicant.User?.Fname);
-      setValue("Lname", response.data.data.applicant.User?.Lname);
+      setValue("Fname", response.data.data.applicant?.User?.Fname);
+      setValue("Lname", response.data.data.applicant?.User?.Lname);
     };
 
     if (user) {
@@ -163,6 +163,7 @@ export default function Profile() {
             sx={{
               marginRight: "1rem",
             }}
+            InputLabelProps={{ shrink: true }}
           />
           <Button
             onClick={handleSubmit(updateEducation)}
