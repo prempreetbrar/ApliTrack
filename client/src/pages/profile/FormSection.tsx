@@ -34,7 +34,8 @@ export default function FormSection({
   const [editExperienceDialogOpen, setEditExperienceDialogOpen] =
     React.useState(false);
   const [selectedExperience, setSelectedExperience] = React.useState(null);
-  const [selectedItemToDelete, setSelectedItemToDelete] = React.useState(null);
+  const [selectedIndexToDelete, setSelectedIndexToDelete] =
+    React.useState(null);
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
     React.useState(false);
 
@@ -59,6 +60,21 @@ export default function FormSection({
     }
   }
 
+  async function handleDelete(index) {
+    console.log(index);
+    const data = await deleteInstance(
+      { [attributeName]: onUpdateSectionArray[index][attributeName] },
+      sectionURL
+    );
+
+    if (data) {
+      setOnUpdateSectionArray([
+        ...onUpdateSectionArray.slice(0, index),
+        ...onUpdateSectionArray.slice(index + 1),
+      ]);
+    }
+  }
+
   const handleOpenEditExperienceDialog = (experience, index) => {
     setCurrentExperienceIndex(index);
     setSelectedExperience(experience);
@@ -69,13 +85,13 @@ export default function FormSection({
     setEditExperienceDialogOpen(false);
   };
 
-  const handleOpenDeleteConfirmationDialog = (item) => {
-    setSelectedItemToDelete(item);
+  const handleOpenDeleteConfirmationDialog = (index) => {
+    setSelectedIndexToDelete(index);
     setDeleteConfirmationDialogOpen(true);
   };
 
   const handleCloseDeleteConfirmationDialog = () => {
-    setSelectedItemToDelete(null);
+    setSelectedIndexToDelete(null);
     setDeleteConfirmationDialogOpen(false);
   };
 
@@ -114,7 +130,7 @@ export default function FormSection({
             </IconButton>
             <IconButton
               aria-label="delete"
-              onClick={() => handleOpenDeleteConfirmationDialog(entity)}
+              onClick={() => handleOpenDeleteConfirmationDialog(index)}
             >
               <DeleteIcon />
             </IconButton>
@@ -170,13 +186,10 @@ export default function FormSection({
         <DeleteConfirmationDialog
           open={deleteConfirmationDialogOpen}
           handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() =>
-            deleteInstance(
-              { [attributeName]: selectedItemToDelete[attributeName] },
-              sectionURL
-            )
+          handleConfirm={() => handleDelete(selectedIndexToDelete)}
+          itemName={
+            onUpdateSectionArray[selectedIndexToDelete]?.[attributeName]
           }
-          itemName={selectedItemToDelete?.[attributeName]}
         />
       )}
     </Paper>
