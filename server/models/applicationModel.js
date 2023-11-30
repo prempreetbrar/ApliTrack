@@ -5,15 +5,21 @@ const { Applicant } = require("./applicantModel");
 const Application = sequelize.define(
   "APPLICATION",
   {
+    ApplicationID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
     ApplicantUsername: {
       type: DataTypes.STRING(32),
-      primaryKey: true,
       allowNull: false,
+      unique: 'uniqueTag',
     },
     AName: {
       type: DataTypes.STRING(32),
-      primaryKey: true,
       allowNull: false,
+      unique: 'uniqueTag',
     },
     Notes: {
       type: DataTypes.TEXT,
@@ -41,21 +47,18 @@ Applicant.hasMany(Application, {
 });
 Application.belongsTo(Applicant, {
     foreignKey: "ApplicantUsername",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
 });
 
 const Appl_Relevant_URL = sequelize.define(
     "APPL_RELEVANT_URL",
     {
-      ApplicantUsername: {
-        type: DataTypes.STRING(32),
-        primaryKey: true,
-        allowNull: false,
-      },
-      AName: {
-        type: DataTypes.STRING(32),
-        primaryKey: true,
-        allowNull: false,
-      },
+        ApplicationID: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            allowNull: false,
+          },
       RelevantURL: {
         type: DataTypes.STRING(512),
         primaryKey: true,
@@ -69,12 +72,14 @@ const Appl_Relevant_URL = sequelize.define(
 
 //appl_relevant_URL is a multi-value attribute of application
 Application.hasMany(Appl_Relevant_URL, {
-    foreignKey: 'AName',
+    foreignKey: 'ApplicationID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Appl_Relevant_URL.belongsTo(Application, {
-    foreignKey: "AName",
+    foreignKey: "ApplicationID",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
 });
 // Appl_Relevant_URL.belongsTo(Applicant, {
 //     foreignKey: 'ApplicantUsername',
@@ -83,16 +88,11 @@ Appl_Relevant_URL.belongsTo(Application, {
 const Appl_Category = sequelize.define(
     "APPL_CATEGORY",
     {
-      ApplicantUsername: {
-        type: DataTypes.STRING(32),
-        primaryKey: true,
-        allowNull: false,
-      },
-      AName: {
-        type: DataTypes.STRING(32),
-        primaryKey: true,
-        allowNull: false,
-      },
+        ApplicationID: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            allowNull: false,
+          },
       Category: {
         type: DataTypes.STRING(32),
         primaryKey: true,
@@ -106,12 +106,14 @@ const Appl_Category = sequelize.define(
 
 //appl_category is a multivalue attribute of application
 Application.hasMany(Appl_Category, {
-    foreignKey: 'AName',
+    foreignKey: 'ApplicationID',
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onUpdate: 'CASCADE',
 });
 Appl_Category.belongsTo(Application, {
-    foreignKey: "AName",
+    foreignKey: "ApplicationID",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
 });
 // Appl_Category.belongsTo(Applicant, {
 //     foreignKey: 'ApplicantUsername',
