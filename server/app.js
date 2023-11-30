@@ -15,6 +15,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 const authRouter = require("./routes/authRoutes");
+const userRouter = require("./routes/userRoutes");
 const applicantRouter = require("./routes/applicantRoutes");
 const interviewRouter = require("./routes/interviewRoutes");
 const documentRouter = require("./routes/documentRoutes");
@@ -41,6 +42,7 @@ app.use(express.json());
   it is CORS, ... , lastRoute, errorController.
 */
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
 app.use("/api/applicants", applicantRouter);
 app.use("/api/interviews", interviewRouter);
 app.use("/api/documents", documentRouter);

@@ -12,8 +12,22 @@ exports.createProject = factory.createOne(Applicant.ApplicantProject);
 exports.createExperience = factory.createOne(Applicant.ApplicantExperience);
 exports.updateEducation = factory.updateInstance(Applicant.Applicant);
 exports.getApplicant = factory.getOne(Applicant.Applicant);
+exports.updateExperience = factory.updateInstance(
+  Applicant.ApplicantExperience
+);
 
 exports.deleteApplicant = factory.deleteInstance(Applicant.Applicant);
+exports.deleteExperience = factory.deleteInstance(
+  Applicant.ApplicantExperience
+);
+exports.deleteCertification = factory.deleteInstance(
+  Applicant.ApplicantCertification
+);
+exports.deleteSkill = factory.deleteInstance(Applicant.ApplicantSkill);
+exports.deleteCompetition = factory.deleteInstance(
+  Applicant.ApplicantCompetition
+);
+
 /*
   Why aren't we adding this filter in the authController.checkIfLoggedIn function?
   Great question. In the authController.checkIfLoggedIn function, we do
