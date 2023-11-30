@@ -10,6 +10,7 @@ router.post(
   applicantController.createApplicant
 );
 
+router.delete("/delete-applicant", applicantController.deleteApplicant);
 router.get(
   "/profile",
   authController.checkIfLoggedIn,

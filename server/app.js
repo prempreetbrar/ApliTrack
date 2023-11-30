@@ -17,12 +17,15 @@ const app = express();
 const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes");
 const applicantRouter = require("./routes/applicantRoutes");
+const interviewRouter = require("./routes/interviewRoutes");
+const documentRouter = require("./routes/documentRoutes");
+const applicationRouter = require("./routes/applicationRoutes");
 const contactRouter = require("./routes/contactRoutes");
 const companyRouter = require("./routes/companyRoutes");
 const jobRouter = require("./routes/jobRoutes");
 const offerRouter = require("./routes/offerRoutes");
-const applicationRouter = require("./routes/applicationRoutes");
 const referralRouter = require("./routes/referralRoutes");
+
 const errorController = require("./controllers/errorController");
 
 app.use(morgan("dev"));
@@ -47,12 +50,15 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/applicants", applicantRouter);
+app.use("/api/interviews", interviewRouter);
+app.use("/api/documents", documentRouter);
+app.use("/api/applications", applicationRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/company", companyRouter);
 app.use("/api/job", jobRouter);
 app.use("/api/offer", offerRouter);
-app.use("/api/applications", applicationRouter);
 app.use("/api/referral", referralRouter);
+
 app.use(errorController);
 
 module.exports = app;
