@@ -2,10 +2,10 @@
   "name": "Aplitrack",
   "version": "1.0.0",
   "description": "An app that allows you to track job postings.",
-  "main": "app.js",
+  "main": "app.ts",
   "scripts": {
-    "start": "node server.js",
-    "start:dev": "nodemon server.js"
+    "start": "node server.ts",
+    "start:dev": "TSC_COMPILE_ON_ERROR=true nodemon server.ts"
   },
   "author": "Fedor Prokopchuk, Prempreet Brar, Jayden Yeo",
   "license": "ISC",
@@ -20,9 +20,16 @@
     "nodemon": "^3.0.1",
     "sequelize": "^6.35.1",
     "sqlite3": "^5.1.6",
+    "ts-node": "^10.9.1",
     "util": "^0.12.5"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.1",
+    "typescript": "^5.3.2"
   }
 }
