@@ -1,9 +1,17 @@
 const express = require("express");
+const authController = require("../controllers/authController");
 const interviewController = require("../controllers/interviewController");
 
 const router = express.Router();
-router.post("/schedule", interviewController.createInterview);
-router.delete("/delete-interview", interviewController.deleteInterview);
-router.put("/update-interview", interviewController.updateInterview);
+/*
+    For any route that comes after this, we will check if the user is loggedIn.
+*/
+router.use(authController.checkIfLoggedIn);
+
+router
+  .route("")
+  .post(interviewController.createInterview)
+  .delete(interviewController.deleteInterview)
+  .patch(interviewController.updateInterview);
 
 module.exports = router;

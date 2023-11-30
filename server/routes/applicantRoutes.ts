@@ -3,6 +3,7 @@ const applicantController = require("../controllers/applicantController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
+const interviewRouter = require("./interviewRoutes");
 
 router.post(
   "/get-started",
@@ -55,5 +56,7 @@ router
     authController.checkIfLoggedIn,
     applicantController.deleteCompetition
   );
+
+router.use("/interviews", interviewRouter);
 
 module.exports = router;

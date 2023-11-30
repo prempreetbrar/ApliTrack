@@ -6,6 +6,8 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
 import useAuthContext from "../hooks/useAuthContext";
@@ -14,6 +16,20 @@ export default function Navbar() {
   const { user } = useAuthContext();
   const { logout } = useLogout();
   const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuItemClick = (path) => {
+    navigate(path);
+    handleMenuClose();
+  };
 
   function handleLogoutClick() {
     logout();
@@ -37,6 +53,7 @@ export default function Navbar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={handleMenuClick}
           >
             <MenuIcon />
           </IconButton>
@@ -80,6 +97,19 @@ export default function Navbar() {
           )}
         </Toolbar>
       </AppBar>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={() => handleMenuItemClick("/applicants/profile")}>
+          Profile
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuItemClick("/applicants/interviews")}>
+          Interviews
+        </MenuItem>
+        {/* Add more menu items as needed */}
+      </Menu>
     </Box>
   );
 }
