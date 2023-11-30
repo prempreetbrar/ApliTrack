@@ -87,6 +87,81 @@ exports.updateInstance = (Model) => {
         [Model.name.toLowerCase()]: instance,
       },
     });
+
+    console.log(document.toJSON());
+  });
+};
+
+exports.updateInstance = (Model) => {
+  return errorHandling.catchAsync(async (request, response) => {
+    //get a list of the model's primary key attributes
+    const pkAttributes = Model.primaryKeyAttributes;
+
+    //get the keys and the new values of the request
+    var keys = {};
+    var newValues = {};
+    for(let x in request.body) {
+      var obj = {[x]: request.body[x]};
+
+      if(pkAttributes.includes(x)) {
+        Object.assign(keys, obj);
+      }
+      else {
+        Object.assign(newValues, obj);
+      }
+    }
+
+    //debug output
+    console.log("KEYS:");
+    console.log(keys);
+
+    console.log("NEW VALUES:");
+    console.log(newValues);
+
+    //find the instance
+    const instance = await Model.findOne({
+      where: keys
+    });
+
+    //update the instance
+    await instance.update(newValues);
+
+    response.status(201).json({
+      status: "success",
+    });
+
+    console.log("\nNEW INSTANCE")
+    console.log(instance.toJSON());
+  });
+};
+
+exports.deleteInstance = (Model) => {
+  return errorHandling.catchAsync(async (request, response) => {
+    //get a list of the model's primary key attributes
+    const pkAttributes = Model.primaryKeyAttributes;
+
+    //get the keys and the new values of the request
+    var keys = {};
+    for(let x in request.body) {
+      var obj = {[x]: request.body[x]};
+
+      if(pkAttributes.includes(x)) {
+        Object.assign(keys, obj);
+      }
+    }
+
+    //debug output
+    console.log("KEYS:");
+    console.log(keys);
+
+    //delete the instance
+    await Model.destroy({
+      where: keys
+    });
+
+    response.status(201).json({
+      status: "success",
+    });
   });
 };
 

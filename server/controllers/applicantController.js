@@ -10,14 +10,12 @@ exports.createSkill = factory.createOne(Applicant.ApplicantSkill);
 exports.createCompetition = factory.createOne(Applicant.ApplicantCompetition);
 exports.createProject = factory.createOne(Applicant.ApplicantProject);
 exports.createExperience = factory.createOne(Applicant.ApplicantExperience);
-
-exports.getApplicant = factory.getOne(Applicant.Applicant);
-
 exports.updateEducation = factory.updateInstance(Applicant.Applicant);
 exports.updateExperience = factory.updateOneWithKey(
   Applicant.ApplicantExperience
 );
 
+exports.deleteApplicant = factory.deleteInstance(Applicant.Applicant);
 exports.deleteExperience = factory.deleteInstance(
   Applicant.ApplicantExperience
 );
