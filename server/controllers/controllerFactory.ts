@@ -88,7 +88,7 @@ exports.updateInstance = (Model) => {
       },
     });
 
-    console.log(document.toJSON());
+    console.log(instance.toJSON());
   });
 };
 
@@ -100,13 +100,12 @@ exports.updateInstance = (Model) => {
     //get the keys and the new values of the request
     var keys = {};
     var newValues = {};
-    for(let x in request.body) {
-      var obj = {[x]: request.body[x]};
+    for (let x in request.body) {
+      var obj = { [x]: request.body[x] };
 
-      if(pkAttributes.includes(x)) {
+      if (pkAttributes.includes(x)) {
         Object.assign(keys, obj);
-      }
-      else {
+      } else {
         Object.assign(newValues, obj);
       }
     }
@@ -120,7 +119,7 @@ exports.updateInstance = (Model) => {
 
     //find the instance
     const instance = await Model.findOne({
-      where: keys
+      where: keys,
     });
 
     //update the instance
@@ -130,7 +129,7 @@ exports.updateInstance = (Model) => {
       status: "success",
     });
 
-    console.log("\nNEW INSTANCE")
+    console.log("\nNEW INSTANCE");
     console.log(instance.toJSON());
   });
 };
@@ -142,10 +141,10 @@ exports.deleteInstance = (Model) => {
 
     //get the keys and the new values of the request
     var keys = {};
-    for(let x in request.body) {
-      var obj = {[x]: request.body[x]};
+    for (let x in request.body) {
+      var obj = { [x]: request.body[x] };
 
-      if(pkAttributes.includes(x)) {
+      if (pkAttributes.includes(x)) {
         Object.assign(keys, obj);
       }
     }
@@ -156,7 +155,7 @@ exports.deleteInstance = (Model) => {
 
     //delete the instance
     await Model.destroy({
-      where: keys
+      where: keys,
     });
 
     response.status(201).json({
