@@ -52,6 +52,7 @@ exports.getOne = (Model) => {
 exports.updateInstance = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
     //get a list of the model's primary key attributes
+    console.log("BODY:", request.body, "\n");
     const pkAttributes = Model.primaryKeyAttributes;
 
     //get the keys and the new values of the request
@@ -69,7 +70,7 @@ exports.updateInstance = (Model) => {
     //debug output
     console.log("KEYS:", keys, "\n");
 
-    console.log("NEW VALUES:", keys, "\n");
+    console.log("NEW VALUES:", newValues, "\n");
 
     //find the instance
     const instance = await Model.findOne({
