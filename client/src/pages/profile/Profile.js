@@ -25,7 +25,7 @@ export default function Profile() {
         {},
         "http://localhost:3000/api/applicants/profile"
       );
-      setApplicantInfo(response.data.data.applicant);
+      setApplicantInfo(response.applicant);
     };
 
     if (user) {

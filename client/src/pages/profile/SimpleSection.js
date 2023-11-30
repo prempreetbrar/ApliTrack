@@ -19,13 +19,27 @@ export default function SimpleSection({
   sectionArray,
   attributeName,
 }) {
+  const [onUpdateSectionArray, setOnUpdateSectionArray] = React.useState([]);
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeRequest: deleteInstance } = useDelete();
   const { register, getValues, reset } = useForm();
 
-  function handleCreate() {
-    create({ [attributeName]: getValues(attributeName) }, sectionURL);
-    // reset();
+  React.useEffect(() => {
+    if (sectionArray) {
+      setOnUpdateSectionArray([...sectionArray]);
+    }
+  }, [sectionArray]);
+
+  async function handleCreate() {
+    const data = await create(
+      { [attributeName]: getValues(attributeName) },
+      sectionURL
+    );
+    if (data) {
+      const tableName = Object.keys(data)[0];
+      setOnUpdateSectionArray([...onUpdateSectionArray, data[tableName]]);
+      reset();
+    }
   }
 
   return (
@@ -42,9 +56,9 @@ export default function SimpleSection({
           {sectionName}
         </Typography>
         {/* Display all of the user's current data */}
-        <Stack direction="row" spacing={2}>
-          {sectionArray &&
-            sectionArray.map((entity, index) => (
+        <Box display="flex" sx={{ flexWrap: "wrap" }}>
+          {onUpdateSectionArray &&
+            onUpdateSectionArray.map((entity, index) => (
               <Chip
                 key={index}
                 label={entity[attributeName]}
@@ -54,12 +68,21 @@ export default function SimpleSection({
                     sectionURL
                   )
                 }
+                sx={{
+                  marginLeft: "0.5rem",
+                  marginBottom: "0.5rem",
+                }}
               />
             ))}
-        </Stack>
+        </Box>
 
         {/* Allow the user to enter new data. */}
-        <Box display="flex" marginTop="2rem" alignItems="center">
+        <Box
+          component="form"
+          display="flex"
+          marginTop="2rem"
+          alignItems="center"
+        >
           <TextField
             {...register(attributeName)}
             placeholder={`Enter Name of New ${attributeName} (Max 32 Characters)`}

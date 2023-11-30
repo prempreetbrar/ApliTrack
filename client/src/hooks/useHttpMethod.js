@@ -41,7 +41,7 @@ const useHttpMethod = (method) => {
       setIsLoading(false);
       setError(null);
 
-      return response;
+      return response.data.data;
     } catch (error) {
       setIsLoading(false);
       setError(error?.response?.data.message);
@@ -50,6 +50,7 @@ const useHttpMethod = (method) => {
         variant: "error",
         autoHideDuration: 1000,
       });
+      return null;
     }
   };
 
