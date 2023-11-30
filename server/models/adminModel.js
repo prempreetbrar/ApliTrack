@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../server');
 const User = require('./userModel');
+const {Permission} = require('./permissionModel');
 
 const Admin = sequelize.define(
     'ADMIN', {
@@ -88,6 +89,11 @@ Dev_Specialization.belongsTo(Admin, {
     onUpdate: 'CASCADE',
 });
 
+// definition of many-to-many relationship b/t Admin and Permission
+const AdminHasPerm = sequelize.define('ADMIN_HAS_PERM', {}, {timestamps: false});
+  Admin.belongsToMany(Permission, { through: AdminHasPerm });
+  Permission.belongsToMany(Admin, { through: AdminHasPerm });
+
 /*
   If any changes occurred to the model, sequelize.sync just ensures that they are
   applied to the database.
@@ -96,3 +102,4 @@ sequelize.sync();
 exports.Admin = Admin;
 exports.Admin_Responsibility = Admin_Responsibility;
 exports.Dev_Specialization = Dev_Specialization;
+exports.AdminHasPerm = AdminHasPerm;

@@ -17,4 +17,8 @@ router.route("/developer-specializations")
 .post(authController.checkIfLoggedIn, adminController.createDevSpec)
 .delete(authController.checkIfLoggedIn, adminController.deleteDevSpec);
 
+router.route("/permissions")
+.post(authController.checkIfLoggedIn, adminController.createAdminHasPerm)
+.delete(authController.checkIfLoggedIn, adminController.deleteAdminHasPerm);
+
 module.exports = router;
