@@ -9,13 +9,16 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { useUpdate } from "../../hooks/useHttpMethod";
 
 export default function EditExperienceForm({
   open,
   handleClose,
   experienceTitle,
   experienceDesc,
-  onSubmit,
+  currentExperienceIndex,
+  setOnUpdateSectionArray,
+  onUpdateSectionArray,
 }) {
   const {
     register,
@@ -23,6 +26,7 @@ export default function EditExperienceForm({
     setValue,
     formState: { errors },
   } = useForm();
+  const { executeRequest: update } = useUpdate();
 
   React.useEffect(() => {
     // Set initial form values when the experience changes
@@ -32,10 +36,26 @@ export default function EditExperienceForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [experienceTitle, experienceDesc]);
 
-  const handleFormSubmit = (data) => {
-    onSubmit(data, "http://localhost:3000/api/applicants/experiences");
+  async function handleFormSubmit(data) {
+    const response = await update(
+      { ...data },
+      `http://localhost:3000/api/applicants/experiences/${experienceTitle}`
+    );
+
+    if (response) {
+      const tableName = Object.keys(response)[0];
+      setOnUpdateSectionArray([
+        ...onUpdateSectionArray.slice(0, currentExperienceIndex),
+        response[tableName],
+        ...onUpdateSectionArray.slice(
+          currentExperienceIndex + 1,
+          onUpdateSectionArray.length - 1
+        ),
+      ]);
+    }
+
     handleClose();
-  };
+  }
 
   return (
     <Dialog open={open} onClose={handleClose}>

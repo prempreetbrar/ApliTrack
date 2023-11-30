@@ -15,7 +15,7 @@ import { Textarea } from "@mui/joy";
 import EditExperienceForm from "./EditExperienceForm";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
-import { useCreate, useUpdate, useDelete } from "../../hooks/useHttpMethod";
+import { useCreate, useDelete } from "../../hooks/useHttpMethod";
 
 export default function FormSection({
   sectionName,
@@ -24,9 +24,12 @@ export default function FormSection({
   attributeName,
   attributeDescName,
 }) {
+  const [currentExperienceIndex, setCurrentExperienceIndex] =
+    React.useState(null);
+  const [onUpdateSectionArray, setOnUpdateSectionArray] = React.useState([]);
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
-  const { executeRequest: update } = useUpdate();
   const { executeRequest: deleteInstance } = useDelete();
+  const { register, getValues, reset } = useForm();
 
   const [editExperienceDialogOpen, setEditExperienceDialogOpen] =
     React.useState(false);
@@ -35,7 +38,29 @@ export default function FormSection({
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
     React.useState(false);
 
-  const handleOpenEditExperienceDialog = (experience) => {
+  React.useEffect(() => {
+    if (sectionArray) {
+      setOnUpdateSectionArray([...sectionArray]);
+    }
+  }, [sectionArray]);
+
+  async function handleCreate() {
+    const data = await create(
+      {
+        [attributeName]: getValues(attributeName),
+        [attributeDescName]: getValues(attributeDescName),
+      },
+      sectionURL
+    );
+    if (data) {
+      const tableName = Object.keys(data)[0];
+      setOnUpdateSectionArray([...onUpdateSectionArray, data[tableName]]);
+      reset();
+    }
+  }
+
+  const handleOpenEditExperienceDialog = (experience, index) => {
+    setCurrentExperienceIndex(index);
     setSelectedExperience(experience);
     setEditExperienceDialogOpen(true);
   };
@@ -54,13 +79,11 @@ export default function FormSection({
     setDeleteConfirmationDialogOpen(false);
   };
 
-  const { register, getValues } = useForm();
-
   return (
     <Paper
-      display="flex"
-      flexDirection="column"
       sx={{
+        display: "flex",
+        flexDirection: "column",
         padding: "1rem",
         marginBottom: "2rem",
       }}
@@ -70,8 +93,8 @@ export default function FormSection({
       </Typography>
 
       {/* Existing data */}
-      {sectionArray &&
-        sectionArray.map((entity, index) => (
+      {onUpdateSectionArray &&
+        onUpdateSectionArray.map((entity, index) => (
           <Box
             key={index}
             display="flex"
@@ -85,7 +108,7 @@ export default function FormSection({
 
             <IconButton
               aria-label="edit"
-              onClick={() => handleOpenEditExperienceDialog(entity)}
+              onClick={() => handleOpenEditExperienceDialog(entity, index)}
             >
               <EditIcon />
             </IconButton>
@@ -105,6 +128,7 @@ export default function FormSection({
         flexDirection="row"
         alignItems="center"
         padding="1rem"
+        component="form"
       >
         <Box display="flex" flexGrow="1" flexDirection="column">
           <TextField
@@ -123,15 +147,7 @@ export default function FormSection({
           />
         </Box>
         <Button
-          onClick={() =>
-            create(
-              {
-                [attributeName]: getValues(attributeName),
-                [attributeDescName]: getValues(attributeDescName),
-              },
-              sectionURL
-            )
-          }
+          onClick={handleCreate}
           sx={{ ml: 1, fontSize: "1.5rem" }}
           disabled={createIsLoading}
         >
@@ -145,7 +161,9 @@ export default function FormSection({
         handleClose={handleCloseEditExperienceDialog}
         experienceTitle={selectedExperience?.[attributeName]}
         experienceDesc={selectedExperience?.[attributeDescName]}
-        onSubmit={update}
+        currentExperienceIndex={currentExperienceIndex}
+        setOnUpdateSectionArray={setOnUpdateSectionArray}
+        onUpdateSectionArray={onUpdateSectionArray}
       />
 
       {deleteConfirmationDialogOpen && (

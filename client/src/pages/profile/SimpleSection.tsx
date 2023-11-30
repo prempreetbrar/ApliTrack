@@ -89,7 +89,7 @@ export default function SimpleSection({
             fullWidth
           />
           <Button
-            onClick={() => handleCreate(attributeName, sectionURL)}
+            onClick={handleCreate}
             sx={{ ml: 1, fontSize: "1.5rem" }}
             disabled={createIsLoading}
           >
