@@ -10,7 +10,7 @@ import useAuthContext from "./hooks/useAuthContext";
 import "./App.css";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import Profile from "./pages/Profile";
+import Profile from "./pages/profile/Profile";
 import Navbar from "./components/Navbar";
 
 function App() {

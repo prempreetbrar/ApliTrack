@@ -1,8 +1,9 @@
 const express = require("express");
 const applicationController = require("../controllers/applicationController");
+const authController = require("../controllers/authController");
 
 const router = express.Router();
-router.post("/create-application", applicationController.createApplication);
+router.post("/create-application", authController.checkIfLoggedIn, applicationController.createApplication);
 router.post("/create-appl-URL", applicationController.createApplicationURL);
 router.post("/create-appl-category", applicationController.createApplicationCategory);
 

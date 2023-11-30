@@ -12,7 +12,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useLogin } from "../hooks/useLogin";
+import { useLogin } from "../hooks/useAuthAction";
 import { useSnackbar } from "notistack";
 
 /**
@@ -39,7 +39,7 @@ export default function Login() {
   });
   const password = register("Password", { required: "Password is required." });
 
-  const { login, error, isLoading } = useLogin();
+  const { authAction: login, error, isLoading } = useLogin();
 
   /*
     When the user submits the form, try to log them in. If it succeeds, let them know!
@@ -75,6 +75,7 @@ export default function Login() {
         autoHideDuration: 3000,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, errors, isLoading]);
 
   return (
