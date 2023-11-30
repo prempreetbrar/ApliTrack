@@ -55,24 +55,21 @@ exports.updateInstance = (Model) => {
     const pkAttributes = Model.primaryKeyAttributes;
 
     //get the keys and the new values of the request
-    var keys = {};
-    var newValues = {};
-    for (let x in request.body) {
-      var obj = { [x]: request.body[x] };
+    const keys = {};
+    const newValues = {};
 
+    for (let x in request.body) {
       if (pkAttributes.includes(x)) {
-        Object.assign(keys, obj);
+        keys[x] = request.body[x];
       } else {
-        Object.assign(newValues, obj);
+        newValues[x] = request.body[x];
       }
     }
 
     //debug output
-    console.log("KEYS:");
-    console.log(keys);
+    console.log("KEYS:", keys, "\n");
 
-    console.log("NEW VALUES:");
-    console.log(newValues);
+    console.log("NEW VALUES:", keys, "\n");
 
     //find the instance
     const instance = await Model.findOne({
@@ -81,6 +78,76 @@ exports.updateInstance = (Model) => {
 
     //update the instance
     await instance.update(newValues);
+
+    // response code 200 (since 201 is for creation but we aren't creating here, we're updating)
+    response.status(200).json({
+      status: "success",
+      data: {
+        [Model.name.toLowerCase()]: instance,
+      },
+    });
+  });
+};
+
+exports.updateOneWithKey = (Model) => {
+  return errorHandling.catchAsync(async (request, response) => {
+    /*
+      If we are updating the key of a model (usually when it's a 
+      composite key where we're updating one of the attributes,
+      such as for a multivalued attribute table), we run into a
+      problem if we only use the request body. This is because the
+      request body contains the NEW key value, making it IMPOSSIBLE
+      for us to search by the OLD key. To solve this, we pass in a variable
+      into the URL. We first filter using this variable, and THEN
+      update the object using the new values.
+    */
+    const pkAttributes = Model.primaryKeyAttributes;
+    const uniqueAttributes = getUniqueAttributes(Model);
+
+    const keys = {};
+    const newValues = {};
+    for (let x in request.body) {
+      /*
+        If the request body has the NEW key, then we've structured the
+        route in such a way that the URL parameters ALSO have the same
+        name. For example, for applicant experiences, we have
+        /experiences/:Experience. Therefore, if we pass in an experience
+        in the request body, we can easily check if it is in the URL params.
+
+        If it is, that means we do NOT want to search by it. Instead,
+        we want to put it into the newValues object. 
+      */
+      if (
+        (pkAttributes.includes(x) || uniqueAttributes.includes(x)) &&
+        !request.params.hasOwnProperty(x)
+      ) {
+        keys[x] = request.body[x];
+
+        /*
+        If it IS a key, then we must store two things. We must store the
+        URL parameter as the key we will search by, and then store the
+        request body value into our new values (that we will update by).
+      */
+      } else if (request.params.hasOwnProperty(x)) {
+        keys[x] = request.params[x];
+        newValues[x] = request.body[x];
+      } else {
+        newValues[x] = request.body[x];
+      }
+    }
+
+    //debug output
+    console.log("KEYS:", keys, "\n");
+    console.log("NEW VALUES:", newValues, "\n");
+
+    const instance = await Model.findOne({
+      where: keys,
+    });
+
+    //update the instance
+    console.log("LOGGING INSTNACE", instance, "\n");
+    await instance.update(newValues);
+    console.log("NEW INSTNACE", instance, "\n");
 
     // response code 200 (since 201 is for creation but we aren't creating here, we're updating)
     response.status(200).json({
@@ -109,8 +176,7 @@ exports.deleteInstance = (Model) => {
     }
 
     //debug output
-    console.log("KEYS:");
-    console.log(keys);
+    console.log("KEYS:", keys, "\n");
 
     //delete the instance
     await Model.destroy({
@@ -122,3 +188,16 @@ exports.deleteInstance = (Model) => {
     });
   });
 };
+
+function getUniqueAttributes(Model) {
+  const uniqueAttributes = [];
+
+  Object.keys(Model.rawAttributes).forEach((attribute) => {
+    const uniqueConstraint = Model.rawAttributes[attribute].unique;
+    if (uniqueConstraint) {
+      uniqueAttributes.push(attribute);
+    }
+  });
+
+  return uniqueAttributes;
+}

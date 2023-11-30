@@ -43,7 +43,13 @@ const ApplicantExperience = sequelize.define(
     },
     Experience: {
       type: DataTypes.STRING(32),
-      primaryKey: true,
+      /*
+        We make this unique rather than a primary key. This is because
+        Sequelize does not allow updating primary keys. Therefore, keeping
+        it unique allows it to still "serve" as a primary key, but allows us
+        to still update it. 
+      */
+      unique: true,
       allowNull: false,
     },
     ExperienceDesc: {

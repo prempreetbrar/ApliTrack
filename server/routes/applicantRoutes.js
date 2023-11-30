@@ -26,8 +26,13 @@ router.patch(
 router
   .route("/experiences")
   .post(authController.checkIfLoggedIn, applicantController.createExperience)
-  .patch(authController.checkIfLoggedIn, applicantController.updateExperience)
   .delete(authController.checkIfLoggedIn, applicantController.deleteExperience);
+
+router.patch(
+  "/experiences/:Experience",
+  authController.checkIfLoggedIn,
+  applicantController.updateExperience
+);
 
 router
   .route("/certifications")
