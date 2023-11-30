@@ -108,7 +108,9 @@ export default function Navbar() {
         <MenuItem onClick={() => handleMenuItemClick("/applicants/interviews")}>
           Interviews
         </MenuItem>
-        {/* Add more menu items as needed */}
+        <MenuItem onClick={() => handleMenuItemClick("/contacts")}>
+          Contacts
+        </MenuItem>
       </Menu>
     </Box>
   );
