@@ -52,12 +52,14 @@ const User = sequelize.define(
 
 /*
   ALL HOOKS (the following section) are applied AFTER any validate functions in the schema.
-  For example, User.beforeCreate FIRST checks if PasswordConfirm matches Password, BEFORE going
+  For example, User.beforeSave FIRST checks if PasswordConfirm matches Password, BEFORE going
   ahead and hashing it.
 */
-User.beforeCreate(async (user, options) => {
-  user.Password = await bcrypt.hash(user.Password, 12);
-  user.PasswordConfirm = undefined;
+User.beforeSave(async (user, options) => {
+  if (user.Password) {
+    user.Password = await bcrypt.hash(user.Password, 12);
+    user.PasswordConfirm = undefined;
+  }
 });
 
 User.prototype.isPasswordCorrect = async function (

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.ts",
     "start:dev": "nodemon server.ts",
-    "start:ignore-errors": "TSC_COMPILE_ON_ERROR=true ts-node server.ts"
+    "start:ignore-errors": "TSC_COMPILE_ON_ERROR=true nodemon server.ts"
   },
   "author": "Fedor Prokopchuk, Prempreet Brar, Jayden Yeo",
   "license": "ISC",

@@ -127,6 +127,7 @@ exports.updateInstance = (Model) => {
 
     response.status(201).json({
       status: "success",
+      instance,
     });
 
     console.log("\nNEW INSTANCE");
