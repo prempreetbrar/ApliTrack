@@ -92,49 +92,6 @@ exports.updateInstance = (Model) => {
   });
 };
 
-exports.updateInstance = (Model) => {
-  return errorHandling.catchAsync(async (request, response) => {
-    //get a list of the model's primary key attributes
-    const pkAttributes = Model.primaryKeyAttributes;
-
-    //get the keys and the new values of the request
-    var keys = {};
-    var newValues = {};
-    for (let x in request.body) {
-      var obj = { [x]: request.body[x] };
-
-      if (pkAttributes.includes(x)) {
-        Object.assign(keys, obj);
-      } else {
-        Object.assign(newValues, obj);
-      }
-    }
-
-    //debug output
-    console.log("KEYS:");
-    console.log(keys);
-
-    console.log("NEW VALUES:");
-    console.log(newValues);
-
-    //find the instance
-    const instance = await Model.findOne({
-      where: keys,
-    });
-
-    //update the instance
-    await instance.update(newValues);
-
-    response.status(201).json({
-      status: "success",
-      instance,
-    });
-
-    console.log("\nNEW INSTANCE");
-    console.log(instance.toJSON());
-  });
-};
-
 exports.deleteInstance = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
     //get a list of the model's primary key attributes
@@ -221,9 +178,9 @@ exports.updateOneWithKey = (Model) => {
     });
 
     //update the instance
-    console.log("LOGGING INSTNACE", instance, "\n");
+    console.log("LOGGING INSTANCE", instance, "\n");
     await instance.update(newValues);
-    console.log("NEW INSTNACE", instance, "\n");
+    console.log("NEW INSTANCE", instance, "\n");
 
     // response code 200 (since 201 is for creation but we aren't creating here, we're updating)
     response.status(200).json({

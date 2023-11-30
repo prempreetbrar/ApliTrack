@@ -12,7 +12,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Textarea } from "@mui/joy";
-import EditExperienceForm from "./EditExperienceForm";
+import EditItemForm from "./EditItemForm";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 import { useCreate, useDelete } from "../../hooks/useHttpMethod";
@@ -24,16 +24,14 @@ export default function FormSection({
   attributeName,
   attributeDescName,
 }) {
-  const [currentExperienceIndex, setCurrentExperienceIndex] =
-    React.useState(null);
+  const [currentItemIndex, setcurrentItemIndex] = React.useState(null);
   const [onUpdateSectionArray, setOnUpdateSectionArray] = React.useState([]);
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeRequest: deleteInstance } = useDelete();
   const { register, getValues, reset } = useForm();
 
-  const [editExperienceDialogOpen, setEditExperienceDialogOpen] =
-    React.useState(false);
-  const [selectedExperience, setSelectedExperience] = React.useState(null);
+  const [editItemDialogOpen, setEditItemDialogOpen] = React.useState(false);
+  const [selectedItem, setSelectedItem] = React.useState(null);
   const [selectedIndexToDelete, setSelectedIndexToDelete] =
     React.useState(null);
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -75,14 +73,14 @@ export default function FormSection({
     }
   }
 
-  const handleOpenEditExperienceDialog = (experience, index) => {
-    setCurrentExperienceIndex(index);
-    setSelectedExperience(experience);
-    setEditExperienceDialogOpen(true);
+  const handleOpenEditItemDialog = (item, index) => {
+    setcurrentItemIndex(index);
+    setSelectedItem(item);
+    setEditItemDialogOpen(true);
   };
 
-  const handleCloseEditExperienceDialog = () => {
-    setEditExperienceDialogOpen(false);
+  const handleCloseEditItemDialog = () => {
+    setEditItemDialogOpen(false);
   };
 
   const handleOpenDeleteConfirmationDialog = (index) => {
@@ -124,7 +122,7 @@ export default function FormSection({
 
             <IconButton
               aria-label="edit"
-              onClick={() => handleOpenEditExperienceDialog(entity, index)}
+              onClick={() => handleOpenEditItemDialog(entity, index)}
             >
               <EditIcon />
             </IconButton>
@@ -172,12 +170,15 @@ export default function FormSection({
       </Box>
 
       {/* Editing existing data */}
-      <EditExperienceForm
-        open={editExperienceDialogOpen}
-        handleClose={handleCloseEditExperienceDialog}
-        experienceTitle={selectedExperience?.[attributeName]}
-        experienceDesc={selectedExperience?.[attributeDescName]}
-        currentExperienceIndex={currentExperienceIndex}
+      <EditItemForm
+        open={editItemDialogOpen}
+        handleClose={handleCloseEditItemDialog}
+        sectionURL={sectionURL}
+        itemTitle={selectedItem?.[attributeName]}
+        itemTitleName={attributeName}
+        itemDesc={selectedItem?.[attributeDescName]}
+        itemDescName={attributeDescName}
+        currentItemIndex={currentItemIndex}
         setOnUpdateSectionArray={setOnUpdateSectionArray}
         onUpdateSectionArray={onUpdateSectionArray}
       />

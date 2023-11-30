@@ -53,6 +53,14 @@ export default function Profile() {
         attributeName="Experience"
         attributeDescName="ExperienceDesc"
       />
+      {/* PROJECTS */}
+      <FormSection
+        sectionName={"PROJECTS"}
+        sectionURL={"http://localhost:3000/api/applicants/projects"}
+        sectionArray={applicantInfo?.Projects}
+        attributeName="Project"
+        attributeDescName="ProjectDesc"
+      />
       {/* CERTIFICATIONS */}
       <SimpleSection
         sectionName={"CERTIFICATIONS"}

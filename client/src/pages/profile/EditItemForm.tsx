@@ -11,12 +11,15 @@ import {
 } from "@mui/material";
 import { useUpdate } from "../../hooks/useHttpMethod";
 
-export default function EditExperienceForm({
+export default function EditItemForm({
   open,
   handleClose,
-  experienceTitle,
-  experienceDesc,
-  currentExperienceIndex,
+  itemTitleName,
+  itemDescName,
+  itemTitle,
+  itemDesc,
+  currentItemIndex,
+  sectionURL,
   setOnUpdateSectionArray,
   onUpdateSectionArray,
 }) {
@@ -29,26 +32,23 @@ export default function EditExperienceForm({
   const { executeRequest: update } = useUpdate();
 
   React.useEffect(() => {
-    // Set initial form values when the experience changes
-    setValue("Experience", experienceTitle);
-    setValue("ExperienceDesc", experienceDesc);
+    // Set initial form values when the item changes
+    setValue(itemTitleName, itemTitle);
+    setValue(itemDescName, itemDesc);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [experienceTitle, experienceDesc]);
+  }, [itemTitleName, itemDescName, itemTitle, itemDesc]);
 
   async function handleFormSubmit(data) {
-    const response = await update(
-      { ...data },
-      `http://localhost:3000/api/applicants/experiences/${experienceTitle}`
-    );
+    const response = await update({ ...data }, `${sectionURL}/${itemTitle}`);
 
     if (response) {
       const tableName = Object.keys(response)[0];
       setOnUpdateSectionArray([
-        ...onUpdateSectionArray.slice(0, currentExperienceIndex),
+        ...onUpdateSectionArray.slice(0, currentItemIndex),
         response[tableName],
         ...onUpdateSectionArray.slice(
-          currentExperienceIndex + 1,
+          currentItemIndex + 1,
           onUpdateSectionArray.length - 1
         ),
       ]);
@@ -59,23 +59,23 @@ export default function EditExperienceForm({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Edit Experience</DialogTitle>
+      <DialogTitle>Edit Item</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <TextField
             margin="dense"
             label="Title"
-            {...register("Experience", { required: "Title is required" })}
+            {...register(itemTitleName, { required: "Title is required" })}
             fullWidth
-            error={!!errors.Experience}
-            helperText={errors.Experience?.message}
+            error={!!errors.Item}
+            helperText={errors.Item?.message}
             sx={{
               paddingBottom: "1rem",
             }}
           />
           <TextField
             label="Description"
-            {...register("ExperienceDesc")}
+            {...register(itemDescName)}
             fullWidth
             multiline
             rows={4}

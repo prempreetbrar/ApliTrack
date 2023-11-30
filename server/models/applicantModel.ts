@@ -38,8 +38,8 @@ const ApplicantExperience = sequelize.define(
   {
     ApplicantUsername: {
       type: DataTypes.STRING(32),
-      primaryKey: true,
       allowNull: false,
+      unique: "actions_unique",
     },
     Experience: {
       type: DataTypes.STRING(32),
@@ -49,8 +49,8 @@ const ApplicantExperience = sequelize.define(
         it unique allows it to still "serve" as a primary key, but allows us
         to still update it. 
       */
-      unique: true,
       allowNull: false,
+      unique: "actions_unique",
     },
     ExperienceDesc: {
       type: DataTypes.TEXT,
@@ -58,6 +58,11 @@ const ApplicantExperience = sequelize.define(
     },
   },
   {
+    uniqueKeys: {
+      actions_unique: {
+        fields: ["ApplicantUsername", "Experience"],
+      },
+    },
     timestamps: false,
   }
 );
@@ -85,13 +90,13 @@ const ApplicantProject = sequelize.define(
   {
     ApplicantUsername: {
       type: DataTypes.STRING(32),
-      primaryKey: true,
       allowNull: false,
+      unique: "actions_unique",
     },
     Project: {
       type: DataTypes.STRING(32),
-      primaryKey: true,
       allowNull: false,
+      unique: "actions_unique",
     },
     ProjectDesc: {
       type: DataTypes.TEXT,
@@ -99,6 +104,11 @@ const ApplicantProject = sequelize.define(
     },
   },
   {
+    uniqueKeys: {
+      actions_unique: {
+        fields: ["ApplicantUsername", "Project"],
+      },
+    },
     timestamps: false,
   }
 );
@@ -218,7 +228,7 @@ ApplicantCompetition.belongsTo(Applicant, {
   If any changes occurred to the model, sequelize.sync just ensures that they are
   applied to the database.
 */
-sequelize.sync();
+sequelize.sync({ alter: true });
 exports.Applicant = Applicant;
 exports.ApplicantExperience = ApplicantExperience;
 exports.ApplicantProject = ApplicantProject;

@@ -5,57 +5,44 @@ const authController = require("../controllers/authController");
 const router = express.Router();
 const interviewRouter = require("./interviewRoutes");
 
-router.post(
-  "/get-started",
-  authController.checkIfLoggedIn,
-  applicantController.createApplicant
-);
+router.post("/get-started", applicantController.createApplicant);
+
+router.use(authController.checkIfLoggedIn);
 
 router.delete("/delete-applicant", applicantController.deleteApplicant);
 router.get(
   "/profile",
-  authController.checkIfLoggedIn,
   applicantController.addFilter,
   applicantController.getApplicant
 );
 
-router.patch(
-  "/education",
-  authController.checkIfLoggedIn,
-  applicantController.updateEducation
-);
+router.patch("/education", applicantController.updateEducation);
 
 router
   .route("/experiences")
-  .post(authController.checkIfLoggedIn, applicantController.createExperience)
-  .delete(authController.checkIfLoggedIn, applicantController.deleteExperience);
+  .post(applicantController.createExperience)
+  .delete(applicantController.deleteExperience);
+router.patch("/experiences/:Experience", applicantController.updateExperience);
 
-router.patch(
-  "/experiences/:Experience",
-  authController.checkIfLoggedIn,
-  applicantController.updateExperience
-);
+router
+  .route("/projects")
+  .post(applicantController.createProject, applicantController.deleteProject);
+router.patch("/projects/:Project", applicantController.updateProject);
 
 router
   .route("/certifications")
-  .post(authController.checkIfLoggedIn, applicantController.createCertification)
-  .delete(
-    authController.checkIfLoggedIn,
-    applicantController.deleteCertification
-  );
+  .post(applicantController.createCertification)
+  .delete(applicantController.deleteCertification);
 
 router
   .route("/skills")
-  .post(authController.checkIfLoggedIn, applicantController.createSkill)
-  .delete(authController.checkIfLoggedIn, applicantController.deleteSkill);
+  .post(applicantController.createSkill)
+  .delete(applicantController.deleteSkill);
 
 router
   .route("/competitions")
-  .post(authController.checkIfLoggedIn, applicantController.createCompetition)
-  .delete(
-    authController.checkIfLoggedIn,
-    applicantController.deleteCompetition
-  );
+  .post(applicantController.createCompetition)
+  .delete(applicantController.deleteCompetition);
 
 router.use("/interviews", interviewRouter);
 
