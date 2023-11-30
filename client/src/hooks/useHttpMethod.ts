@@ -13,6 +13,7 @@ const useHttpMethod = (method) => {
     setIsLoading(true);
     setError(null);
 
+    console.log(data);
     try {
       if (method === "delete") {
         config.data = data;
@@ -25,7 +26,7 @@ const useHttpMethod = (method) => {
 
       let response;
 
-      if (method === "get") {
+      if (method === "get" || method === "delete") {
         response = await axios[method](url, config);
       } else {
         response = await axios[method](url, data, config);
@@ -41,7 +42,11 @@ const useHttpMethod = (method) => {
       setIsLoading(false);
       setError(null);
 
-      return response.data.data;
+      if (method === "delete") {
+        return response;
+      } else {
+        return response.data.data;
+      }
     } catch (error) {
       setIsLoading(false);
       setError(error?.response?.data.message);

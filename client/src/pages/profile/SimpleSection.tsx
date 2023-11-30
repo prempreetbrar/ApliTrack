@@ -42,6 +42,20 @@ export default function SimpleSection({
     }
   }
 
+  async function handleDelete(index) {
+    const data = await deleteInstance(
+      { [attributeName]: onUpdateSectionArray[index][attributeName] },
+      sectionURL
+    );
+
+    if (data) {
+      setOnUpdateSectionArray([
+        ...onUpdateSectionArray.slice(0, index),
+        ...onUpdateSectionArray.slice(index + 1),
+      ]);
+    }
+  }
+
   return (
     <>
       <Paper
@@ -62,12 +76,7 @@ export default function SimpleSection({
               <Chip
                 key={index}
                 label={entity[attributeName]}
-                onDelete={() =>
-                  deleteInstance(
-                    { [attributeName]: entity[attributeName] },
-                    sectionURL
-                  )
-                }
+                onDelete={() => handleDelete(index)}
                 sx={{
                   marginLeft: "0.5rem",
                   marginBottom: "0.5rem",

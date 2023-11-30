@@ -139,7 +139,7 @@ export default function Login() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="http://localhost:3001/signup" variant="body2">
+              <Link href="http://localhost:3001/auth/signup" variant="body2">
                 Don't have an account? Sign up
               </Link>
             </Grid>

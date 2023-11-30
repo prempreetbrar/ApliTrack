@@ -9,6 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "module": "ESNext",
+    "skipLibCheck": true,
     "moduleResolution": "node",
     "newLine": "LF",
     "noFallthroughCasesInSwitch": true,
