@@ -23,6 +23,7 @@ const jobRouter = require("./routes/jobRoutes");
 const offerRouter = require("./routes/offerRoutes");
 const applicationRouter = require("./routes/applicationRoutes");
 const referralRouter = require("./routes/referralRoutes");
+const adminRouter = require("./routes/adminRoutes");
 const errorController = require("./controllers/errorController");
 
 app.use(morgan("dev"));
@@ -53,6 +54,7 @@ app.use("/api/job", jobRouter);
 app.use("/api/offer", offerRouter);
 app.use("/api/applications", applicationRouter);
 app.use("/api/referral", referralRouter);
+app.use("/api/admins", adminRouter);
 app.use(errorController);
 
 module.exports = app;
