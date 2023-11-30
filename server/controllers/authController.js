@@ -92,6 +92,7 @@ exports.loginUser = errorHandling.catchAsync(async (request, response) => {
   const user = await User.findByPk(request.body.Username, {
     attributes: { include: ["Password"] },
   });
+
   if (
     !user ||
     !(await user.isPasswordCorrect(request.body.Password, user.Password))
@@ -109,7 +110,8 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
 
     if (
       request.headers.authorization &&
-      request.headers.authorization.startsWith("Bearer")
+      request.headers.authorization.startsWith("Bearer") &&
+      request.headers.authorization.split(" ")[1] !== null
     ) {
       token = request.headers.authorization.split(" ")[1];
     } else if (request.cookies.jwt) {
@@ -153,5 +155,45 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
     request.body.Username = user.Username;
     request.body.ApplicantUsername = user.Username;
     next();
+  }
+);
+
+/*
+  This function allows the user to change their password assuming they know their
+  existing one.
+*/
+exports.changePassword = errorHandling.catchAsync(
+  async (request, response, next) => {
+    /*
+       1) we want user to still write their password (so that somebody
+       can't just find an open computer and change the password)
+      */
+    const userWithPassword = await User.findByPk(request.body.Username, {
+      attributes: { include: ["Password"] },
+    });
+    if (
+      !(await userWithPassword.isPasswordCorrect(
+        request.body.Password,
+        userWithPassword.Password
+      ))
+    ) {
+      throw new errorHandling.AppError(
+        "The existing password provided was incorrect",
+        401
+      );
+    }
+
+    /*
+      Update password. Even though the user didn't send a password confirm
+      in their request body, we still need to manually make sure that
+      password and password confirm are identical, otherwise the model will
+      prevent the update.
+    */
+    userWithPassword.Password = request.body.NewPassword;
+    userWithPassword.PasswordConfirm = request.body.ConfirmNewPassword;
+    await userWithPassword.save();
+
+    // 4) Send new JWT token with updated password
+    createSendToken(userWithPassword, 200, request, response);
   }
 );

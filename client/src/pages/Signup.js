@@ -12,7 +12,7 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useSignup } from "../hooks/useSignup";
+import { useSignup } from "../hooks/useAuthAction";
 import { useSnackbar } from "notistack";
 
 /**
@@ -44,7 +44,7 @@ export default function Signup() {
   const firstName = register("Fname");
   const lastName = register("Lname");
 
-  const { signup, error, isLoading } = useSignup();
+  const { authAction: signup, error, isLoading } = useSignup();
 
   /*
     When the user submits the form, try to sign them up. If it succeeds, let them know!
@@ -74,12 +74,12 @@ export default function Signup() {
         });
       });
     } else if (error) {
-      console.log(error);
       enqueueSnackbar(error.message, {
         variant: "error",
         autoHideDuration: 3000,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, errors, isLoading]);
 
   return (

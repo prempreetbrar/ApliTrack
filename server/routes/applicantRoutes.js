@@ -17,7 +17,7 @@ router.get(
   applicantController.getApplicant
 );
 
-router.put(
+router.patch(
   "/education",
   authController.checkIfLoggedIn,
   applicantController.updateEducation
@@ -26,7 +26,7 @@ router.put(
 router
   .route("/experiences")
   .post(authController.checkIfLoggedIn, applicantController.createExperience)
-  .put(authController.checkIfLoggedIn, applicantController.updateExperience)
+  .patch(authController.checkIfLoggedIn, applicantController.updateExperience)
   .delete(authController.checkIfLoggedIn, applicantController.deleteExperience);
 
 router
