@@ -12,8 +12,11 @@ import {
   Avatar,
   Tooltip,
 } from "@mui/material";
+import MainBox from "components/MainBox";
+
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete } from "hooks/useHttpMethod";
+import MainPaper from "components/MainPaper";
 
 export default function Contacts() {
   const { user } = useAuthContext();
@@ -37,36 +40,18 @@ export default function Contacts() {
   }, []);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      sx={{
-        height: "100vh",
-        padding: "2rem",
-        backgroundColor: "rgb(249, 250, 251)",
-      }}
-    >
+    <MainBox>
       {contactsInfo &&
         contactsInfo.map((contact, index) => (
           <Contact key={index} contact={contact} />
         ))}
-    </Box>
+    </MainBox>
   );
 }
 
 function Contact({ key, contact }) {
   return (
-    <Paper
-      key={key}
-      sx={{
-        display: "flex",
-        padding: "2rem",
-        marginBottom: "2rem",
-        backgroundColor: "white",
-        flexDirection: { xs: "column", sm: "row" },
-        alignItems: { xs: "center" },
-      }}
-    >
+    <MainPaper key={key}>
       <Avatar
         src="/broken-image.jpg"
         sx={{
@@ -121,7 +106,7 @@ function Contact({ key, contact }) {
           <Typography>(587) 917 - 4521, Role - Manager</Typography>
         </Box> */}
       </Box>
-    </Paper>
+    </MainPaper>
   );
 }
 
