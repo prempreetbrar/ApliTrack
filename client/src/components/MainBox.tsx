@@ -8,12 +8,12 @@ export default function MainBox({ children }) {
       display="flex"
       flexDirection="column"
       sx={{
-        height: "100vh",
+        minHeight: "100vh",
+        height: "100%",
         padding: "2rem",
         backgroundColor: "rgb(249, 250, 251)",
       }}
     >
-      {" "}
       {children}
     </Box>
   );

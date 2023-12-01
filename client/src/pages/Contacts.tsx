@@ -17,6 +17,7 @@ import MainBox from "components/MainBox";
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete } from "hooks/useHttpMethod";
 import MainPaper from "components/MainPaper";
+import useHandleOperation from "hooks/useHandleOperation";
 
 export default function Contacts() {
   const { user } = useAuthContext();
@@ -124,6 +125,12 @@ function InfoSection({
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeRequest: deleteInstance } = useDelete();
   const { register, getValues, reset } = useForm();
+  const { executeHandle } = useHandleOperation(
+    reset,
+    null,
+    setOnUpdateSectionArray,
+    onUpdateSectionArray
+  );
 
   React.useEffect(() => {
     if (sectionArray) {
@@ -132,32 +139,24 @@ function InfoSection({
   }, [sectionArray]);
 
   async function handleCreate() {
-    const data = await create(
+    executeHandle(
+      "create",
+      create,
       { [attributeName]: getValues(attributeName), [entityIDName]: entityID },
       sectionURL
     );
-    if (data) {
-      const tableName = Object.keys(data)[0];
-      setOnUpdateSectionArray([...onUpdateSectionArray, data[tableName]]);
-      reset();
-    }
   }
 
   async function handleDelete(index) {
-    const data = await deleteInstance(
+    executeHandle(
+      "delete",
+      deleteInstance,
       {
         [attributeName]: onUpdateSectionArray[index][attributeName],
         [entityIDName]: entityID,
       },
       sectionURL
     );
-
-    if (data) {
-      setOnUpdateSectionArray([
-        ...onUpdateSectionArray.slice(0, index),
-        ...onUpdateSectionArray.slice(index + 1),
-      ]);
-    }
   }
 
   return (
@@ -225,7 +224,6 @@ function InfoSection({
 
 const CHIP_MAX_WIDTH = 150;
 const CHIP_ICON_WIDTH = 30;
-
 const EllipsisText = (props) => {
   const { children } = props;
 
