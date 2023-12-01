@@ -1,23 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import {
-  Box,
-  Paper,
-  TextField,
-  Button,
-  Chip,
-  Typography,
-  Link,
-  Avatar,
-  Tooltip,
-} from "@mui/material";
+import { Box, Typography, Link, Avatar } from "@mui/material";
 import MainBox from "components/MainBox";
 
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete } from "hooks/useHttpMethod";
 import MainPaper from "components/MainPaper";
 import useHandleOperation from "hooks/useHandleOperation";
+import NewEntry from "components/NewEntry";
+import ChipDisplayer from "components/ChipDisplayer";
 
 export default function Contacts() {
   const { user } = useAuthContext();
@@ -165,78 +157,19 @@ function InfoSection({
         {sectionTitle}
       </Typography>
       <Box>
-        {onUpdateSectionArray.map((entity, index) => (
-          <Tooltip
-            key={index}
-            title={entity[attributeName]}
-            arrow
-            placement="top"
-          >
-            <Chip
-              label={<EllipsisText>{entity[attributeName]}</EllipsisText>}
-              onDelete={() => handleDelete(index)}
-              sx={{ marginBottom: "0.5rem", marginRight: "0.25rem" }}
-            />
-          </Tooltip>
-        ))}
-      </Box>
-      {/* Allow the user to enter new data. */}
-      <Box component="form" display="flex" marginTop="2rem" alignItems="center">
-        <TextField
-          {...register(attributeName, { maxLength: maxCreateLength })}
-          placeholder={`Enter New ${attributeName}`}
-          fullWidth
-          required
-          inputProps={{ maxLength: maxCreateLength }}
+        <ChipDisplayer
+          onUpdateSectionArray={onUpdateSectionArray}
+          attributeName={attributeName}
+          handleDelete={handleDelete}
         />
-        <Button
-          onClick={handleCreate}
-          sx={{ ml: 1, fontSize: "1.5rem" }}
-          disabled={createIsLoading}
-        >
-          +
-        </Button>
       </Box>
+      <NewEntry
+        attributeName={attributeName}
+        maxCreateLength={maxCreateLength}
+        handleCreate={handleCreate}
+        createIsLoading={createIsLoading}
+        register={register}
+      />
     </Box>
   );
 }
-
-// {/* Allow the user to enter new data. */}
-// <Box
-//   component="form"
-//   display="flex"
-//   marginTop="2rem"
-//   alignItems="center"
-// >
-//   <TextField
-//     {...register(attributeName)}
-//     placeholder={`Enter Name of New ${attributeName} (Max 32 Characters)`}
-//     fullWidth
-//   />
-//   <Button
-//     onClick={handleCreate}
-//     sx={{ ml: 1, fontSize: "1.5rem" }}
-//     disabled={createIsLoading}
-//   >
-//     +
-//   </Button>
-// </Box>
-
-const CHIP_MAX_WIDTH = 150;
-const CHIP_ICON_WIDTH = 30;
-const EllipsisText = (props) => {
-  const { children } = props;
-
-  return (
-    <div
-      style={{
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        maxWidth: CHIP_MAX_WIDTH - CHIP_ICON_WIDTH,
-      }}
-    >
-      {children}
-    </div>
-  );
-};
