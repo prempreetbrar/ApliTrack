@@ -1,4 +1,5 @@
 const errorHandling = require("../utils/errorHandling");
+const APIFeatures = require("../utils/apiFeatures");
 
 /*
   We realize that a lot of the time, creation involves
@@ -44,6 +45,36 @@ exports.getOne = (Model) => {
       status: "success",
       data: {
         [Model.name.toLowerCase()]: document,
+      },
+    });
+  });
+};
+
+exports.getAll = (Model) => {
+  return errorHandling.catchAsync(async (request, response) => {
+    const cleanedQuery = new APIFeatures(
+      request.query,
+      Model.findAll({
+        where: request.body.filter,
+        include: {
+          all: true,
+          required: false,
+          nested: false,
+        },
+      })
+    )
+      .filter()
+      .sort()
+      .project()
+      .paginate();
+    const instances = await cleanedQuery.dbQuery;
+
+    response.status(200).json({
+      status: "success",
+      //   page: cleanedQuery.pageNumber,
+      results: instances.length,
+      data: {
+        [Model.name.toLowerCase()]: instances,
       },
     });
   });

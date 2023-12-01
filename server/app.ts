@@ -51,7 +51,7 @@ app.use("/api/users", userRouter);
 app.use("/api/applicants", applicantRouter);
 app.use("/api/documents", documentRouter);
 app.use("/api/applications", applicationRouter);
-app.use("/api/contact", contactRouter);
+app.use("/api/contacts", contactRouter);
 app.use("/api/company", companyRouter);
 app.use("/api/job", jobRouter);
 app.use("/api/offer", offerRouter);

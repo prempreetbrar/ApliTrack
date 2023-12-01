@@ -49,10 +49,7 @@ function App() {
           path="/applicants/interviews"
           element={user ? <Interview /> : <Navigate to="/auth/login" />}
         />
-        <Route
-          path="/contacts"
-          element={user ? <Contacts /> : <Navigate to="/auth/login" />}
-        />
+        <Route path="/contacts" element={<Contacts />} />
       </Routes>
     </Router>
   );

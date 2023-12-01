@@ -152,6 +152,7 @@ export default function FormSection({
             sx={{
               marginBottom: "1rem",
             }}
+            required
           />
           <Textarea
             {...register(attributeDescName)}

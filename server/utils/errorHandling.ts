@@ -3,6 +3,9 @@
   class. Even without it, the program would function.
 */
 exports.AppError = class AppError extends Error {
+  statusCode: any;
+  status: string;
+
   constructor(message, statusCode) {
     super(message);
 
@@ -36,6 +39,7 @@ exports.catchAsync = (asyncFunc) => {
 */
 exports.handleUncaught = (event, server) => {
   process.on(event, (error) => {
+    //@ts-ignore
     console.error(error.name, error.message);
     if (server) server.close(() => process.exit(1));
     else process.exit(1);
