@@ -22,4 +22,10 @@ router
   .post(authController.checkIfLoggedIn, contactController.createContactEmail)
   .delete(authController.checkIfLoggedIn, contactController.deleteContactEmail);
 
+router
+.route("/works-at")
+.post(authController.checkIfLoggedIn, contactController.createContactWorksAtCompany)
+.delete(authController.checkIfLoggedIn, contactController.deleteContactWorksAtCompany)
+.patch(authController.checkIfLoggedIn, contactController.updateContactWorksAtCompany);
+
 module.exports = router;
