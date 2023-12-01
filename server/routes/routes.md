@@ -30,7 +30,7 @@ For example, you would do
 ```
 router.route("/interviews/:id")
 .get(getInterview)
-.put(updateInterview)
+.patch(updateInterview)
 ```
 
 The `":id"` in the queryString ensures that ExpressJS can take it and handle it as a parameter.
