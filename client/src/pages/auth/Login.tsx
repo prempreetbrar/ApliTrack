@@ -1,3 +1,6 @@
+import React from "react";
+import { useForm } from "react-hook-form";
+
 import {
   Button,
   TextField,
@@ -10,10 +13,11 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { useLogin } from "../hooks/useAuthAction";
-import { useSnackbar } from "notistack";
+import Copyright from "components/Copyright";
+
+import { useLogin } from "../../hooks/useAuthAction";
+import useAuthSucceeded from "hooks/useAuthSucceeded";
+import { authErrorHandler } from "./authUtils";
 
 /**
  * Login component
@@ -24,7 +28,6 @@ export default function Login() {
     validates any specified requirements (ie. minLength, in this case we have none) 
     before submitting the form.
   */
-  const { enqueueSnackbar } = useSnackbar();
   const {
     register,
     handleSubmit,
@@ -40,41 +43,10 @@ export default function Login() {
   const password = register("Password", { required: "Password is required." });
 
   const { authAction: login, error, isLoading } = useLogin();
-
-  /*
-    When the user submits the form, try to log them in. If it succeeds, let them know!
-  */
-  const onSubmit = async (data) => {
-    const success = await login(data);
-    if (success) {
-      enqueueSnackbar("Login succeeded!", {
-        variant: "success",
-        autoHideDuration: 3000,
-      });
-    }
-  };
+  const onSubmit = useAuthSucceeded(login, "Login");
 
   React.useEffect(() => {
-    /*
-      Check if we have errors coming from the form. If we do, show those
-      (because that means the form wasn't even able to be submitted). Otherwise,
-      that means the form was able to be submitted, so instead show the error
-      returned by the database backend.
-    */
-    if (Object.keys(errors).length > 0) {
-      Object.values(errors).forEach(async (err) => {
-        enqueueSnackbar(err.message, {
-          variant: "error",
-          autoHideDuration: 3000,
-        });
-      });
-    } else if (error) {
-      console.error(error);
-      enqueueSnackbar(error.message, {
-        variant: "error",
-        autoHideDuration: 3000,
-      });
-    }
+    authErrorHandler(error, errors);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, errors, isLoading]);
 
@@ -113,6 +85,7 @@ export default function Login() {
                 inputRef={username.ref}
                 onChange={username.onChange}
                 autoComplete="email"
+                inputProps={{ maxLength: 32 }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -125,6 +98,7 @@ export default function Login() {
                 autoComplete="new-password"
                 inputRef={password.ref}
                 onChange={password.onChange}
+                inputProps={{ maxLength: 64 }}
               />
             </Grid>
           </Grid>
@@ -148,23 +122,5 @@ export default function Login() {
       </Box>
       <Copyright sx={{ mt: 5 }} />
     </Container>
-  );
-}
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        ApliTrack
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
   );
 }

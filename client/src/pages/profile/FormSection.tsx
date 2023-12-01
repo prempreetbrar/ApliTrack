@@ -59,7 +59,6 @@ export default function FormSection({
   }
 
   async function handleDelete(index) {
-    console.log(index);
     const data = await deleteInstance(
       { [attributeName]: onUpdateSectionArray[index][attributeName] },
       sectionURL
