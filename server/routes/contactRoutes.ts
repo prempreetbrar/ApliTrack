@@ -7,7 +7,8 @@ const router = express.Router();
 router
   .route("")
   .get(contactController.getAllContacts)
-  .post(authController.checkIfLoggedIn, contactController.createContact);
+  .post(authController.checkIfLoggedIn, contactController.createContact)
+  .patch(authController.checkIfLoggedIn, contactController.updateContact);
 
 // router.delete("/details", contactController.deleteContact);
 router
@@ -19,7 +20,5 @@ router
   .route("/emails")
   .post(authController.checkIfLoggedIn, contactController.createContactEmail)
   .delete(authController.checkIfLoggedIn, contactController.deleteContactEmail);
-
-// router.put("/details", contactController.updateContact);
 
 module.exports = router;

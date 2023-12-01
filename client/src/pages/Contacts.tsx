@@ -5,14 +5,15 @@ import { Box, Typography, Link, Avatar } from "@mui/material";
 import MainBox from "components/MainBox";
 
 import useAuthContext from "hooks/useAuthContext";
-import { useGet, useCreate, useDelete } from "hooks/useHttpMethod";
+import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
 import MainPaper from "components/MainPaper";
 import useHandleOperation from "hooks/useHandleOperation";
 import NewEntry from "components/NewEntry";
 import ChipDisplayer from "components/ChipDisplayer";
+import NameUpdater from "components/NameUpdater";
+import SingleUpdater from "components/SingleUpdater";
 
 export default function Contacts() {
-  const { user } = useAuthContext();
   const [contactsInfo, setContactsInfo] = React.useState(null);
   const { executeRequest: get } = useGet();
 
@@ -43,6 +44,24 @@ export default function Contacts() {
 }
 
 function Contact({ key, contact }) {
+  const { register, handleSubmit, setValue } = useForm();
+  const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
+
+  React.useEffect(() => {
+    /*
+        We have forms that the user can change. However, we want to prepopulate them
+        with their current values from the database.
+      */
+    setValue("Fname", contact?.Fname);
+    setValue("Lname", contact?.Lname);
+    setValue("LinkedInURL", contact?.LinkedInURL);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contact]);
+
+  function updateNameOrLinkedInURL(data) {
+    update(data, "http://localhost:3000/api/contacts/");
+  }
+
   return (
     <MainPaper key={key}>
       <Avatar
@@ -61,10 +80,19 @@ function Contact({ key, contact }) {
         flexDirection="column"
         justifyContent="space-between"
       >
-        <Typography fontWeight="bold">
-          {contact.Fname} {contact.Lname}
-        </Typography>
-        <Link href={contact.LinkedInURL}>{contact.LinkedInURL}</Link>
+        <NameUpdater
+          register={register}
+          handleSubmit={handleSubmit}
+          updateName={updateNameOrLinkedInURL}
+          updateIsLoading={updateIsLoading}
+        />
+        <SingleUpdater
+          register={register}
+          handleSubmit={handleSubmit}
+          updateAttribute={updateNameOrLinkedInURL}
+          attributeName={"LinkedInURL"}
+          updateIsLoading={updateIsLoading}
+        />
 
         <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
           Contact Info
@@ -79,6 +107,7 @@ function Contact({ key, contact }) {
             isMarginRight
             sectionURL="http://localhost:3000/api/contacts/phones"
             maxCreateLength={16}
+            width="50%"
           />
           <InfoSection
             entityIDName="ContactID"
@@ -88,16 +117,12 @@ function Contact({ key, contact }) {
             attributeName="Email"
             sectionURL="http://localhost:3000/api/contacts/emails"
             maxCreateLength={64}
+            width="50%"
           />
         </Box>
         <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
           Employed At
         </Typography>
-        {/* <Box padding="0.5rem">
-          <Typography>(587) 917 - 4521, Role - Cashier</Typography>
-          <Typography>(587) 917 - 4521, Role - Supervisor</Typography>
-          <Typography>(587) 917 - 4521, Role - Manager</Typography>
-        </Box> */}
       </Box>
     </MainPaper>
   );
@@ -112,6 +137,7 @@ function InfoSection({
   attributeName,
   isMarginRight,
   sectionURL,
+  width,
 }) {
   const [onUpdateSectionArray, setOnUpdateSectionArray] = React.useState([]);
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
@@ -152,17 +178,20 @@ function InfoSection({
   }
 
   return (
-    <Box padding="0.5rem" marginRight={`${isMarginRight ? "2rem" : "0"}`}>
+    <Box
+      padding="0.5rem"
+      marginRight={`${isMarginRight ? "2rem" : "0"}`}
+      sx={{ width }}
+    >
       <Typography sx={{ textDecoration: "underline" }}>
         {sectionTitle}
       </Typography>
-      <Box>
-        <ChipDisplayer
-          onUpdateSectionArray={onUpdateSectionArray}
-          attributeName={attributeName}
-          handleDelete={handleDelete}
-        />
-      </Box>
+      <ChipDisplayer
+        onUpdateSectionArray={onUpdateSectionArray}
+        attributeName={attributeName}
+        handleDelete={handleDelete}
+      />
+
       <NewEntry
         attributeName={attributeName}
         maxCreateLength={maxCreateLength}

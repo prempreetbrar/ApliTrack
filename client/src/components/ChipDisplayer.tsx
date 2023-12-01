@@ -1,4 +1,5 @@
 import { Tooltip, Chip } from "@mui/material";
+import useAuthContext from "hooks/useAuthContext";
 import React from "react";
 
 export default function ChipDisplayer({
@@ -6,6 +7,7 @@ export default function ChipDisplayer({
   attributeName,
   handleDelete,
 }) {
+  const { user } = useAuthContext();
   return (
     <>
       {onUpdateSectionArray.map((entity, index) => (
@@ -17,7 +19,7 @@ export default function ChipDisplayer({
         >
           <Chip
             label={<EllipsisText>{entity[attributeName]}</EllipsisText>}
-            onDelete={() => handleDelete(index)}
+            onDelete={user && (() => handleDelete(index))}
             sx={{ marginBottom: "0.5rem", marginRight: "0.25rem" }}
           />
         </Tooltip>

@@ -45,11 +45,16 @@ const ContactEmail = sequelize.define(
     },
     Email: {
       type: DataTypes.STRING(64),
-      primaryKey: true,
+      primaryKey: false,
       allowNull: false,
     },
   },
   {
+    uniqueKeys: {
+      actions_unique: {
+        fields: ["ContactID", "Email"],
+      },
+    },
     timestamps: false,
   }
 );
@@ -86,11 +91,16 @@ const ContactPhone = sequelize.define(
     },
     Phone: {
       type: DataTypes.STRING(16),
-      primaryKey: true,
+      primaryKey: false,
       allowNull: false,
     },
   },
   {
+    uniqueKeys: {
+      actions_unique: {
+        fields: ["ContactID", "Email"],
+      },
+    },
     timestamps: false,
   }
 );
