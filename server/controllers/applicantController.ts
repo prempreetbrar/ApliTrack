@@ -29,6 +29,11 @@ exports.deleteCompetition = factory.deleteInstance(
   Applicant.ApplicantCompetition
 );
 
+// for many-to-many relationship(s)
+exports.createApplicantKnowsContact = factory.createOne(Applicant.ApplicantKnowsContact);
+exports.deleteApplicantKnowsContact = factory.deleteInstance(Applicant.ApplicantKnowsContact);
+exports.updateApplicantKnowsContact = factory.updateInstance(Applicant.ApplicantKnowsContact);
+
 /*
   Why aren't we adding this filter in the authController.checkIfLoggedIn function?
   Great question. In the authController.checkIfLoggedIn function, we do

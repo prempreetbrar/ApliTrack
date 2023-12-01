@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const errorHandling = require("../utils/errorHandling");
+const APIFeatures = require("../utils/apiFeatures");
 /*
   We realize that a lot of the time, creation involves
   simply sending a create request to the database (with the
@@ -56,6 +57,31 @@ exports.getOne = (Model) => {
         });
     }));
 };
+exports.getAll = (Model) => {
+    return errorHandling.catchAsync((request, response) => __awaiter(void 0, void 0, void 0, function* () {
+        const cleanedQuery = new APIFeatures(request.query, Model.findAll({
+            where: request.body.filter,
+            include: {
+                all: true,
+                required: false,
+                nested: false,
+            },
+        }))
+            .filter()
+            .sort()
+            .project()
+            .paginate();
+        const instances = yield cleanedQuery.dbQuery;
+        response.status(200).json({
+            status: "success",
+            //   page: cleanedQuery.pageNumber,
+            results: instances.length,
+            data: {
+                [Model.name.toLowerCase()]: instances,
+            },
+        });
+    }));
+};
 exports.updateInstance = (Model) => {
     return errorHandling.catchAsync((request, response) => __awaiter(void 0, void 0, void 0, function* () {
         //get a list of the model's primary key attributes
@@ -88,40 +114,6 @@ exports.updateInstance = (Model) => {
                 [Model.name.toLowerCase()]: instance,
             },
         });
-        console.log(document.toJSON());
-    }));
-};
-exports.updateInstance = (Model) => {
-    return errorHandling.catchAsync((request, response) => __awaiter(void 0, void 0, void 0, function* () {
-        //get a list of the model's primary key attributes
-        const pkAttributes = Model.primaryKeyAttributes;
-        //get the keys and the new values of the request
-        var keys = {};
-        var newValues = {};
-        for (let x in request.body) {
-            var obj = { [x]: request.body[x] };
-            if (pkAttributes.includes(x)) {
-                Object.assign(keys, obj);
-            }
-            else {
-                Object.assign(newValues, obj);
-            }
-        }
-        //debug output
-        console.log("KEYS:");
-        console.log(keys);
-        console.log("NEW VALUES:");
-        console.log(newValues);
-        //find the instance
-        const instance = yield Model.findOne({
-            where: keys
-        });
-        //update the instance
-        yield instance.update(newValues);
-        response.status(201).json({
-            status: "success",
-        });
-        console.log("\nNEW INSTANCE");
         console.log(instance.toJSON());
     }));
 };
@@ -142,7 +134,7 @@ exports.deleteInstance = (Model) => {
         console.log(keys);
         //delete the instance
         yield Model.destroy({
-            where: keys
+            where: keys,
         });
         response.status(201).json({
             status: "success",
@@ -200,9 +192,9 @@ exports.updateOneWithKey = (Model) => {
             where: keys,
         });
         //update the instance
-        console.log("LOGGING INSTNACE", instance, "\n");
+        console.log("LOGGING INSTANCE", instance, "\n");
         yield instance.update(newValues);
-        console.log("NEW INSTNACE", instance, "\n");
+        console.log("NEW INSTANCE", instance, "\n");
         // response code 200 (since 201 is for creation but we aren't creating here, we're updating)
         response.status(200).json({
             status: "success",

@@ -46,4 +46,10 @@ router
 
 router.use("/interviews", interviewRouter);
 
+router
+.route("/known-contacts")
+.post(applicantController.createApplicantKnowsContact)
+.delete(applicantController.deleteApplicantKnowsContact)
+.patch(applicantController.updateApplicantKnowsContact);
+
 module.exports = router;

@@ -98,7 +98,7 @@ const ContactPhone = sequelize.define(
   {
     uniqueKeys: {
       actions_unique: {
-        fields: ["ContactID", "Email"],
+        fields: ["ContactID", "Phone"],
       },
     },
     timestamps: false,

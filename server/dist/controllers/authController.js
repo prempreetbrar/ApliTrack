@@ -35,7 +35,8 @@ function createSendToken(user, statusCode, request, response) {
     const token = signToken(user.Username);
     // we don't want the user to be logged in forever, so we set an expiry date
     const cookieOptions = {
-        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+        expires: new Date(Date.now() +
+            Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000),
         secure: true,
         httpOnly: true,
     };
@@ -126,6 +127,8 @@ exports.checkIfLoggedIn = errorHandling.catchAsync((request, response, next) => 
     request.body.user = user;
     request.body.Username = user.Username;
     request.body.ApplicantUsername = user.Username;
+    request.body.AdminUsername = user.Username;
+    request.body.ADMINUsername = user.Username;
     next();
 }));
 /*

@@ -8,6 +8,7 @@ router
   .route("")
   .get(contactController.getAllContacts)
   .post(authController.checkIfLoggedIn, contactController.createContact)
+  .delete(authController.checkIfLoggedIn, contactController.deleteContact)
   .patch(authController.checkIfLoggedIn, contactController.updateContact);
 
 // router.delete("/details", contactController.deleteContact);
