@@ -52,4 +52,10 @@ router
 .delete(applicantController.deleteApplicantKnowsContact)
 .patch(applicantController.updateApplicantKnowsContact);
 
+router
+.route("/tracked-jobs")
+.post(applicantController.createApplicantTracksJob)
+.delete(applicantController.deleteApplicantTracksJob)
+.patch(applicantController.updateApplicantTracksJob);
+
 module.exports = router;
