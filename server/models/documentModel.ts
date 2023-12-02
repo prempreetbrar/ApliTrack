@@ -31,6 +31,7 @@ const Document = sequelize.define(
     },
   },
   {
+    initialAutoIncrement: 1,
     timestamps: false,
   }
 );

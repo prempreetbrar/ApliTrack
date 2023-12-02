@@ -10,3 +10,7 @@ exports.updateApplication = factory.updateInstance(Application.Application);
 exports.deleteApplication = factory.deleteInstance(Application.Application);
 exports.deleteApplicationURL = factory.deleteInstance(Application.Appl_Relevant_URL);
 exports.deleteApplicationCategory = factory.deleteInstance(Application.Appl_Category);
+
+//many-to-many relationships
+exports.createApplicationSubmitWithDoc = factory.createOne(Application.ApplicationSubmitWithDoc);
+exports.deleteApplicationSubmitWithDoc = factory.deleteInstance(Application.ApplicationSubmitWithDoc);
