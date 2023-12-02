@@ -7,6 +7,7 @@ import FormSection from "./FormSection";
 
 import useAuthContext from "../../hooks/useAuthContext";
 import { useGet } from "../../hooks/useHttpMethod";
+import MainBox from "components/MainBox";
 
 export default function Profile() {
   const { user } = useAuthContext();
@@ -35,14 +36,7 @@ export default function Profile() {
   }, [user]);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      sx={{
-        padding: "2rem",
-        backgroundColor: "rgb(249, 250, 251)",
-      }}
-    >
+    <MainBox>
       {/* YOU */}
       <UserSection applicantInfo={applicantInfo} />
       {/* EXPERIENCES */}
@@ -82,6 +76,6 @@ export default function Profile() {
         sectionArray={applicantInfo?.Competitions}
         attributeName="Competition"
       />
-    </Box>
+    </MainBox>
   );
 }

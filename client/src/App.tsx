@@ -9,8 +9,8 @@ import useAuthContext from "./hooks/useAuthContext";
 
 import "./App.css";
 
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
+import Signup from "./pages/auth/Signup";
+import Login from "./pages/auth/Login";
 import Profile from "./pages/profile/Profile";
 import Navbar from "./components/Navbar";
 import Interview from "pages/Interviews";
@@ -19,6 +19,10 @@ import Contacts from "pages/Contacts";
 function App() {
   const { user } = useAuthContext();
 
+  /*
+    If the user isn't logged in, then navigate them to the login page on a protected route.
+    Otherwise, if they are logged in, let them see the protected route.
+  */
   return (
     <Router>
       <Navbar />
@@ -49,10 +53,7 @@ function App() {
           path="/applicants/interviews"
           element={user ? <Interview /> : <Navigate to="/auth/login" />}
         />
-        <Route
-          path="/contacts"
-          element={user ? <Contacts /> : <Navigate to="/auth/login" />}
-        />
+        <Route path="/contacts" element={<Contacts />} />
       </Routes>
     </Router>
   );

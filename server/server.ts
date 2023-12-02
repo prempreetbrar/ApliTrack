@@ -27,8 +27,9 @@ const sequelize = new Sequelize({
   define: {
     freezeTableName: true,
   },
+  logging: console.log,
 });
-sequelize.sync({ alter: true });
+sequelize.sync();
 module.exports = sequelize;
 
 /*

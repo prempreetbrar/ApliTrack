@@ -1,16 +1,24 @@
 const express = require("express");
 const contactController = require("../controllers/contactController");
+const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.post("/details", contactController.createContact);
-router.post("/emails", contactController.createContactEmail);
-router.post("/phones", contactController.createContactPhone);
+router
+  .route("")
+  .get(contactController.getAllContacts)
+  .post(authController.checkIfLoggedIn, contactController.createContact)
+  .patch(authController.checkIfLoggedIn, contactController.updateContact);
 
-router.delete("/details", contactController.deleteContact);
-router.delete("/phones", contactController.deleteContactPhone);
-router.delete("/emails", contactController.deleteContactEmail);
+// router.delete("/details", contactController.deleteContact);
+router
+  .route("/phones")
+  .post(authController.checkIfLoggedIn, contactController.createContactPhone)
+  .delete(authController.checkIfLoggedIn, contactController.deleteContactPhone);
 
-router.put("/details", contactController.updateContact);
+router
+  .route("/emails")
+  .post(authController.checkIfLoggedIn, contactController.createContactEmail)
+  .delete(authController.checkIfLoggedIn, contactController.deleteContactEmail);
 
 module.exports = router;

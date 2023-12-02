@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 
 import { useUpdate } from "../../hooks/useHttpMethod";
+import NameUpdater from "components/NameUpdater";
 
 export default function UserSection({ applicantInfo }) {
   const { register, handleSubmit, setValue } = useForm();
@@ -58,33 +59,12 @@ export default function UserSection({ applicantInfo }) {
     >
       <Avatar src="/broken-image.jpg" sx={{ width: 100, height: 100 }} />
       <Typography fontWeight="bold">YOU</Typography>
-      <Box display="flex" alignItems="center">
-        <TextField
-          InputLabelProps={{ shrink: true }}
-          {...register("Fname")}
-          label="First Name"
-          sx={{
-            marginRight: "1rem",
-          }}
-        />
-        <TextField
-          InputLabelProps={{ shrink: true }}
-          {...register("Lname")}
-          label="Last Name"
-          sx={{
-            marginRight: "1rem",
-          }}
-        />
-        <Button
-          onClick={handleSubmit(updateName)}
-          type="submit"
-          variant="outlined"
-          sx={{ mt: 3, mb: 2 }}
-          disabled={updateIsLoading}
-        >
-          Update
-        </Button>
-      </Box>
+      <NameUpdater
+        register={register}
+        handleSubmit={handleSubmit}
+        updateName={updateName}
+        updateIsLoading={updateIsLoading}
+      />
       <Box
         display="flex"
         width="100%"

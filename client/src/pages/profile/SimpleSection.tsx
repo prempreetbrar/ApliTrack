@@ -96,6 +96,7 @@ export default function SimpleSection({
             {...register(attributeName)}
             placeholder={`Enter Name of New ${attributeName} (Max 32 Characters)`}
             fullWidth
+            required
           />
           <Button
             onClick={handleCreate}

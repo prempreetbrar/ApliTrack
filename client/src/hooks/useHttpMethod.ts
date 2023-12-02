@@ -13,16 +13,17 @@ const useHttpMethod = (method) => {
     setIsLoading(true);
     setError(null);
 
-    console.log(data);
     try {
       if (method === "delete") {
         config.data = data;
       }
 
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${user.token}`,
-      };
+      if (user) {
+        config.headers = {
+          ...config.headers,
+          Authorization: `Bearer ${user.token}`,
+        };
+      }
 
       let response;
 
@@ -31,7 +32,6 @@ const useHttpMethod = (method) => {
       } else {
         response = await axios[method](url, data, config);
       }
-
       if (method !== "get") {
         enqueueSnackbar(`Success!`, {
           variant: "success",

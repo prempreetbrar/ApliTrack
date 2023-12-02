@@ -59,7 +59,6 @@ export default function FormSection({
   }
 
   async function handleDelete(index) {
-    console.log(index);
     const data = await deleteInstance(
       { [attributeName]: onUpdateSectionArray[index][attributeName] },
       sectionURL
@@ -152,6 +151,7 @@ export default function FormSection({
             sx={{
               marginBottom: "1rem",
             }}
+            required
           />
           <Textarea
             {...register(attributeDescName)}
