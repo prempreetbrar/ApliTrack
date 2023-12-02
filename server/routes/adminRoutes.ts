@@ -4,10 +4,12 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
+/*
 router.route("/details")
 .post(authController.checkIfLoggedIn, adminController.createAdmin)
 .delete(authController.checkIfLoggedIn, adminController.deleteAdmin)
 .put(authController.checkIfLoggedIn, adminController.updateAdmin);
+*/
 
 router.route("/responsibilities")
 .post(authController.checkIfLoggedIn, adminController.createAdminResp)
@@ -17,8 +19,10 @@ router.route("/developer-specializations")
 .post(authController.checkIfLoggedIn, adminController.createDevSpec)
 .delete(authController.checkIfLoggedIn, adminController.deleteDevSpec);
 
+/*
 router.route("/permissions")
 .post(authController.checkIfLoggedIn, adminController.createAdminHasPerm)
 .delete(authController.checkIfLoggedIn, adminController.deleteAdminHasPerm);
+*/
 
 module.exports = router;

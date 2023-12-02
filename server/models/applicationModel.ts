@@ -135,6 +135,7 @@ Job.belongsToMany(Application, {through: ApplicationCorrespondsToJob});
 
 //Application has a many-to-many relationship with Document
 
+
 sequelize.sync();
 exports.Application = Application;
 exports.Appl_Relevant_URL = Appl_Relevant_URL;

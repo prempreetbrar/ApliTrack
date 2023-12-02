@@ -1,8 +1,9 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../server');
 const User = require('./userModel');
-const {Permission} = require('./permissionModel');
+//const {Permission} = require('./permissionModel');
 
+/*
 const Admin = sequelize.define(
     'ADMIN', {
   Username: {
@@ -33,11 +34,11 @@ User.hasMany(Admin,
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
-
+*/
 
 const Admin_Responsibility = sequelize.define(
     'ADMIN_RESPONSIBILITY', {
-    AdminUsername: {
+    Username: {
       type: DataTypes.STRING(32),
       primaryKey: true,
       allowNull: false,
@@ -51,20 +52,20 @@ const Admin_Responsibility = sequelize.define(
     timestamps: false,
   });
 
-Admin.hasMany(Admin_Responsibility, {
-    foreignKey: 'AdminUsername',
+User.hasMany(Admin_Responsibility, {
+    foreignKey: 'Username',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
-Admin_Responsibility.belongsTo(Admin, {
-    foreignKey: "AdminUsername",
+Admin_Responsibility.belongsTo(User, {
+    foreignKey: "Username",
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 
 const Dev_Specialization = sequelize.define(
     'DEV_SPECIALIZATION', {
-    AdminUsername: {
+    Username: {
       type: DataTypes.STRING(32),
       primaryKey: true,
       allowNull: false,
@@ -78,28 +79,30 @@ const Dev_Specialization = sequelize.define(
     timestamps: false,
   });
 
-Admin.hasMany(Dev_Specialization, {
-    foreignKey: 'AdminUsername',
+User.hasMany(Dev_Specialization, {
+    foreignKey: 'Username',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
-Dev_Specialization.belongsTo(Admin, {
-    foreignKey: "AdminUsername",
+Dev_Specialization.belongsTo(User, {
+    foreignKey: "Username",
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 
+/*
 // definition of many-to-many relationship b/t Admin and Permission
 const AdminHasPerm = sequelize.define('ADMIN_HAS_PERM', {}, {timestamps: false});
   Admin.belongsToMany(Permission, { through: AdminHasPerm });
   Permission.belongsToMany(Admin, { through: AdminHasPerm });
+*/
 
 /*
   If any changes occurred to the model, sequelize.sync just ensures that they are
   applied to the database.
 */
 sequelize.sync();
-exports.Admin = Admin;
+//exports.Admin = Admin;
 exports.Admin_Responsibility = Admin_Responsibility;
 exports.Dev_Specialization = Dev_Specialization;
-exports.AdminHasPerm = AdminHasPerm;
+//exports.AdminHasPerm = AdminHasPerm;

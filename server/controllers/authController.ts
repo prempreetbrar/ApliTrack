@@ -155,7 +155,6 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
     request.body.user = user;
     request.body.Username = user.Username;
     request.body.ApplicantUsername = user.Username;
-    request.body.AdminUsername = user.Username;
     request.body.ADMINUsername = user.Username;
     request.body.APPLICANTUsername = user.Username;
     next();

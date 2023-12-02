@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const sequelize = require("../server");
+const {Permission} = require('./permissionModel');
 
 const { AppError } = require("../utils/errorHandling");
 
@@ -36,6 +37,22 @@ const User = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: true, // Setting the default value to true (or 1)
     },
+    AdminFlag: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    DeveloperFlag: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    DeveloperType: {
+      type: DataTypes.STRING(64),
+    },
+    PermissionLevel: {
+      type: DataTypes.INTEGER,
+    },
   },
   {
     timestamps: false, // we don't need to store the time of creation or updation
@@ -49,6 +66,16 @@ const User = sequelize.define(
     },
   }
 );
+Permission.hasMany(User, {
+  foreignKey: 'PermissionLevel',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+User.belongsTo(Permission, {
+  foreignKey: "PermissionLevel",
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
 
 /*
   ALL HOOKS (the following section) are applied AFTER any validate functions in the schema.

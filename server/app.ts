@@ -16,6 +16,7 @@ const app = express();
 
 const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes");
+const adminRouter = require("./routes/adminRoutes");
 const applicantRouter = require("./routes/applicantRoutes");
 const documentRouter = require("./routes/documentRoutes");
 const applicationRouter = require("./routes/applicationRoutes");
@@ -24,6 +25,7 @@ const companyRouter = require("./routes/companyRoutes");
 const jobRouter = require("./routes/jobRoutes");
 const offerRouter = require("./routes/offerRoutes");
 const referralRouter = require("./routes/referralRoutes");
+const permissionRouter = require("./routes/permissionRoutes");
 
 const errorController = require("./controllers/errorController");
 
@@ -56,6 +58,8 @@ app.use("/api/company", companyRouter);
 app.use("/api/job", jobRouter);
 app.use("/api/offer", offerRouter);
 app.use("/api/referral", referralRouter);
+app.use("/api/admins", adminRouter);
+app.use("/api/permissions", permissionRouter);
 
 app.use(errorController);
 
