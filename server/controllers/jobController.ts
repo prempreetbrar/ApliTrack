@@ -10,3 +10,7 @@ exports.deleteJobQual = factory.deleteInstance(Job.JobQualification);
 exports.deleteJobResp = factory.deleteInstance(Job.JobResponsibility);
 
 exports.updateJob = factory.updateInstance(Job.Job);
+
+// for many-to-many relationship(s)
+exports.createJobMentionsInterview = factory.createOne(Job.JobMentionsInterview);
+exports.deleteJobMentionsInterview = factory.deleteInstance(Job.JobMentionsInterview);
