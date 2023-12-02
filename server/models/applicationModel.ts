@@ -118,7 +118,7 @@ Appl_Category.belongsTo(Application, {
     onUpdate: 'CASCADE',
 });
 
-//TODO: later
+
 //Application has a many-to-many relationship with Document
 const ApplicationSubmitWithDoc = sequelize.define(
   "SUBMIT_WITH",
