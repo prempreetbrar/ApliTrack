@@ -29,7 +29,7 @@ exports.deleteCompetition = factory.deleteInstance(
   Applicant.ApplicantCompetition
 );
 
-// for many-to-many relationship(s)
+// for many-to-many relationships
 exports.createApplicantKnowsContact = factory.createOne(Applicant.ApplicantKnowsContact);
 exports.deleteApplicantKnowsContact = factory.deleteInstance(Applicant.ApplicantKnowsContact);
 exports.updateApplicantKnowsContact = factory.updateInstance(Applicant.ApplicantKnowsContact);

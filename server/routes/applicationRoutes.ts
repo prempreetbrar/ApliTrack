@@ -13,4 +13,10 @@ router.delete("/delete-application", applicationController.deleteApplication);
 router.delete("/delete-appl-URL", applicationController.deleteApplicationURL);
 router.delete("/delete-appl-category", applicationController.deleteApplicationCategory);
 
+router
+.route("/corresponding-jobs")
+.post(applicationController.createApplicationCorrespondsToJob)
+.delete(applicationController.deleteApplicationCorrespondsToJob)
+.patch(applicationController.updateApplicationCorrespondsToJob);
+
 module.exports = router;
