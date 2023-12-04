@@ -11,6 +11,10 @@ router
   .delete(authController.checkIfLoggedIn, contactController.deleteContact)
   .patch(authController.checkIfLoggedIn, contactController.updateContact);
 
+router
+  .route("/contact")
+  .get(contactController.addFilter, contactController.getContact);
+
 // router.delete("/details", contactController.deleteContact);
 router
   .route("/phones")

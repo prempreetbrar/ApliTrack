@@ -7,7 +7,20 @@ const router = express.Router();
 router.route("/details")
 .post(authController.checkIfLoggedIn, offerController.createOffer)
 .delete(authController.checkIfLoggedIn, offerController.deleteOffer)
-.put(authController.checkIfLoggedIn, offerController.updateOffer);
+.put(authController.checkIfLoggedIn, offerController.updateOffer)
+.get(authController.checkIfLoggedIn, 
+    offerController.filterApplicantFile,
+    offerController.getOffer);
+
+router
+.route("")
+.get(offerController.getAllOffers);
+
+router
+.route("/my-offers")
+.get(authController.checkIfLoggedIn, 
+    offerController.filterApplicant, 
+    offerController.getAllApplicantOffers);
 
 // leaving this here in case auth doesn't work
 /* 
