@@ -35,8 +35,9 @@ const sequelize = new Sequelize({
     define: {
         freezeTableName: true,
     },
+    logging: console.log,
 });
-sequelize.sync({ alter: true });
+sequelize.sync();
 module.exports = sequelize;
 /*
   We try connecting our app to the database. We do it once here

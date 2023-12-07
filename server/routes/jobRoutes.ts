@@ -6,7 +6,8 @@ const router = express.Router();
 router.route("/details")
 .post(jobController.createJob)
 .delete(jobController.deleteJob)
-.put(jobController.updateJob);
+.put(jobController.updateJob)
+.get(jobController.addFilterID, jobController.getJob);
 
 router.route("/qualifications")
 .post(jobController.createJobQual)
@@ -15,5 +16,10 @@ router.route("/qualifications")
 router.route("/responsibilities")
 .post(jobController.createJobResp)
 .delete(jobController.deleteJobResp);
+
+router.route("").get(jobController.getAllJobs);
+
+router.route("/company-jobs")
+.get(jobController.addFilterCompany, jobController.getAllCompanyJobs);
 
 module.exports = router;

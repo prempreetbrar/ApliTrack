@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const sequelize = require("../server");
+const {Permission} = require('./permissionModel');
 
 const { AppError } = require("../utils/errorHandling");
 
@@ -36,6 +37,14 @@ const User = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: true, // Setting the default value to true (or 1)
     },
+    AdminFlag: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    PermissionLevel: {
+      type: DataTypes.INTEGER,
+    },
   },
   {
     timestamps: false, // we don't need to store the time of creation or updation
@@ -49,6 +58,25 @@ const User = sequelize.define(
     },
   }
 );
+
+/*
+PermissionLevel attribute in User is no longer a Foreign Key. It was decided that having  
+Permission and Permission_Ability tables was redundant, since combining the Admin flag and PermissionLevel 
+in the User table simplified the backend while maintaining desired functionality. We also removed the Developer flag 
+and Dev_Specialization table because a developer/admin's permissions and abilities are normally managed
+in the GitHub repository, NOT in the actual application itself. 
+
+Permission.hasMany(User, {
+  foreignKey: 'PermissionLevel',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+User.belongsTo(Permission, {
+  foreignKey: "PermissionLevel",
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+*/
 
 /*
   ALL HOOKS (the following section) are applied AFTER any validate functions in the schema.

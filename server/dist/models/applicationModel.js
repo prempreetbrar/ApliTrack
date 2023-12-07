@@ -1,45 +1,40 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../server");
 const { Applicant } = require("./applicantModel");
-const {Job} = require("./jobModel");
-
-const Application = sequelize.define(
-  "APPLICATION",
-  {
+const Application = sequelize.define("APPLICATION", {
     ApplicationID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
-      },
+    },
     ApplicantUsername: {
-      type: DataTypes.STRING(32),
-      allowNull: false,
-      unique: 'uniqueTag',
+        type: DataTypes.STRING(32),
+        allowNull: false,
+        unique: 'uniqueTag',
     },
     AName: {
-      type: DataTypes.STRING(32),
-      allowNull: false,
-      unique: 'uniqueTag',
+        type: DataTypes.STRING(32),
+        allowNull: false,
+        unique: 'uniqueTag',
     },
     Notes: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+        type: DataTypes.TEXT,
+        allowNull: true,
     },
     DateSubmitted: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
+        type: DataTypes.DATEONLY,
+        allowNull: true,
     },
     Status: {
-      type: DataTypes.STRING(32),
-      allowNull: true,
+        type: DataTypes.STRING(32),
+        allowNull: true,
     },
-  },
-  {
+}, {
     timestamps: false,
-  }
-);
-
+});
 //Applicant has a one-to-many relationship with Application
 Applicant.hasMany(Application, {
     foreignKey: "ApplicantUsername",
@@ -51,26 +46,20 @@ Application.belongsTo(Applicant, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
-
-const Appl_Relevant_URL = sequelize.define(
-    "APPL_RELEVANT_URL",
-    {
-        ApplicationID: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-          },
-      RelevantURL: {
+const Appl_Relevant_URL = sequelize.define("APPL_RELEVANT_URL", {
+    ApplicationID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+    },
+    RelevantURL: {
         type: DataTypes.STRING(512),
         primaryKey: true,
         allowNull: false,
-      },
     },
-    {
-      timestamps: false,
-    }
-);
-
+}, {
+    timestamps: false,
+});
 //appl_relevant_URL is a multi-value attribute of application
 Application.hasMany(Appl_Relevant_URL, {
     foreignKey: 'ApplicationID',
@@ -85,26 +74,20 @@ Appl_Relevant_URL.belongsTo(Application, {
 // Appl_Relevant_URL.belongsTo(Applicant, {
 //     foreignKey: 'ApplicantUsername',
 // });
-
-const Appl_Category = sequelize.define(
-    "APPL_CATEGORY",
-    {
-        ApplicationID: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-          },
-      Category: {
+const Appl_Category = sequelize.define("APPL_CATEGORY", {
+    ApplicationID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+    },
+    Category: {
         type: DataTypes.STRING(32),
         primaryKey: true,
         allowNull: false,
-      },
     },
-    {
-      timestamps: false,
-    }
-);
-
+}, {
+    timestamps: false,
+});
 //appl_category is a multivalue attribute of application
 Application.hasMany(Appl_Category, {
     foreignKey: 'ApplicationID',
@@ -119,25 +102,9 @@ Appl_Category.belongsTo(Application, {
 // Appl_Category.belongsTo(Applicant, {
 //     foreignKey: 'ApplicantUsername',
 // });
-
-// definition of many-to-many relationship b/t Application and Job
-const ApplicationCorrespondsToJob = sequelize.define(
-  'CORRESPONDS_TO', 
-{
-  JobPostURL: {
-    type: DataTypes.STRING(128),
-  },
-}, {
-  timestamps: false
-});
-Application.belongsToMany(Job, {through: ApplicationCorrespondsToJob});
-Job.belongsToMany(Application, {through: ApplicationCorrespondsToJob});
-
+//TODO: later
 //Application has a many-to-many relationship with Document
-
-
 sequelize.sync();
 exports.Application = Application;
 exports.Appl_Relevant_URL = Appl_Relevant_URL;
 exports.Appl_Category = Appl_Category;
-exports.ApplicationCorrespondsToJob = ApplicationCorrespondsToJob;
