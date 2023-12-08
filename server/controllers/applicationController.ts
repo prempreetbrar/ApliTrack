@@ -15,3 +15,6 @@ exports.deleteApplicationCategory = factory.deleteInstance(Application.Appl_Cate
 exports.createApplicationCorrespondsToJob = factory.createOne(Application.ApplicationCorrespondsToJob);
 exports.deleteApplicationCorrespondsToJob = factory.deleteInstance(Application.ApplicationCorrespondsToJob);
 exports.updateApplicationCorrespondsToJob = factory.updateInstance(Application.ApplicationCorrespondsToJob);
+
+exports.createApplicationSubmitWithDoc = factory.createOne(Application.ApplicationSubmitWithDoc);
+exports.deleteApplicationSubmitWithDoc = factory.deleteInstance(Application.ApplicationSubmitWithDoc);

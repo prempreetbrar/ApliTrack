@@ -2,6 +2,7 @@ const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../server");
 const { Applicant } = require("./applicantModel");
 const {Job} = require("./jobModel");
+const { Document } = require("./documentModel");
 
 const Application = sequelize.define(
   "APPLICATION",
@@ -36,6 +37,7 @@ const Application = sequelize.define(
     },
   },
   {
+    initialAutoIncrement: 1,
     timestamps: false,
   }
 );
@@ -134,10 +136,46 @@ Application.belongsToMany(Job, {through: ApplicationCorrespondsToJob});
 Job.belongsToMany(Application, {through: ApplicationCorrespondsToJob});
 
 //Application has a many-to-many relationship with Document
+//Application has a many-to-many relationship with Document
+const ApplicationSubmitWithDoc = sequelize.define(
+  "SUBMIT_WITH",
+  {
+      ApplicationID: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          allowNull: false,
+          references: {
+              model: Application,
+              key: "ApplicationID",
+          }
+      },
+      DocumentID: {
+          type: DataTypes.STRING(32),
+          primaryKey: true,
+          allowNull: false,
+          references: {
+              model: Document,
+              key: "DocumentID",
+          }
+      }
+  },
+  {
+      timestamps: false,
+  }
+);
 
+Document.belongsToMany(Application, {
+  through: ApplicationSubmitWithDoc,
+  foreignKey: "DocumentID",
+});
+Application.belongsToMany(Document, {
+  through: ApplicationSubmitWithDoc,
+  foreignKey: "ApplicationID",
+});
 
 sequelize.sync();
 exports.Application = Application;
 exports.Appl_Relevant_URL = Appl_Relevant_URL;
 exports.Appl_Category = Appl_Category;
 exports.ApplicationCorrespondsToJob = ApplicationCorrespondsToJob;
+exports.ApplicationSubmitWithDoc = ApplicationSubmitWithDoc;
