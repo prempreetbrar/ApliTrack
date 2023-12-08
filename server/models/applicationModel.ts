@@ -1,6 +1,7 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../server");
 const { Applicant } = require("./applicantModel");
+const {Job} = require("./jobModel");
 
 const Application = sequelize.define(
   "APPLICATION",
@@ -119,10 +120,24 @@ Appl_Category.belongsTo(Application, {
 //     foreignKey: 'ApplicantUsername',
 // });
 
-//TODO: later
+// definition of many-to-many relationship b/t Application and Job
+const ApplicationCorrespondsToJob = sequelize.define(
+  'CORRESPONDS_TO', 
+{
+  JobPostURL: {
+    type: DataTypes.STRING(128),
+  },
+}, {
+  timestamps: false
+});
+Application.belongsToMany(Job, {through: ApplicationCorrespondsToJob});
+Job.belongsToMany(Application, {through: ApplicationCorrespondsToJob});
+
 //Application has a many-to-many relationship with Document
+
 
 sequelize.sync();
 exports.Application = Application;
 exports.Appl_Relevant_URL = Appl_Relevant_URL;
 exports.Appl_Category = Appl_Category;
+exports.ApplicationCorrespondsToJob = ApplicationCorrespondsToJob;
