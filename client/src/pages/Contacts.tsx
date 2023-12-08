@@ -16,8 +16,10 @@ import SimpleSection from "./profile/SimpleSection";
 import NameForm from "components/NameForm";
 import SingleForm from "components/SingleForm";
 import Person from "components/Person";
+import { register } from "module";
 
 export default function Contacts() {
+  const { user } = useAuthContext();
   const [contactsInfo, setContactsInfo] = React.useState(null);
   const { executeRequest: get } = useGet();
 
@@ -43,7 +45,12 @@ export default function Contacts() {
         contactsInfo.map((contact, index) => (
           <Contact key={index} contact={contact} />
         ))}
-      <AddNewContact />
+      {user && (
+        <AddNewContact
+          setContactsInfo={setContactsInfo}
+          contactsInfo={contactsInfo}
+        />
+      )}
     </MainBox>
   );
 }
@@ -199,17 +206,31 @@ function InfoSection({
   );
 }
 
-function AddNewContact() {
-  const { register, handleSubmit, setValue } = useForm();
+function AddNewContact({ setContactsInfo, contactsInfo }) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { register, getValues, reset, handleSubmit, setValue } = useForm();
+  const { executeHandle } = useHandleOperation(
+    reset,
+    null,
+    setContactsInfo,
+    contactsInfo
+  );
 
-  async function createContact(data) {
-    const result = await create(data, "http://localhost:3000/api/contacts");
-    if (result) {
-      setValue("Fname", "");
-      setValue("Lname", "");
-      setValue("LinkedInURL", "");
-    }
+  async function handleCreate(data) {
+    const result = await executeHandle(
+      "create",
+      create,
+      data,
+      "http://localhost:3000/api/contacts"
+    );
+
+    /*
+      Done manually here because for some reason, when executeHandle is running reset(), it 
+      isn't working.
+    */
+    setValue("Fname", "");
+    setValue("Lname", "");
+    setValue("LinkedInURL", "");
   }
 
   return (
@@ -220,17 +241,21 @@ function AddNewContact() {
       <Box
         display="flex"
         sx={{
-          flexDirection: { xs: "column", sm: "column", md: "row" },
+          flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
         }}
       >
-        <Person additionalStyles={{ margin: "1.5rem 0" }} />
+        <Person
+          additionalStyles={{ margin: { xs: "1.5rem 0", md: "0 1.5rem" } }}
+        />
         <NameForm
           register={register}
           handleSubmit={handleSubmit}
           onSubmit={null}
           isLoading={createIsLoading}
-          additionalStyles={{ marginBottom: "1rem" }}
+          additionalStyles={{
+            marginBottom: { md: "0", xs: "1rem" },
+          }}
         />
         <SingleForm
           register={register}
@@ -241,7 +266,7 @@ function AddNewContact() {
           maxLength={64}
         />
         <Button
-          onClick={handleSubmit(createContact)}
+          onClick={handleSubmit(handleCreate)}
           type="submit"
           variant="outlined"
           sx={{ mt: 3, mb: 2 }}

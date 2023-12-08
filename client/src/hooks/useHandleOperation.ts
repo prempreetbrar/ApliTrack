@@ -9,6 +9,7 @@ export default function useHandleOperation(
     if (operation === "create" && data) {
       const tableName = Object.keys(data)[0];
       setOnUpdateSectionArray([...onUpdateSectionArray, data[tableName]]);
+
       reset();
     }
 
