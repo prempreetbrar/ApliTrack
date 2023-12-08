@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { Box, Typography, Link, Avatar } from "@mui/material";
+import { Box, Typography, Link, Avatar, Button } from "@mui/material";
 import MainBox from "components/MainBox";
 
 import useAuthContext from "hooks/useAuthContext";
@@ -10,8 +10,12 @@ import MainPaper from "components/MainPaper";
 import useHandleOperation from "hooks/useHandleOperation";
 import NewEntry from "components/NewEntry";
 import ChipDisplayer from "components/ChipDisplayer";
-import NameUpdater from "components/NameUpdater";
-import SingleUpdater from "components/SingleUpdater";
+import NameUpdater from "components/NameForm";
+import SingleUpdater from "components/SingleForm";
+import SimpleSection from "./profile/SimpleSection";
+import NameForm from "components/NameForm";
+import SingleForm from "components/SingleForm";
+import Person from "components/Person";
 
 export default function Contacts() {
   const [contactsInfo, setContactsInfo] = React.useState(null);
@@ -39,6 +43,7 @@ export default function Contacts() {
         contactsInfo.map((contact, index) => (
           <Contact key={index} contact={contact} />
         ))}
+      <AddNewContact />
     </MainBox>
   );
 }
@@ -64,16 +69,7 @@ function Contact({ key, contact }) {
 
   return (
     <MainPaper key={key}>
-      <Avatar
-        src="/broken-image.jpg"
-        sx={{
-          width: 100,
-          height: 100,
-          marginRight: { xs: 0, sm: "2rem" },
-          marginBottom: { xs: "2rem", sm: 0 },
-          alignSelf: { xs: "center", sm: "flex-start" },
-        }}
-      />
+      <Person />
       <Box
         display="flex"
         sx={{ alignItems: { xs: "center", sm: "flex-start" } }}
@@ -200,5 +196,60 @@ function InfoSection({
         register={register}
       />
     </Box>
+  );
+}
+
+function AddNewContact() {
+  const { register, handleSubmit, setValue } = useForm();
+  const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+
+  async function createContact(data) {
+    const result = await create(data, "http://localhost:3000/api/contacts");
+    if (result) {
+      setValue("Fname", "");
+      setValue("Lname", "");
+      setValue("LinkedInURL", "");
+    }
+  }
+
+  return (
+    <MainPaper overrideStyles={{ flexDirection: "column" }}>
+      <Typography variant="h2" sx={{ fontSize: "1.5rem", fontWeight: "500" }}>
+        Add New Contact
+      </Typography>
+      <Box
+        display="flex"
+        sx={{
+          flexDirection: { xs: "column", sm: "column", md: "row" },
+          alignItems: "center",
+        }}
+      >
+        <Person additionalStyles={{ margin: "1.5rem 0" }} />
+        <NameForm
+          register={register}
+          handleSubmit={handleSubmit}
+          onSubmit={null}
+          isLoading={createIsLoading}
+          additionalStyles={{ marginBottom: "1rem" }}
+        />
+        <SingleForm
+          register={register}
+          handleSubmit={handleSubmit}
+          actionOnAttribute={null}
+          attributeName={"LinkedInURL"}
+          isLoading={createIsLoading}
+          maxLength={64}
+        />
+        <Button
+          onClick={handleSubmit(createContact)}
+          type="submit"
+          variant="outlined"
+          sx={{ mt: 3, mb: 2 }}
+          disabled={createIsLoading}
+        >
+          Create
+        </Button>
+      </Box>
+    </MainPaper>
   );
 }

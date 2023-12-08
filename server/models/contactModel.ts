@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
-const {Company} = require("./companyModel");
+const { Company } = require("./companyModel");
 
 const Contact = sequelize.define(
   "CONTACT",
@@ -13,6 +13,8 @@ const Contact = sequelize.define(
     },
     LinkedInURL: {
       type: DataTypes.STRING(64),
+      // two different people CANNOT have the same LinkedInURL
+      unique: true,
     },
     Fname: {
       type: DataTypes.STRING(16),
@@ -122,19 +124,20 @@ Contact.hasMany(ContactPhone, {
 
 // ---
 const ContactWorksAtCompany = sequelize.define(
-  'WORKS_AT', 
-{
-  Role: {
-    type: DataTypes.STRING(64),
+  "WORKS_AT",
+  {
+    Role: {
+      type: DataTypes.STRING(64),
+    },
   },
-}, {
-  timestamps: false
-})
-Contact.belongsToMany(Company, {through: ContactWorksAtCompany});
-Company.belongsToMany(Contact, {through: ContactWorksAtCompany});
+  {
+    timestamps: false,
+  }
+);
+Contact.belongsToMany(Company, { through: ContactWorksAtCompany });
+Company.belongsToMany(Contact, { through: ContactWorksAtCompany });
 
 // definition of many-to-many relationship b/t Contact and Company
-
 
 /*
   If any changes occurred to the model, sequelize.sync just ensures that they are

@@ -12,6 +12,7 @@ export default function MainPaper({ key, overrideStyles, children }) {
         backgroundColor: "white",
         flexDirection: { xs: "column", sm: "row" },
         alignItems: { xs: "center" },
+        width: "100%",
         ...overrideStyles,
       }}
       key={key}
