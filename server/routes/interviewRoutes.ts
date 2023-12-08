@@ -8,10 +8,17 @@ const router = express.Router();
 */
 router.use(authController.checkIfLoggedIn);
 
+router.route("").get(interviewController.getAllInterviews);
+
 router
   .route("/details")
+  .get(interviewController.filterID, interviewController.getInterview)
   .post(interviewController.createInterview)
   .delete(interviewController.deleteInterview)
   .patch(interviewController.updateInterview);
+
+  router
+  .route("/my-interviews")
+  .get(interviewController.filterApplicant, interviewController.getAllApplicantInterviews);
 
 module.exports = router;
