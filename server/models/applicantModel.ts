@@ -1,6 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
 const User = require("./userModel");
+
+//TODO: changes from main creating errors
 const {Contact} = require("./contactModel");
 const {Job} = require("./jobModel");
 
@@ -228,6 +230,8 @@ ApplicantCompetition.belongsTo(Applicant, {
 
 // --------------------------------------------
 
+//TODO: changes from main creating errors
+
 // definition of many-to-many relationship b/t Applicant and Contact
 const ApplicantKnowsContact = sequelize.define(
   'KNOWS', 
@@ -274,5 +278,7 @@ exports.ApplicantProject = ApplicantProject;
 exports.ApplicantCertification = ApplicantCertification;
 exports.ApplicantSkill = ApplicantSkill;
 exports.ApplicantCompetition = ApplicantCompetition;
+
+//TODO: changes from main creating errors
 exports.ApplicantKnowsContact = ApplicantKnowsContact;
 exports.ApplicantTracksJob = ApplicantTracksJob;

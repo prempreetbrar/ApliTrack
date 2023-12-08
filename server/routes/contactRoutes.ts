@@ -32,4 +32,9 @@ router
 .delete(authController.checkIfLoggedIn, contactController.deleteContactWorksAtCompany)
 .patch(authController.checkIfLoggedIn, contactController.updateContactWorksAtCompany);
 
+//TODO: CHECK
+// router.route("/attends")
+// .post(authController.checkIfLoggedIn, contactController.createContactAttendsInterview)
+// .delete(authController.checkIfLoggedIn, contactController.deleteContactAttendsInterview);
+
 module.exports = router;
