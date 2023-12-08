@@ -5,9 +5,10 @@ import React from "react";
 export default function NameForm({
   register,
   handleSubmit,
-  onSubmit,
+  actionOnAttribute,
   isLoading,
   additionalStyles,
+  additionalLnameStyles,
 }) {
   const { user } = useAuthContext();
 
@@ -27,13 +28,14 @@ export default function NameForm({
         {...register("Lname")}
         label="Last Name"
         sx={{
-          marginRight: { sm: "0", md: "1rem" },
+          marginRight: { xs: "0", md: "1rem" },
+          ...additionalLnameStyles,
         }}
         disabled={!user}
       />
-      {user && onSubmit && (
+      {user && actionOnAttribute && (
         <Button
-          onClick={handleSubmit(onSubmit)}
+          onClick={handleSubmit(actionOnAttribute)}
           type="submit"
           variant="outlined"
           sx={{ mt: 3, mb: 2 }}

@@ -1,4 +1,4 @@
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 import React from "react";
 
 export default function SingleForm({
@@ -8,14 +8,17 @@ export default function SingleForm({
   attributeName,
   isLoading,
   maxLength,
+  additionalStyles,
+  additionalFieldStyles,
 }) {
   return (
-    <>
+    <Box sx={{ ...additionalStyles }}>
       <TextField
         {...register(attributeName)}
         label={attributeName}
         sx={{
-          marginRight: { sm: "0", md: "1rem" },
+          marginRight: { xs: "0", md: "1rem" },
+          ...additionalFieldStyles,
         }}
         InputLabelProps={{ shrink: true }}
         inputProps={{
@@ -33,6 +36,6 @@ export default function SingleForm({
           Update
         </Button>
       )}
-    </>
+    </Box>
   );
 }

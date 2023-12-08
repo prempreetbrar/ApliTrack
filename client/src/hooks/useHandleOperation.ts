@@ -19,6 +19,11 @@ export default function useHandleOperation(
         ...onUpdateSectionArray.slice(index + 1),
       ]);
     }
+
+    if (data) {
+      return true;
+    }
+    return false;
   };
 
   return { executeHandle };

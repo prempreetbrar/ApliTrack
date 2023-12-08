@@ -59,6 +59,8 @@ function Contact({ key, contact }) {
   const { register, handleSubmit, setValue } = useForm();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
 
+  console.log(contact);
+
   React.useEffect(() => {
     /*
         We have forms that the user can change. However, we want to prepopulate them
@@ -71,36 +73,61 @@ function Contact({ key, contact }) {
   }, [contact]);
 
   function updateNameOrLinkedInURL(data) {
-    update(data, "http://localhost:3000/api/contacts/");
+    update(
+      { ...data, ContactID: contact.ContactID },
+      "http://localhost:3000/api/contacts/"
+    );
   }
 
   return (
-    <MainPaper key={key}>
-      <Person />
+    <MainPaper
+      overrideStyles={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      key={key}
+    >
+      <Person
+        additionalStyles={{
+          alignSelf: { xs: "center", md: "flex-start" },
+          marginRight: { xs: "0", md: "2.5rem" },
+          marginBottom: { xs: "1.5rem", md: "0" },
+        }}
+      />
       <Box
         display="flex"
-        sx={{ alignItems: { xs: "center", sm: "flex-start" } }}
+        sx={{ alignItems: { xs: "center", md: "flex-start" } }}
         flexDirection="column"
-        justifyContent="space-between"
       >
-        <NameUpdater
+        <NameForm
           register={register}
           handleSubmit={handleSubmit}
-          updateName={updateNameOrLinkedInURL}
-          updateIsLoading={updateIsLoading}
+          actionOnAttribute={updateNameOrLinkedInURL}
+          isLoading={updateIsLoading}
+          additionalLnameStyles={{ marginRight: { xs: "1rem" } }}
         />
-        <SingleUpdater
+        <SingleForm
           register={register}
           handleSubmit={handleSubmit}
-          updateAttribute={updateNameOrLinkedInURL}
+          actionOnAttribute={updateNameOrLinkedInURL}
           attributeName={"LinkedInURL"}
-          updateIsLoading={updateIsLoading}
+          isLoading={updateIsLoading}
+          additionalStyles={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+          additionalFieldStyles={{
+            marginRight: { xs: "1rem" },
+          }}
         />
 
         <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
           Contact Info
         </Typography>
-        <Box display="flex">
+        <Box display="flex" sx={{ flexDirection: { xs: "column", sm: "row" } }}>
           <InfoSection
             entityIDName="ContactID"
             entityID={contact.ContactID}
@@ -110,7 +137,6 @@ function Contact({ key, contact }) {
             isMarginRight
             sectionURL="http://localhost:3000/api/contacts/phones"
             maxCreateLength={16}
-            width="50%"
           />
           <InfoSection
             entityIDName="ContactID"
@@ -120,7 +146,6 @@ function Contact({ key, contact }) {
             attributeName="Email"
             sectionURL="http://localhost:3000/api/contacts/emails"
             maxCreateLength={64}
-            width="50%"
           />
         </Box>
         <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
@@ -140,7 +165,6 @@ function InfoSection({
   attributeName,
   isMarginRight,
   sectionURL,
-  width,
 }) {
   const [onUpdateSectionArray, setOnUpdateSectionArray] = React.useState([]);
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
@@ -184,7 +208,7 @@ function InfoSection({
     <Box
       padding="0.5rem"
       marginRight={`${isMarginRight ? "2rem" : "0"}`}
-      sx={{ width }}
+      sx={{ minWidth: { xs: "100%", sm: "50%" }, marginRight: { xs: "0" } }}
     >
       <Typography sx={{ textDecoration: "underline" }}>
         {sectionTitle}
@@ -228,9 +252,11 @@ function AddNewContact({ setContactsInfo, contactsInfo }) {
       Done manually here because for some reason, when executeHandle is running reset(), it 
       isn't working.
     */
-    setValue("Fname", "");
-    setValue("Lname", "");
-    setValue("LinkedInURL", "");
+    if (result) {
+      setValue("Fname", "");
+      setValue("Lname", "");
+      setValue("LinkedInURL", "");
+    }
   }
 
   return (
@@ -251,7 +277,7 @@ function AddNewContact({ setContactsInfo, contactsInfo }) {
         <NameForm
           register={register}
           handleSubmit={handleSubmit}
-          onSubmit={null}
+          actionOnAttribute={null}
           isLoading={createIsLoading}
           additionalStyles={{
             marginBottom: { md: "0", xs: "1rem" },
