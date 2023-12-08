@@ -8,9 +8,9 @@ const Interview = sequelize.define(
   {
     InterviewID: {
       type: DataTypes.INTEGER,
-      autoIncrement: false,
       primaryKey: true,
       allowNull: false,
+      //autoIncrement: true,
       defaultValue: 0,
     },
     ApplicantUsername: {
@@ -32,6 +32,7 @@ const Interview = sequelize.define(
     },
   },
   {
+    initialAutoIncrement: 1,
     timestamps: false,
   }
 );
