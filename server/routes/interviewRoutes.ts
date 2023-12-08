@@ -9,7 +9,7 @@ const router = express.Router();
 router.use(authController.checkIfLoggedIn);
 
 router
-  .route("")
+  .route("/details")
   .post(interviewController.createInterview)
   .delete(interviewController.deleteInterview)
   .patch(interviewController.updateInterview);

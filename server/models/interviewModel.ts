@@ -1,6 +1,7 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../server");
 const { Applicant } = require("./applicantModel");
+const { Application } = require("./applicationModel");
 
 const Interview = sequelize.define(
   "INTERVIEW",
@@ -25,10 +26,10 @@ const Interview = sequelize.define(
       type: DataTypes.TEXT, //change maybde to date only
       allowNull: false,
     },
-    //   ApplicationName: {
-    //     type: DataTypes.STRING(32),
-    //     allowNull: false,
-    //   },
+    ApplicationID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
     timestamps: false,
@@ -45,11 +46,17 @@ Interview.belongsTo(Applicant, {
   foreignKey: "ApplicantUsername",
 });
 
-//   APPLICATION.hasMany(INTERVIEW, {
-//     foreignKey: 'ApplicationName',
-//     onDelete: 'CASCADE',
-//     onUpdate: 'CASCADE',
-//   });
+//Application has a one-to-many relationship with Interview
+Application.hasMany(Interview, {
+  foreignKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Interview.belongsTo(Application, {
+  foreignKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 // Implementing a beforeCreate hook to manually increment the InterviewID
 Interview.beforeCreate(async (instance, options) => {
