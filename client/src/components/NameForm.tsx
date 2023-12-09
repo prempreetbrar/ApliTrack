@@ -9,6 +9,7 @@ export default function NameForm({
   isLoading,
   additionalStyles,
   additionalLnameStyles,
+  buttonName,
 }) {
   const { user } = useAuthContext();
 
@@ -41,7 +42,7 @@ export default function NameForm({
           sx={{ mt: 3, mb: 2 }}
           disabled={isLoading}
         >
-          Update
+          {buttonName}
         </Button>
       )}
     </Box>

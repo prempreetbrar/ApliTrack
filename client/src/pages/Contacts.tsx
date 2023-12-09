@@ -12,6 +12,7 @@ import {
   Switch,
 } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
+import SearchIcon from "@mui/icons-material/Search";
 
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
@@ -33,6 +34,8 @@ export default function Contacts() {
   const { user } = useAuthContext();
   const [contactsInfo, setContactsInfo] = React.useState([]);
   const [knownContactsInfo, setKnownContactsInfo] = React.useState({});
+  const { register, handleSubmit, setValue } = useForm();
+
   const { executeRequest: get } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
@@ -67,7 +70,9 @@ export default function Contacts() {
         ContactID: contactsInfo[index].ContactID,
       },
       "http://localhost:3000/api/contacts",
-      index
+      index,
+      false,
+      null
     );
   }
 
@@ -105,18 +110,77 @@ export default function Contacts() {
 
   return (
     <MainBox>
-      <FormGroup sx={{ marginRight: "auto", marginBottom: "1rem" }}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={onlyShowContactsIKnow}
-              onChange={(event) =>
-                setOnlyShowContactsIKnow(event.target.checked)
-              }
-            />
-          }
-          label="Only Show Contacts I Know"
-        />
+      <FormGroup
+        sx={{
+          display: "flex",
+          width: "100%",
+          flexDirection: "row",
+          marginBottom: "1rem",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        {user && (
+          <FormControlLabel
+            control={
+              <Switch
+                checked={onlyShowContactsIKnow}
+                onChange={(event) =>
+                  setOnlyShowContactsIKnow(event.target.checked)
+                }
+              />
+            }
+            label="Only Show Contacts I Know"
+          />
+        )}{" "}
+        <Box
+          display="flex"
+          sx={{
+            marginTop: { xs: "2rem", md: "0rem" },
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "flex-start", sm: "center" },
+          }}
+        >
+          <Typography
+            variant="h3"
+            sx={{ fontSize: "1rem", marginRight: "1rem" }}
+          >
+            Search by:
+          </Typography>
+          <NameForm
+            register={register}
+            handleSubmit={handleSubmit}
+            additionalStyles={{
+              marginTop: { xs: "1rem", sm: "0rem" },
+            }}
+            additionalLnameStyles={{
+              marginRight: { xs: "1rem" },
+            }}
+          />
+          <Box display="flex" alignItems="center">
+            {user && (
+              <SingleDate
+                register={register}
+                handleSubmit={handleSubmit}
+                attributeName={"LastContactDate"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", sm: "0rem" },
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+              />
+            )}
+            <IconButton>
+              <SearchIcon color="primary" />
+            </IconButton>
+          </Box>
+        </Box>
       </FormGroup>
       {contactsInfo &&
         contactsInfo.map((contact, index) => {
@@ -366,6 +430,7 @@ function Contact({
           actionOnAttribute={updateNameOrLinkedInURL}
           isLoading={updateIsLoading}
           additionalLnameStyles={{ marginRight: { xs: "1rem" } }}
+          buttonName={"Update"}
         />
         <SingleForm
           register={register}
