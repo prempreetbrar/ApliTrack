@@ -47,15 +47,19 @@ router
 router.use("/interviews", interviewRouter);
 
 router
-.route("/known-contacts")
-.post(applicantController.createApplicantKnowsContact)
-.delete(applicantController.deleteApplicantKnowsContact)
-.patch(applicantController.updateApplicantKnowsContact);
+  .route("/known-contacts")
+  .get(
+    applicantController.addFilter,
+    applicantController.getApplicantKnowsContact
+  )
+  .post(applicantController.createApplicantKnowsContact)
+  .delete(applicantController.deleteApplicantKnowsContact)
+  .patch(applicantController.updateApplicantKnowsContact);
 
 router
-.route("/tracked-jobs")
-.post(applicantController.createApplicantTracksJob)
-.delete(applicantController.deleteApplicantTracksJob)
-.patch(applicantController.updateApplicantTracksJob);
+  .route("/tracked-jobs")
+  .post(applicantController.createApplicantTracksJob)
+  .delete(applicantController.deleteApplicantTracksJob)
+  .patch(applicantController.updateApplicantTracksJob);
 
 module.exports = router;

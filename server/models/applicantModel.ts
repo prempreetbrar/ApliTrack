@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
 const User = require("./userModel");
-const {Contact} = require("./contactModel");
-const {Job} = require("./jobModel");
+const { Contact } = require("./contactModel");
+const { Job } = require("./jobModel");
 
 const Applicant = sequelize.define(
   "APPLICANT",
@@ -230,38 +230,52 @@ ApplicantCompetition.belongsTo(Applicant, {
 
 // definition of many-to-many relationship b/t Applicant and Contact
 const ApplicantKnowsContact = sequelize.define(
-  'KNOWS', 
-{
-  Relationship: {
-    type: DataTypes.STRING(64),
+  "KNOWS",
+  {
+    Relationship: {
+      type: DataTypes.STRING(64),
+    },
+    Notes: {
+      type: DataTypes.TEXT,
+    },
+    LastContactDate: {
+      type: DataTypes.DATEONLY,
+    },
   },
-  Notes: {
-    type: DataTypes.TEXT,
-  },
-  LastContactDate: {
-    type: DataTypes.DATEONLY,
-  },
-}, {
-  timestamps: false
+  {
+    timestamps: false,
+  }
+);
+Applicant.belongsToMany(Contact, {
+  as: "Contacts",
+  through: ApplicantKnowsContact,
+  foreignKey: "Username",
+  otherKey: "ContactID",
 });
-Applicant.belongsToMany(Contact, {through: ApplicantKnowsContact});
-Contact.belongsToMany(Applicant, {through: ApplicantKnowsContact});
+Contact.belongsToMany(Applicant, {
+  as: "Applicants",
+  through: ApplicantKnowsContact,
+  foreignKey: "ContactID",
+  otherKey: "Username",
+});
 
 // definition of many-to-many relationship b/t Applicant and Job, for tracking jobs
 const ApplicantTracksJob = sequelize.define(
-  'TRACKS', 
-{
-  Notes: {
-    type: DataTypes.TEXT,
+  "TRACKS",
+  {
+    Notes: {
+      type: DataTypes.TEXT,
+    },
+    DateToApply: {
+      type: DataTypes.DATEONLY,
+    },
   },
-  DateToApply: {
-    type: DataTypes.DATEONLY,
-  },
-}, {
-  timestamps: false
-});
-Applicant.belongsToMany(Job, {through: ApplicantTracksJob});
-Job.belongsToMany(Applicant, {through: ApplicantTracksJob});
+  {
+    timestamps: false,
+  }
+);
+Applicant.belongsToMany(Job, { through: ApplicantTracksJob });
+Job.belongsToMany(Applicant, { through: ApplicantTracksJob });
 
 /*
   If any changes occurred to the model, sequelize.sync just ensures that they are

@@ -9,13 +9,15 @@ export default function ChipDisplayer({
   handleDelete,
 }) {
   const { user } = useAuthContext();
-  // console.log(onUpdateSectionArray, attributeName, secondAttributeName);
+
   return (
     <>
       {onUpdateSectionArray.map((entity, index) => (
         <Tooltip
           key={index}
-          title={entity[attributeName]}
+          title={`${entity[attributeName]}${
+            secondAttributeName ? ` - ${entity[secondAttributeName]}` : ""
+          }`}
           arrow
           placement="top"
         >

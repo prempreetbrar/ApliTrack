@@ -1,7 +1,13 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { Box, Typography, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
@@ -15,10 +21,12 @@ import NameForm from "components/NameForm";
 import SingleForm from "components/SingleForm";
 import Person from "components/Person";
 import NewEntryDropdown from "components/NewEntryDropdown";
+import SingleDate from "components/SingleDate";
 
 export default function Contacts() {
   const { user } = useAuthContext();
-  const [contactsInfo, setContactsInfo] = React.useState(null);
+  const [contactsInfo, setContactsInfo] = React.useState([]);
+  const [knownContactsInfo, setKnownContactsInfo] = React.useState({});
   const { executeRequest: get } = useGet();
 
   /*
@@ -30,18 +38,43 @@ export default function Contacts() {
   React.useEffect(() => {
     const fetchContactsInfo = async () => {
       const response = await get({}, "http://localhost:3000/api/contacts");
+      if (user) {
+        const knownResponse = await get(
+          {},
+          "http://localhost:3000/api/applicants/known-contacts"
+        );
+
+        const hashtableKnownContacts = {};
+        for (const contact of knownResponse.knows) {
+          hashtableKnownContacts[contact.ContactID] = {
+            ...contact,
+          };
+        }
+
+        setKnownContactsInfo(hashtableKnownContacts);
+      }
+
       setContactsInfo(response.contact);
     };
 
     fetchContactsInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   return (
     <MainBox>
       {contactsInfo &&
         contactsInfo.map((contact, index) => (
-          <Contact key={index} contact={contact} />
+          <Contact
+            key={index}
+            contact={contact}
+            isKnown={contact.ContactID in knownContactsInfo}
+            Relationship={knownContactsInfo[contact.ContactID]?.Relationship}
+            Notes={knownContactsInfo[contact.ContactID]?.Notes}
+            LastContactDate={
+              knownContactsInfo[contact.ContactID]?.LastContactDate
+            }
+          />
         ))}
       {user && (
         <AddNewContact
@@ -53,9 +86,23 @@ export default function Contacts() {
   );
 }
 
-function Contact({ key, contact }) {
+function Contact({
+  key,
+  contact,
+  isKnown,
+  Relationship,
+  Notes,
+  LastContactDate,
+}) {
   const { register, handleSubmit, setValue } = useForm();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
+  const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
+    useDelete();
+  const { user } = useAuthContext();
+  const [stillKnown, setStillKnown] = React.useState(isKnown);
+  const [mostRecentLastContactDate, setMostRecentLastContactDate] =
+    React.useState(LastContactDate);
 
   React.useEffect(() => {
     /*
@@ -65,13 +112,51 @@ function Contact({ key, contact }) {
     setValue("Fname", contact?.Fname);
     setValue("Lname", contact?.Lname);
     setValue("LinkedInURL", contact?.LinkedInURL);
+    setValue("Relationship", Relationship);
+    setValue("LastContactDate", LastContactDate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contact]);
+  }, [contact, Relationship]);
+
+  React.useEffect(() => {
+    setStillKnown(isKnown);
+  }, [isKnown]);
+
+  React.useEffect(() => {
+    setMostRecentLastContactDate(LastContactDate);
+  }, [LastContactDate]);
 
   function updateNameOrLinkedInURL(data) {
     update(
       { ...data, ContactID: contact.ContactID },
       "http://localhost:3000/api/contacts/"
+    );
+  }
+
+  function handleKnows(event) {
+    if (event.target.checked) {
+      create(
+        { ContactID: contact.ContactID },
+        "http://localhost:3000/api/applicants/known-contacts"
+      );
+      setStillKnown(true);
+    }
+    if (!event.target.checked) {
+      deleteInstance(
+        { ContactID: contact.ContactID },
+        "http://localhost:3000/api/applicants/known-contacts"
+      );
+      setStillKnown(false);
+    }
+  }
+
+  function updateKnows(data) {
+    update(
+      {
+        ContactID: contact.ContactID,
+        ...data,
+        LastContactDate: mostRecentLastContactDate,
+      },
+      "http://localhost:3000/api/applicants/known-contacts"
     );
   }
 
@@ -85,13 +170,64 @@ function Contact({ key, contact }) {
       }}
       key={key}
     >
-      <Person
-        additionalStyles={{
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
           alignSelf: { xs: "center", md: "flex-start" },
           marginRight: { xs: "0", md: "2.5rem" },
           marginBottom: { xs: "1.5rem", md: "0" },
         }}
-      />
+      >
+        <Person />
+        {user && (
+          <>
+            <FormControlLabel
+              control={<Checkbox checked={stillKnown} onChange={handleKnows} />}
+              label="I know this person!"
+            />
+            {stillKnown && (
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                actionOnAttribute={updateKnows}
+                attributeName={"Relationship"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+              />
+            )}
+            {stillKnown && (
+              <SingleDate
+                register={register}
+                handleSubmit={handleSubmit}
+                actionOnAttribute={updateKnows}
+                attributeName={"LastContactDate"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+                mostRecentLastContactDate={mostRecentLastContactDate}
+                setMostRecentLastContactDate={setMostRecentLastContactDate}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+              />
+            )}
+          </>
+        )}
+      </Box>
       <Box
         display="flex"
         sx={{ alignItems: { xs: "center", md: "flex-start" } }}
@@ -162,7 +298,7 @@ function Contact({ key, contact }) {
           entityIDName="ContactID"
           entityID={contact.ContactID}
           sectionTitle="Companie(s)"
-          sectionArray={contact.Companies.map(
+          sectionArray={contact?.Companies?.map(
             (company, index) => company.WORKS_AT
           )}
           entityName="Company"
