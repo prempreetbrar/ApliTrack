@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
-const User = require("./userModel");
+const { User } = require("./userModel");
 const { Contact } = require("./contactModel");
 const { Job } = require("./jobModel");
 
@@ -23,6 +23,7 @@ const Applicant = sequelize.define(
 
 User.hasMany(Applicant, {
   foreignKey: "Username",
+  constraints: false,
 });
 
 // Define the foreign key relationship
