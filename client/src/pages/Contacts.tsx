@@ -1,11 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { Box, Typography, Link, Avatar, Button } from "@mui/material";
-import MainBox from "components/MainBox";
+import { Box, Typography, Button } from "@mui/material";
 
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
+
+import MainBox from "components/MainBox";
 import MainPaper from "components/MainPaper";
 import useHandleOperation from "hooks/useHandleOperation";
 import NewEntry from "components/NewEntry";
@@ -108,6 +109,7 @@ function Contact({ key, contact }) {
           handleSubmit={handleSubmit}
           actionOnAttribute={updateNameOrLinkedInURL}
           attributeName={"LinkedInURL"}
+          maxLength={64}
           isLoading={updateIsLoading}
           additionalStyles={{
             display: "flex",
@@ -128,7 +130,8 @@ function Contact({ key, contact }) {
             entityID={contact.ContactID}
             sectionTitle="Phone Number(s)"
             sectionArray={contact.Phones}
-            attributeName="Phone"
+            entityName="Contact"
+            entityTargetAttribute="Phone"
             isMarginRight
             sectionURL="http://localhost:3000/api/contacts/phones"
             maxCreateLength={16}
@@ -142,7 +145,8 @@ function Contact({ key, contact }) {
             entityID={contact.ContactID}
             sectionTitle="Email(s)"
             sectionArray={contact.Emails}
-            attributeName="Email"
+            entityName="Contact"
+            entityTargetAttribute="Email"
             sectionURL="http://localhost:3000/api/contacts/emails"
             maxCreateLength={64}
             additionalStyles={{
@@ -159,10 +163,11 @@ function Contact({ key, contact }) {
           entityID={contact.ContactID}
           sectionTitle="Companie(s)"
           sectionArray={contact.Companies}
-          attributeName="Company"
-          attributeSpecificName="CompanyName"
-          attribute2Name="Role"
+          entityName="Company"
+          entityTargetAttribute="CompanyName"
+          entitySecondTargetAttribute="Role"
           sectionURL="http://localhost:3000/api/contacts/works-at"
+          fetchAllOptionsURL="http://localhost:3000/api/companies"
           maxCreateLength={64}
           isCompany
         />
@@ -177,11 +182,12 @@ function InfoSection({
   entityID,
   sectionTitle,
   sectionArray,
-  attributeName,
-  attributeSpecificName,
-  attribute2Name,
+  entityName,
+  entityTargetAttribute,
+  entitySecondTargetAttribute,
   isMarginRight,
   sectionURL,
+  fetchAllOptionsURL,
   isCompany,
   additionalStyles,
 }) {
@@ -192,7 +198,6 @@ function InfoSection({
   const { register, getValues, reset, control } = useForm();
   const { executeHandle } = useHandleOperation(
     reset,
-    null,
     setOnUpdateSectionArray,
     onUpdateSectionArray
   );
@@ -204,25 +209,17 @@ function InfoSection({
   }, [sectionArray]);
 
   async function handleCreate() {
-    if (!isCompany) {
-      executeHandle(
-        "create",
-        create,
-        { [attributeName]: getValues(attributeName), [entityIDName]: entityID },
-        sectionURL
-      );
-    } else {
-      executeHandle(
-        "create",
-        create,
-        {
-          [attributeSpecificName]: dropdownValue,
-          [entityIDName]: entityID,
-          [attribute2Name]: getValues(attribute2Name),
-        },
-        sectionURL
-      );
-    }
+    executeHandle(
+      "create",
+      create,
+      {
+        [entityTargetAttribute]:
+          getValues(entityTargetAttribute) || dropdownValue,
+        [entityIDName]: entityID,
+        [entitySecondTargetAttribute]: getValues(entitySecondTargetAttribute),
+      },
+      sectionURL
+    );
   }
 
   async function handleDelete(index) {
@@ -230,10 +227,12 @@ function InfoSection({
       "delete",
       deleteInstance,
       {
-        [attributeName]: onUpdateSectionArray[index][attributeName],
+        [entityTargetAttribute]:
+          onUpdateSectionArray[index][entityTargetAttribute],
         [entityIDName]: entityID,
       },
-      sectionURL
+      sectionURL,
+      index
     );
   }
 
@@ -249,13 +248,13 @@ function InfoSection({
       </Typography>
       <ChipDisplayer
         onUpdateSectionArray={onUpdateSectionArray}
-        attributeName={attributeName}
+        attributeName={entityTargetAttribute}
         handleDelete={handleDelete}
       />
 
       {!isCompany && (
         <NewEntry
-          attributeName={attributeName}
+          attributeName={entityTargetAttribute}
           maxCreateLength={maxCreateLength}
           handleCreate={handleCreate}
           createIsLoading={createIsLoading}
@@ -265,21 +264,20 @@ function InfoSection({
       {isCompany && (
         <Box display="flex" flexDirection="row" justifyContent="space-between">
           <NewEntryDropdown
-            entityName={attributeName}
-            entityAttributeName="CompanyName"
+            entityName={entityName}
+            entityAttributeName={entityTargetAttribute}
             maxCreateLength={maxCreateLength}
             handleCreate={handleCreate}
             createIsLoading={createIsLoading}
             register={register}
-            fetchAllOptionsURL="http://localhost:3000/api/companies"
+            fetchAllOptionsURL={fetchAllOptionsURL}
             additionalStyles={{ width: "50%" }}
             doNotShowButton
             dropdownValue={dropdownValue}
             setDropdownValue={setDropdownValue}
           />
           <NewEntry
-            dropdownValue={dropdownValue}
-            attributeName={attribute2Name}
+            attributeName={entitySecondTargetAttribute}
             maxCreateLength={maxCreateLength}
             handleCreate={handleCreate}
             createIsLoading={createIsLoading}
@@ -296,7 +294,6 @@ function AddNewContact({ setContactsInfo, contactsInfo }) {
   const { register, getValues, reset, handleSubmit, setValue } = useForm();
   const { executeHandle } = useHandleOperation(
     reset,
-    null,
     setContactsInfo,
     contactsInfo
   );

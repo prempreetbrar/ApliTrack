@@ -16,6 +16,7 @@ const APIFeatures = require("../utils/apiFeatures");
 */
 exports.createOne = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
+    console.log(request.body);
     const document = await Model.create(request.body);
     response.status(201).json({
       status: "success",
@@ -227,6 +228,7 @@ exports.deleteInstance = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
     //get a list of the model's primary key attributes
     const pkAttributes = Model.primaryKeyAttributes;
+    const uniqueAttributes = getUniqueAttributes(Model);
 
     //get the keys and the new values of the request
     var keys = {};
@@ -234,7 +236,7 @@ exports.deleteInstance = (Model) => {
     for (let x in request.body) {
       var obj = { [x]: request.body[x] };
 
-      if (pkAttributes.includes(x)) {
+      if (pkAttributes.includes(x) || uniqueAttributes.includes(x)) {
         Object.assign(keys, obj);
       }
     }

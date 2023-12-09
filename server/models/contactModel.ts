@@ -27,6 +27,7 @@ const Contact = sequelize.define(
   },
   {
     timestamps: false,
+    id: false,
   }
 );
 
@@ -39,6 +40,7 @@ const ContactEmail = sequelize.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+      unique: "actions_unique",
       references: {
         model: Contact,
         key: "ContactID",
@@ -48,8 +50,9 @@ const ContactEmail = sequelize.define(
     },
     Email: {
       type: DataTypes.STRING(64),
-      primaryKey: false,
+      primaryKey: true,
       allowNull: false,
+      unique: "actions_unique",
     },
   },
   {
@@ -59,6 +62,7 @@ const ContactEmail = sequelize.define(
       },
     },
     timestamps: false,
+    id: false,
   }
 );
 
@@ -83,19 +87,21 @@ const ContactPhone = sequelize.define(
   {
     ContactID: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       allowNull: false,
+      primaryKey: true,
       references: {
         model: Contact,
         key: "ContactID",
       },
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
+      unique: "actions_unique",
     },
     Phone: {
       type: DataTypes.STRING(16),
-      primaryKey: false,
+      primaryKey: true,
       allowNull: false,
+      unique: "actions_unique",
     },
   },
   {
@@ -105,6 +111,7 @@ const ContactPhone = sequelize.define(
       },
     },
     timestamps: false,
+    id: false,
   }
 );
 
