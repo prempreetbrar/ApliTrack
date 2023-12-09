@@ -113,7 +113,6 @@ function Contact({
     setValue("Lname", contact?.Lname);
     setValue("LinkedInURL", contact?.LinkedInURL);
     setValue("Relationship", Relationship);
-    setValue("LastContactDate", LastContactDate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contact, Relationship]);
 
@@ -218,7 +217,7 @@ function Contact({
                   flexDirection: "row",
                   alignItems: "center",
                 }}
-                mostRecentLastContactDate={mostRecentLastContactDate}
+                mostRecentLastContactDate={mostRecentLastContactDate || null}
                 setMostRecentLastContactDate={setMostRecentLastContactDate}
                 additionalFieldStyles={{
                   marginRight: { xs: "1rem" },

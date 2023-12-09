@@ -31,6 +31,11 @@ export default function SingleDate({
           inputProps={{
             maxLength,
           }}
+          slotProps={{
+            textField: {
+              error: false,
+            },
+          }}
           onChange={(newValue) => setMostRecentLastContactDate(newValue)}
           value={dayjs(mostRecentLastContactDate)}
         />
