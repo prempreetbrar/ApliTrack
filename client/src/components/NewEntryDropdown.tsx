@@ -23,7 +23,6 @@ export default function NewEntryDropdown({
   React.useEffect(() => {
     const fetchAllOptions = async () => {
       const response = await executeRequest(null, fetchAllOptionsURL);
-      console.log(response);
       setAllOptions(
         response[entityName.toLowerCase()].map(
           (entity, index) => entity[entityAttributeName]

@@ -162,7 +162,9 @@ function Contact({ key, contact }) {
           entityIDName="ContactID"
           entityID={contact.ContactID}
           sectionTitle="Companie(s)"
-          sectionArray={contact.Companies}
+          sectionArray={contact.Companies.map(
+            (company, index) => company.WORKS_AT
+          )}
           entityName="Company"
           entityTargetAttribute="CompanyName"
           entitySecondTargetAttribute="Role"
@@ -249,6 +251,7 @@ function InfoSection({
       <ChipDisplayer
         onUpdateSectionArray={onUpdateSectionArray}
         attributeName={entityTargetAttribute}
+        secondAttributeName={entitySecondTargetAttribute}
         handleDelete={handleDelete}
       />
 

@@ -5,9 +5,11 @@ import React from "react";
 export default function ChipDisplayer({
   onUpdateSectionArray,
   attributeName,
+  secondAttributeName,
   handleDelete,
 }) {
   const { user } = useAuthContext();
+  // console.log(onUpdateSectionArray, attributeName, secondAttributeName);
   return (
     <>
       {onUpdateSectionArray.map((entity, index) => (
@@ -18,7 +20,12 @@ export default function ChipDisplayer({
           placement="top"
         >
           <Chip
-            label={<EllipsisText>{entity[attributeName]}</EllipsisText>}
+            label={
+              <EllipsisText>
+                {entity[attributeName]}
+                {secondAttributeName && ` - ${entity[secondAttributeName]}`}
+              </EllipsisText>
+            }
             onDelete={user && (() => handleDelete(index))}
             sx={{ marginBottom: "0.5rem", marginRight: "0.25rem" }}
           />
