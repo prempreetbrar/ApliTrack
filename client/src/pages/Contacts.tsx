@@ -25,12 +25,47 @@ import Person from "components/Person";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import SingleDate from "components/SingleDate";
 import { DELETE_ONLY } from "Constants";
+import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 
 export default function Contacts() {
   const { user } = useAuthContext();
   const [contactsInfo, setContactsInfo] = React.useState([]);
   const [knownContactsInfo, setKnownContactsInfo] = React.useState({});
   const { executeRequest: get } = useGet();
+  const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
+    useDelete();
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
+    React.useState(false);
+  const [selectedIndexToDelete, setSelectedIndexToDelete] =
+    React.useState(null);
+
+  const handleOpenDeleteConfirmationDialog = (index) => {
+    setSelectedIndexToDelete(index);
+    setDeleteConfirmationDialogOpen(true);
+  };
+
+  const handleCloseDeleteConfirmationDialog = () => {
+    setSelectedIndexToDelete(null);
+    setDeleteConfirmationDialogOpen(false);
+  };
+
+  const { executeHandle } = useHandleOperation(
+    undefined,
+    setContactsInfo,
+    contactsInfo
+  );
+
+  async function handleDelete(index) {
+    executeHandle(
+      "delete",
+      deleteInstance,
+      {
+        ContactID: contactsInfo[index].ContactID,
+      },
+      "http://localhost:3000/api/contacts",
+      index
+    );
+  }
 
   /*
     Get the applicant's info upon loading the page (and anytime
@@ -77,15 +112,28 @@ export default function Contacts() {
             LastContactDate={
               knownContactsInfo[contact.ContactID]?.LastContactDate
             }
-            contactsInfo={contactsInfo}
-            setContactsInfo={setContactsInfo}
             index={index}
+            handleOpenDeleteConfirmationDialog={
+              handleOpenDeleteConfirmationDialog
+            }
           />
         ))}
       {user && (
         <AddNewContact
           setContactsInfo={setContactsInfo}
           contactsInfo={contactsInfo}
+        />
+      )}
+      {deleteConfirmationDialogOpen && (
+        <DeleteConfirmationDialog
+          open={deleteConfirmationDialogOpen}
+          handleClose={handleCloseDeleteConfirmationDialog}
+          handleConfirm={() => handleDelete(selectedIndexToDelete)}
+          itemName={
+            contactsInfo[selectedIndexToDelete]?.Fname +
+            " " +
+            contactsInfo[selectedIndexToDelete]?.Lname
+          }
         />
       )}
     </MainBox>
@@ -99,9 +147,8 @@ function Contact({
   Relationship,
   Notes,
   LastContactDate,
-  contactsInfo,
-  setContactsInfo,
   index,
+  handleOpenDeleteConfirmationDialog,
 }) {
   const { register, handleSubmit, setValue } = useForm();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
@@ -112,12 +159,6 @@ function Contact({
   const [stillKnown, setStillKnown] = React.useState(isKnown);
   const [mostRecentLastContactDate, setMostRecentLastContactDate] =
     React.useState(LastContactDate);
-
-  const { executeHandle } = useHandleOperation(
-    undefined,
-    contactsInfo,
-    setContactsInfo
-  );
 
   React.useEffect(() => {
     /*
@@ -172,18 +213,6 @@ function Contact({
         LastContactDate: mostRecentLastContactDate,
       },
       "http://localhost:3000/api/applicants/known-contacts"
-    );
-  }
-
-  async function handleDelete(index) {
-    executeHandle(
-      "delete",
-      deleteInstance,
-      {
-        ContactID: contact.ContactID,
-      },
-      "http://localhost:3000/api/contacts",
-      index
     );
   }
 
@@ -363,6 +392,7 @@ function Contact({
             sx={{ alignSelf: "flex-start" }}
             aria-label="delete"
             size="large"
+            onClick={() => handleOpenDeleteConfirmationDialog(index)}
           >
             <Delete sx={{ width: "2rem", height: "2rem" }} />
           </IconButton>

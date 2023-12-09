@@ -172,8 +172,8 @@ exports.DELETE_AND_CREATE_AND_UPDATE = 3;
 exports.restrictTo = (permissionLevel) => {
   return (request, response, next) => {
     if (
-      request.user.PermissionLevel >= permissionLevel ||
-      !request.user.AdminFlag
+      request.body.user.dataValues.PermissionLevel < permissionLevel ||
+      !request.body.user.dataValues.AdminFlag
     )
       throw new errorHandling.AppError(
         "You do not have permission to perform this action.",
