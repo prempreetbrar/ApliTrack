@@ -45,6 +45,8 @@ export default function Contacts() {
     React.useState(null);
   const [onlyShowContactsIKnow, setOnlyShowContactsIKnow] =
     React.useState(false);
+  const [mostRecentLastContactDate, setMostRecentLastContactDate] =
+    React.useState(null);
 
   const handleOpenDeleteConfirmationDialog = (index) => {
     setSelectedIndexToDelete(index);
@@ -76,6 +78,18 @@ export default function Contacts() {
     );
   }
 
+  async function handleGet(data) {
+    executeHandle(
+      "get",
+      get,
+      data,
+      "http://localhost:3000/api/contacts",
+      null,
+      false,
+      null
+    );
+  }
+
   /*
     Get the applicant's info upon loading the page (and anytime
     the user themselves changes, for example if someone goes into
@@ -85,7 +99,17 @@ export default function Contacts() {
   React.useEffect(() => {
     const fetchContactsInfo = async () => {
       const response = await get({}, "http://localhost:3000/api/contacts");
-      if (user) {
+
+      setContactsInfo(response.contact);
+    };
+
+    fetchContactsInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  React.useEffect(() => {
+    const fetchKnownContactsInfo = async () => {
+      if (user && contactsInfo) {
         const knownResponse = await get(
           {},
           "http://localhost:3000/api/applicants/known-contacts"
@@ -100,13 +124,9 @@ export default function Contacts() {
 
         setKnownContactsInfo(hashtableKnownContacts);
       }
-
-      setContactsInfo(response.contact);
     };
-
-    fetchContactsInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+    fetchKnownContactsInfo();
+  }, [user, contactsInfo]);
 
   return (
     <MainBox>
@@ -133,54 +153,58 @@ export default function Contacts() {
             label="Only Show Contacts I Know"
           />
         )}{" "}
-        <Box
-          display="flex"
-          sx={{
-            marginTop: { xs: "2rem", md: "0rem" },
-            flexDirection: { xs: "column", sm: "row" },
-            alignItems: { xs: "flex-start", sm: "center" },
-          }}
-        >
-          <Typography
-            variant="h3"
-            sx={{ fontSize: "1rem", marginRight: "1rem" }}
+        <form onSubmit={handleSubmit(handleGet)}>
+          <Box
+            display="flex"
+            sx={{
+              marginTop: { xs: "2rem", md: "0rem" },
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { xs: "flex-start", sm: "center" },
+            }}
           >
-            Search by:
-          </Typography>
-          <NameForm
-            register={register}
-            handleSubmit={handleSubmit}
-            additionalStyles={{
-              marginTop: { xs: "1rem", sm: "0rem" },
-            }}
-            additionalLnameStyles={{
-              marginRight: { xs: "1rem" },
-            }}
-          />
-          <Box display="flex" alignItems="center">
-            {user && (
-              <SingleDate
-                register={register}
-                handleSubmit={handleSubmit}
-                attributeName={"LastContactDate"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem", sm: "0rem" },
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-              />
-            )}
-            <IconButton>
-              <SearchIcon color="primary" />
-            </IconButton>
+            <Typography
+              variant="h3"
+              sx={{ fontSize: "1rem", marginRight: "1rem" }}
+            >
+              Search by:
+            </Typography>
+            <NameForm
+              register={register}
+              handleSubmit={handleSubmit}
+              additionalStyles={{
+                marginTop: { xs: "1rem", sm: "0rem" },
+              }}
+              additionalLnameStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+            />
+            <Box display="flex" alignItems="center">
+              {user && (
+                <SingleDate
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  attributeName={"LastContactDate"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", sm: "0rem" },
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  mostRecentLastContactDate={null}
+                  setMostRecentLastContactDate={setMostRecentLastContactDate}
+                />
+              )}
+              <IconButton type="submit">
+                <SearchIcon color="primary" />
+              </IconButton>
+            </Box>
           </Box>
-        </Box>
+        </form>
       </FormGroup>
       {contactsInfo &&
         contactsInfo.map((contact, index) => {

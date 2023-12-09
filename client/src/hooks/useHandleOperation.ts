@@ -1,3 +1,5 @@
+import { enqueueSnackbar } from "notistack";
+
 export default function useHandleOperation(
   reset,
   setStateObjectOrArray,
@@ -29,6 +31,15 @@ export default function useHandleOperation(
       if (reset) {
         reset();
       }
+    }
+
+    if (operation === "get" && data) {
+      const tableName = Object.keys(data)[0];
+      setStateObjectOrArray(data[tableName]);
+      enqueueSnackbar(`Success!`, {
+        variant: "success",
+        autoHideDuration: 1000,
+      });
     }
 
     if (operation === "delete" && data) {

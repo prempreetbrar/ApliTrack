@@ -6,7 +6,7 @@ const router = express.Router();
 
 router
   .route("")
-  .get(contactController.getAllContacts)
+  .get(contactController.addFilter, contactController.getAllContacts)
   .post(authController.checkIfLoggedIn, contactController.createContact)
   .delete(
     authController.checkIfLoggedIn,

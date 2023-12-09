@@ -13,19 +13,25 @@ const Contact = sequelize.define(
     },
     LinkedInURL: {
       type: DataTypes.STRING(64),
-      // two different people CANNOT have the same LinkedInURL
-      unique: true,
+      unique: "actions_unique",
     },
     Fname: {
       type: DataTypes.STRING(16),
       allowNull: false,
+      unique: "actions_unique",
     },
     Lname: {
       type: DataTypes.STRING(16),
       allowNull: false,
+      unique: "actions_unique",
     },
   },
   {
+    uniqueKeys: {
+      actions_unique: {
+        fields: ["LinkedInURL", "Fname", "Lname"],
+      },
+    },
     timestamps: false,
     id: false,
   }

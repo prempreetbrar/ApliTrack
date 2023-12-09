@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const factory = require("./controllerFactory");
 const Contact = require("../models/contactModel");
 const errorHandling = require("../utils/errorHandling");
@@ -28,9 +29,21 @@ exports.updateContactWorksAtCompany = factory.updateInstance(
 
 exports.addFilter = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      ContactID: request.body.ContactID,
-    };
+    request.body.filter = {};
+    if (request.body.ContactID || request.query.ContactID) {
+      request.body.filter.ContactID =
+        request.body.ContactID || request.query.ContactID;
+    }
+    if (request.body.Fname || request.query.Fname) {
+      request.body.filter.Fname = {
+        [Op.like]: `%${request.body.Fname || request.query.Fname}%`,
+      };
+    }
+    if (request.body.Lname || request.query.Lname) {
+      request.body.filter.Lname = {
+        [Op.like]: `%${request.body.Lname || request.query.Lname}%`,
+      };
+    }
     next();
   }
 );

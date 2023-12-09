@@ -17,6 +17,9 @@ const useHttpMethod = (method) => {
       if (method === "delete") {
         config.data = data;
       }
+      if (method === "get") {
+        config.params = data;
+      }
 
       if (user) {
         config.headers = {
@@ -27,7 +30,7 @@ const useHttpMethod = (method) => {
 
       let response;
 
-      if (method === "get" || method === "delete") {
+      if (method === "delete" || method === "get") {
         response = await axios[method](url, config);
       } else {
         response = await axios[method](url, data, config);
