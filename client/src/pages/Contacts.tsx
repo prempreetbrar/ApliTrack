@@ -7,7 +7,9 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  IconButton,
 } from "@mui/material";
+import Delete from "@mui/icons-material/Delete";
 
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
@@ -74,6 +76,9 @@ export default function Contacts() {
             LastContactDate={
               knownContactsInfo[contact.ContactID]?.LastContactDate
             }
+            contactsInfo={contactsInfo}
+            setContactsInfo={setContactsInfo}
+            index={index}
           />
         ))}
       {user && (
@@ -93,6 +98,9 @@ function Contact({
   Relationship,
   Notes,
   LastContactDate,
+  contactsInfo,
+  setContactsInfo,
+  index,
 }) {
   const { register, handleSubmit, setValue } = useForm();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
@@ -103,6 +111,12 @@ function Contact({
   const [stillKnown, setStillKnown] = React.useState(isKnown);
   const [mostRecentLastContactDate, setMostRecentLastContactDate] =
     React.useState(LastContactDate);
+
+  const { executeHandle } = useHandleOperation(
+    undefined,
+    contactsInfo,
+    setContactsInfo
+  );
 
   React.useEffect(() => {
     /*
@@ -128,7 +142,7 @@ function Contact({
   function updateNameOrLinkedInURL(data) {
     update(
       { ...data, ContactID: contact.ContactID },
-      "http://localhost:3000/api/contacts/"
+      "http://localhost:3000/api/contacts"
     );
   }
 
@@ -157,6 +171,18 @@ function Contact({
         LastContactDate: mostRecentLastContactDate,
       },
       "http://localhost:3000/api/applicants/known-contacts"
+    );
+  }
+
+  async function handleDelete(index) {
+    executeHandle(
+      "delete",
+      deleteInstance,
+      {
+        ContactID: contact.ContactID,
+      },
+      "http://localhost:3000/api/contacts",
+      index
     );
   }
 
@@ -330,6 +356,15 @@ function Contact({
           isCompany
         />
       </Box>
+      {user?.data?.user?.AdminFlag && (
+        <IconButton
+          sx={{ alignSelf: "flex-start" }}
+          aria-label="delete"
+          size="large"
+        >
+          <Delete sx={{ width: "2rem", height: "2rem" }} />
+        </IconButton>
+      )}
     </MainPaper>
   );
 }

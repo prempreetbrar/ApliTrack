@@ -13,7 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Textarea } from "@mui/joy";
 import EditItemForm from "./EditItemForm";
-import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import DeleteConfirmationDialog from "../../components/DeleteConfirmationDialog";
 
 import { useCreate, useDelete } from "../../hooks/useHttpMethod";
 
