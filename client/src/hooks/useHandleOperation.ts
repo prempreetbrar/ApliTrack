@@ -8,7 +8,7 @@ export default function useHandleOperation(
     action,
     body,
     url,
-    index = 0,
+    indexOrKey = 0,
     isObject,
     attributeNameForMappingObject
   ) => {
@@ -21,7 +21,6 @@ export default function useHandleOperation(
         newStateObject[data[tableName][attributeNameForMappingObject]] =
           data[tableName];
 
-        console.log(newStateObject);
         setStateObjectOrArray(newStateObject);
       } else {
         setStateObjectOrArray([...stateObjectOrArray, data[tableName]]);
@@ -33,15 +32,16 @@ export default function useHandleOperation(
     }
 
     if (operation === "delete" && data) {
-      console.log("before deletion", stateObjectOrArray);
-      console.log(
-        stateObjectOrArray.slice(0, index),
-        stateObjectOrArray.slice(index + 1)
-      );
-      setStateObjectOrArray([
-        ...stateObjectOrArray.slice(0, index),
-        ...stateObjectOrArray.slice(index + 1),
-      ]);
+      if (isObject) {
+        const newStateObjectOrArray = { ...stateObjectOrArray };
+        delete newStateObjectOrArray[indexOrKey];
+        setStateObjectOrArray(newStateObjectOrArray);
+      } else {
+        setStateObjectOrArray([
+          ...stateObjectOrArray.slice(0, indexOrKey),
+          ...stateObjectOrArray.slice(indexOrKey + 1),
+        ]);
+      }
     }
 
     if (data) {

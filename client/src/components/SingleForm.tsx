@@ -25,10 +25,6 @@ export default function SingleForm({
               marginRight: { xs: "0", md: "1rem" },
               ...additionalFieldStyles,
             }}
-            InputLabelProps={{ shrink: true }}
-            inputProps={{
-              maxLength,
-            }}
             minRows={3}
           />
         </FormControl>

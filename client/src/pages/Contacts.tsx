@@ -171,7 +171,6 @@ export default function Contacts() {
 }
 
 function Contact({
-  key,
   contact,
   isKnown,
   Relationship,
@@ -240,9 +239,14 @@ function Contact({
       );
     }
     if (!event.target.checked) {
-      deleteInstance(
+      executeHandle(
+        "delete",
+        deleteInstance,
         { ContactID: contact.ContactID },
-        "http://localhost:3000/api/applicants/known-contacts"
+        "http://localhost:3000/api/applicants/known-contacts",
+        contact.ContactID,
+        true,
+        null
       );
       setStillKnown(false);
     }
@@ -267,7 +271,7 @@ function Contact({
         justifyContent: "center",
         alignItems: "center",
       }}
-      key={key}
+      paperKey={index}
     >
       <Box
         sx={{

@@ -47,7 +47,6 @@ export default function NewEntryDropdown({
             placeholder={`Enter New ${entityName}`}
             fullWidth
             options={allOptions}
-            inputProps={{ maxLength: maxCreateLength }}
             renderInput={(params) => <TextField {...params} label="Company" />}
             value={dropdownValue}
             onChange={(event, value) => setDropdownValue(value)}
