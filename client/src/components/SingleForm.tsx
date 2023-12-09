@@ -1,3 +1,4 @@
+import { FormControl, FormLabel, Textarea } from "@mui/joy";
 import { TextField, Button, Box } from "@mui/material";
 import React from "react";
 
@@ -10,21 +11,42 @@ export default function SingleForm({
   maxLength,
   additionalStyles,
   additionalFieldStyles,
+  isTextArea,
 }) {
   return (
     <Box sx={{ ...additionalStyles }}>
-      <TextField
-        {...register(attributeName)}
-        label={attributeName}
-        sx={{
-          marginRight: { xs: "0", md: "1rem" },
-          ...additionalFieldStyles,
-        }}
-        InputLabelProps={{ shrink: true }}
-        inputProps={{
-          maxLength,
-        }}
-      />
+      {isTextArea && (
+        <FormControl>
+          <FormLabel>{attributeName}</FormLabel>
+          <Textarea
+            {...register(attributeName)}
+            label={attributeName}
+            sx={{
+              marginRight: { xs: "0", md: "1rem" },
+              ...additionalFieldStyles,
+            }}
+            InputLabelProps={{ shrink: true }}
+            inputProps={{
+              maxLength,
+            }}
+            minRows={3}
+          />
+        </FormControl>
+      )}
+      {!isTextArea && (
+        <TextField
+          {...register(attributeName)}
+          label={attributeName}
+          sx={{
+            marginRight: { xs: "0", md: "1rem" },
+            ...additionalFieldStyles,
+          }}
+          InputLabelProps={{ shrink: true }}
+          inputProps={{
+            maxLength,
+          }}
+        />
+      )}
       {actionOnAttribute && (
         <Button
           onClick={handleSubmit(actionOnAttribute)}

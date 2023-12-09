@@ -113,8 +113,9 @@ function Contact({
     setValue("Lname", contact?.Lname);
     setValue("LinkedInURL", contact?.LinkedInURL);
     setValue("Relationship", Relationship);
+    setValue("Notes", Notes);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contact, Relationship]);
+  }, [contact, Relationship, Notes]);
 
   React.useEffect(() => {
     setStillKnown(isKnown);
@@ -222,6 +223,26 @@ function Contact({
                 additionalFieldStyles={{
                   marginRight: { xs: "1rem" },
                 }}
+              />
+            )}
+            {stillKnown && (
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                actionOnAttribute={updateKnows}
+                attributeName={"Notes"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "2rem", md: "0rem" },
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                isTextArea
               />
             )}
           </>
