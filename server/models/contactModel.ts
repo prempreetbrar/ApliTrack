@@ -132,10 +132,22 @@ const ContactWorksAtCompany = sequelize.define(
   },
   {
     timestamps: false,
+    foreignKey: "ContactID",
+    otherKey: "CompanyName",
   }
 );
-Contact.belongsToMany(Company, { through: ContactWorksAtCompany });
-Company.belongsToMany(Contact, { through: ContactWorksAtCompany });
+Contact.belongsToMany(Company, {
+  through: ContactWorksAtCompany,
+  as: "Companies",
+  foreignKey: "ContactID",
+  otherKey: "CompanyName",
+});
+Company.belongsToMany(Contact, {
+  as: "Contacts",
+  through: ContactWorksAtCompany,
+  foreignKey: "CompanyName",
+  otherKey: "ContactID",
+});
 
 // definition of many-to-many relationship b/t Contact and Company
 

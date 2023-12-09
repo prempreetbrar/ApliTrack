@@ -7,6 +7,7 @@ export default function ChipDisplayer({
   attributeName,
   handleDelete,
 }) {
+  console.log(onUpdateSectionArray, attributeName);
   const { user } = useAuthContext();
   return (
     <>

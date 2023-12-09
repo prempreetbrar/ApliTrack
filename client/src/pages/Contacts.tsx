@@ -10,13 +10,10 @@ import MainPaper from "components/MainPaper";
 import useHandleOperation from "hooks/useHandleOperation";
 import NewEntry from "components/NewEntry";
 import ChipDisplayer from "components/ChipDisplayer";
-import NameUpdater from "components/NameForm";
-import SingleUpdater from "components/SingleForm";
-import SimpleSection from "./profile/SimpleSection";
 import NameForm from "components/NameForm";
 import SingleForm from "components/SingleForm";
 import Person from "components/Person";
-import { register } from "module";
+import NewEntryDropdown from "components/NewEntryDropdown";
 
 export default function Contacts() {
   const { user } = useAuthContext();
@@ -58,8 +55,6 @@ export default function Contacts() {
 function Contact({ key, contact }) {
   const { register, handleSubmit, setValue } = useForm();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
-
-  console.log(contact);
 
   React.useEffect(() => {
     /*
@@ -137,6 +132,10 @@ function Contact({ key, contact }) {
             isMarginRight
             sectionURL="http://localhost:3000/api/contacts/phones"
             maxCreateLength={16}
+            additionalStyles={{
+              minWidth: { xs: "100%", sm: "50%" },
+              marginRight: { xs: "0" },
+            }}
           />
           <InfoSection
             entityIDName="ContactID"
@@ -146,11 +145,27 @@ function Contact({ key, contact }) {
             attributeName="Email"
             sectionURL="http://localhost:3000/api/contacts/emails"
             maxCreateLength={64}
+            additionalStyles={{
+              minWidth: { xs: "100%", sm: "50%" },
+              marginRight: { xs: "0" },
+            }}
           />
         </Box>
         <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
           Employed At
         </Typography>
+        <InfoSection
+          entityIDName="ContactID"
+          entityID={contact.ContactID}
+          sectionTitle="Companie(s)"
+          sectionArray={contact.Companies}
+          attributeName="Company"
+          attributeSpecificName="CompanyName"
+          attribute2Name="Role"
+          sectionURL="http://localhost:3000/api/contacts/works-at"
+          maxCreateLength={64}
+          isCompany
+        />
       </Box>
     </MainPaper>
   );
@@ -163,13 +178,18 @@ function InfoSection({
   sectionTitle,
   sectionArray,
   attributeName,
+  attributeSpecificName,
+  attribute2Name,
   isMarginRight,
   sectionURL,
+  isCompany,
+  additionalStyles,
 }) {
   const [onUpdateSectionArray, setOnUpdateSectionArray] = React.useState([]);
+  const [dropdownValue, setDropdownValue] = React.useState("");
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeRequest: deleteInstance } = useDelete();
-  const { register, getValues, reset } = useForm();
+  const { register, getValues, reset, control } = useForm();
   const { executeHandle } = useHandleOperation(
     reset,
     null,
@@ -184,12 +204,25 @@ function InfoSection({
   }, [sectionArray]);
 
   async function handleCreate() {
-    executeHandle(
-      "create",
-      create,
-      { [attributeName]: getValues(attributeName), [entityIDName]: entityID },
-      sectionURL
-    );
+    if (!isCompany) {
+      executeHandle(
+        "create",
+        create,
+        { [attributeName]: getValues(attributeName), [entityIDName]: entityID },
+        sectionURL
+      );
+    } else {
+      executeHandle(
+        "create",
+        create,
+        {
+          [attributeSpecificName]: dropdownValue,
+          [entityIDName]: entityID,
+          [attribute2Name]: getValues(attribute2Name),
+        },
+        sectionURL
+      );
+    }
   }
 
   async function handleDelete(index) {
@@ -206,9 +239,10 @@ function InfoSection({
 
   return (
     <Box
+      minWidth="100%"
       padding="0.5rem"
       marginRight={`${isMarginRight ? "2rem" : "0"}`}
-      sx={{ minWidth: { xs: "100%", sm: "50%" }, marginRight: { xs: "0" } }}
+      sx={{ ...additionalStyles }}
     >
       <Typography sx={{ textDecoration: "underline" }}>
         {sectionTitle}
@@ -219,13 +253,40 @@ function InfoSection({
         handleDelete={handleDelete}
       />
 
-      <NewEntry
-        attributeName={attributeName}
-        maxCreateLength={maxCreateLength}
-        handleCreate={handleCreate}
-        createIsLoading={createIsLoading}
-        register={register}
-      />
+      {!isCompany && (
+        <NewEntry
+          attributeName={attributeName}
+          maxCreateLength={maxCreateLength}
+          handleCreate={handleCreate}
+          createIsLoading={createIsLoading}
+          register={register}
+        />
+      )}
+      {isCompany && (
+        <Box display="flex" flexDirection="row" justifyContent="space-between">
+          <NewEntryDropdown
+            entityName={attributeName}
+            entityAttributeName="CompanyName"
+            maxCreateLength={maxCreateLength}
+            handleCreate={handleCreate}
+            createIsLoading={createIsLoading}
+            register={register}
+            fetchAllOptionsURL="http://localhost:3000/api/companies"
+            additionalStyles={{ width: "50%" }}
+            doNotShowButton
+            dropdownValue={dropdownValue}
+            setDropdownValue={setDropdownValue}
+          />
+          <NewEntry
+            dropdownValue={dropdownValue}
+            attributeName={attribute2Name}
+            maxCreateLength={maxCreateLength}
+            handleCreate={handleCreate}
+            createIsLoading={createIsLoading}
+            register={register}
+          />
+        </Box>
+      )}
     </Box>
   );
 }
