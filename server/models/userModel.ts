@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const sequelize = require("../server");
 
 const { AppError } = require("../utils/errorHandling");
+const authController = require("../controllers/authController");
 
 const User = sequelize.define(
   "USER",
@@ -84,7 +85,7 @@ User.belongsTo(Permission, {
   ahead and hashing it.
 */
 User.beforeSave(async (user, options) => {
-  if (user.Password) {
+  if (user.Password && user.PasswordConfirm) {
     user.Password = await bcrypt.hash(user.Password, 12);
     user.PasswordConfirm = undefined;
   }
@@ -105,6 +106,9 @@ async function createAdminUser() {
       PasswordConfirm: "admin",
       AdminFlag: true,
     });
+
+    adminUser.PermissionLevel = authController.DELETE_ONLY;
+    await adminUser.save();
 
     console.log("Admin user created:", adminUser);
   } catch (error) {

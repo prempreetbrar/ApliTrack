@@ -24,6 +24,7 @@ import SingleForm from "components/SingleForm";
 import Person from "components/Person";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import SingleDate from "components/SingleDate";
+import { DELETE_ONLY } from "Constants";
 
 export default function Contacts() {
   const { user } = useAuthContext();
@@ -356,15 +357,16 @@ function Contact({
           isCompany
         />
       </Box>
-      {user?.data?.user?.AdminFlag && (
-        <IconButton
-          sx={{ alignSelf: "flex-start" }}
-          aria-label="delete"
-          size="large"
-        >
-          <Delete sx={{ width: "2rem", height: "2rem" }} />
-        </IconButton>
-      )}
+      {user?.data?.user?.AdminFlag &&
+        user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+          <IconButton
+            sx={{ alignSelf: "flex-start" }}
+            aria-label="delete"
+            size="large"
+          >
+            <Delete sx={{ width: "2rem", height: "2rem" }} />
+          </IconButton>
+        )}
     </MainPaper>
   );
 }
