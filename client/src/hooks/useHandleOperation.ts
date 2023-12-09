@@ -1,26 +1,46 @@
 export default function useHandleOperation(
   reset,
-  setOnUpdateSectionArray,
-  onUpdateSectionArray
+  setStateObjectOrArray,
+  stateObjectOrArray
 ) {
-  const executeHandle = async (operation, action, body, url, index = 0) => {
+  const executeHandle = async (
+    operation,
+    action,
+    body,
+    url,
+    index = 0,
+    isObject,
+    attributeNameForMappingObject
+  ) => {
     const data = await action(body, url);
     if (operation === "create" && data) {
       const tableName = Object.keys(data)[0];
-      setOnUpdateSectionArray([...onUpdateSectionArray, data[tableName]]);
 
-      reset();
+      if (isObject) {
+        const newStateObject = { ...stateObjectOrArray };
+        newStateObject[data[tableName][attributeNameForMappingObject]] =
+          data[tableName];
+
+        console.log(newStateObject);
+        setStateObjectOrArray(newStateObject);
+      } else {
+        setStateObjectOrArray([...stateObjectOrArray, data[tableName]]);
+      }
+
+      if (reset) {
+        reset();
+      }
     }
 
     if (operation === "delete" && data) {
-      console.log("before deletion", onUpdateSectionArray);
+      console.log("before deletion", stateObjectOrArray);
       console.log(
-        onUpdateSectionArray.slice(0, index),
-        onUpdateSectionArray.slice(index + 1)
+        stateObjectOrArray.slice(0, index),
+        stateObjectOrArray.slice(index + 1)
       );
-      setOnUpdateSectionArray([
-        ...onUpdateSectionArray.slice(0, index),
-        ...onUpdateSectionArray.slice(index + 1),
+      setStateObjectOrArray([
+        ...stateObjectOrArray.slice(0, index),
+        ...stateObjectOrArray.slice(index + 1),
       ]);
     }
 

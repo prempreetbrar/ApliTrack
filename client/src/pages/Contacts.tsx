@@ -8,6 +8,8 @@ import {
   Checkbox,
   FormControlLabel,
   IconButton,
+  FormGroup,
+  Switch,
 } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
 
@@ -38,6 +40,8 @@ export default function Contacts() {
     React.useState(false);
   const [selectedIndexToDelete, setSelectedIndexToDelete] =
     React.useState(null);
+  const [onlyShowContactsIKnow, setOnlyShowContactsIKnow] =
+    React.useState(false);
 
   const handleOpenDeleteConfirmationDialog = (index) => {
     setSelectedIndexToDelete(index);
@@ -101,23 +105,49 @@ export default function Contacts() {
 
   return (
     <MainBox>
+      <FormGroup sx={{ marginRight: "auto", marginBottom: "1rem" }}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={onlyShowContactsIKnow}
+              onChange={(event) =>
+                setOnlyShowContactsIKnow(event.target.checked)
+              }
+            />
+          }
+          label="Only Show Contacts I Know"
+        />
+      </FormGroup>
       {contactsInfo &&
-        contactsInfo.map((contact, index) => (
-          <Contact
-            key={index}
-            contact={contact}
-            isKnown={contact.ContactID in knownContactsInfo}
-            Relationship={knownContactsInfo[contact.ContactID]?.Relationship}
-            Notes={knownContactsInfo[contact.ContactID]?.Notes}
-            LastContactDate={
-              knownContactsInfo[contact.ContactID]?.LastContactDate
-            }
-            index={index}
-            handleOpenDeleteConfirmationDialog={
-              handleOpenDeleteConfirmationDialog
-            }
-          />
-        ))}
+        contactsInfo.map((contact, index) => {
+          if (
+            onlyShowContactsIKnow &&
+            !(contact.ContactID in knownContactsInfo)
+          ) {
+            return <></>;
+          } else {
+            return (
+              <Contact
+                key={index}
+                contact={contact}
+                isKnown={contact.ContactID in knownContactsInfo}
+                Relationship={
+                  knownContactsInfo[contact.ContactID]?.Relationship
+                }
+                Notes={knownContactsInfo[contact.ContactID]?.Notes}
+                LastContactDate={
+                  knownContactsInfo[contact.ContactID]?.LastContactDate
+                }
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+                setKnownContactsInfo={setKnownContactsInfo}
+                knownContactsInfo={knownContactsInfo}
+              />
+            );
+          }
+        })}
       {user && (
         <AddNewContact
           setContactsInfo={setContactsInfo}
@@ -148,11 +178,18 @@ function Contact({
   Notes,
   LastContactDate,
   index,
+  setKnownContactsInfo,
+  knownContactsInfo,
   handleOpenDeleteConfirmationDialog,
 }) {
   const { register, handleSubmit, setValue } = useForm();
-  const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
+  const { executeHandle } = useHandleOperation(
+    undefined,
+    setKnownContactsInfo,
+    knownContactsInfo
+  );
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const { user } = useAuthContext();
@@ -190,11 +227,17 @@ function Contact({
 
   function handleKnows(event) {
     if (event.target.checked) {
-      create(
-        { ContactID: contact.ContactID },
-        "http://localhost:3000/api/applicants/known-contacts"
-      );
       setStillKnown(true);
+
+      executeHandle(
+        "create",
+        create,
+        { ContactID: contact.ContactID },
+        "http://localhost:3000/api/applicants/known-contacts",
+        null,
+        true,
+        "ContactID"
+      );
     }
     if (!event.target.checked) {
       deleteInstance(
@@ -234,6 +277,7 @@ function Contact({
           alignSelf: { xs: "center", md: "flex-start" },
           marginRight: { xs: "0", md: "2.5rem" },
           marginBottom: { xs: "1.5rem", md: "0" },
+          order: { xs: 2, md: 1 },
         }}
       >
         <Person />
@@ -306,7 +350,10 @@ function Contact({
       </Box>
       <Box
         display="flex"
-        sx={{ alignItems: { xs: "center", md: "flex-start" } }}
+        sx={{
+          alignItems: { xs: "center", md: "flex-start" },
+          order: { xs: 3, md: 2 },
+        }}
         flexDirection="column"
       >
         <NameForm
@@ -389,7 +436,10 @@ function Contact({
       {user?.data?.user?.AdminFlag &&
         user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
           <IconButton
-            sx={{ alignSelf: "flex-start" }}
+            sx={{
+              alignSelf: { xs: "flex-end", md: "flex-start" },
+              order: { xs: 1, md: 3 },
+            }}
             aria-label="delete"
             size="large"
             onClick={() => handleOpenDeleteConfirmationDialog(index)}

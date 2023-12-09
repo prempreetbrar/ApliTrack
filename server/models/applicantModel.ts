@@ -23,7 +23,6 @@ const Applicant = sequelize.define(
 
 User.hasMany(Applicant, {
   foreignKey: "Username",
-  constraints: false,
 });
 
 // Define the foreign key relationship

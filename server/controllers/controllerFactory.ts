@@ -17,6 +17,7 @@ const APIFeatures = require("../utils/apiFeatures");
 exports.createOne = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
     const document = await Model.create(request.body);
+
     response.status(201).json({
       status: "success",
       data: {

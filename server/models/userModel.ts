@@ -98,6 +98,9 @@ User.prototype.isPasswordCorrect = async function (
   return await bcrypt.compare(candidatePassword, actualPassword);
 };
 
+exports.User = User;
+const { Applicant } = require("../models/applicantModel");
+
 async function createAdminUser() {
   try {
     const adminUser = await User.create({
@@ -109,6 +112,10 @@ async function createAdminUser() {
 
     adminUser.PermissionLevel = authController.DELETE_ONLY;
     await adminUser.save();
+
+    const newApplicant = await Applicant.create({
+      Username: "admin@admin.com",
+    });
 
     console.log("Admin user created:", adminUser);
   } catch (error) {
@@ -123,4 +130,3 @@ createAdminUser();
   applied to the database.
 */
 sequelize.sync();
-exports.User = User;
