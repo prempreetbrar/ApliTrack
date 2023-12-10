@@ -274,8 +274,18 @@ const ApplicantTracksJob = sequelize.define(
     timestamps: false,
   }
 );
-Applicant.belongsToMany(Job, { through: ApplicantTracksJob });
-Job.belongsToMany(Applicant, { through: ApplicantTracksJob });
+Applicant.belongsToMany(Job, {
+  as: "Jobs",
+  through: ApplicantTracksJob,
+  foreignKey: "Username",
+  otherKey: "PositionID",
+});
+Job.belongsToMany(Applicant, {
+  as: "Applicants",
+  through: ApplicantTracksJob,
+  foreignKey: "PositionID",
+  otherKey: "Username",
+});
 
 /*
   If any changes occurred to the model, sequelize.sync just ensures that they are

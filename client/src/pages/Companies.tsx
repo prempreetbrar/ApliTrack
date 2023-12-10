@@ -1,7 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { Box, Button, Input, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Input,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import BusinessIcon from "@mui/icons-material/Business";
 import WorkIcon from "@mui/icons-material/Work";
 
@@ -171,7 +179,7 @@ function Company({ company }) {
   );
 }
 
-function Job({ company, job, index }) {
+function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
   const [responsibilitiesArray, setResponsibilitiesArray] = React.useState([]);
   const [qualificationsArray, setQualificationsArray] = React.useState([]);
 
@@ -189,10 +197,18 @@ function Job({ company, job, index }) {
     setQualificationsArray,
     qualificationsArray
   );
-  const { executeRequest: deleteInstance } = useDelete();
+  const { executeHandle: executeHandleTracks } = useHandleOperation(
+    undefined,
+    setTrackedJobs,
+    trackedJobs
+  );
+  const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
+    useDelete();
   const [applicationDeadline, setApplicationDeadline] = React.useState(
     job.ApplicationDeadline
   );
+  const [stillTracks, setStillTracks] = React.useState(false);
+
   const [currentlyUploadedJobPostFile, setCurrentlyUploadedJobPostFile] =
     React.useState(job?.JobPostFile?.split("/")?.pop());
 
@@ -297,7 +313,8 @@ function Job({ company, job, index }) {
       `http://localhost:3000/api/companies/company/jobs/qualifications`,
       null,
       false,
-      null
+      null,
+      {}
     );
     if (success) {
       setValue("Qualification", "");
@@ -315,13 +332,43 @@ function Job({ company, job, index }) {
       `http://localhost:3000/api/companies/company/jobs/responsibilities`,
       null,
       false,
-      null
+      null,
+      {}
     );
     if (success) {
       setValue("Responsibility", "");
     }
   }
 
+  function handleTracks(event) {
+    if (event.target.checked) {
+      setStillTracks(true);
+
+      executeHandleTracks(
+        "create",
+        create,
+        { PositionID: job.PositionID },
+        "http://localhost:3000/api/applicants/tracks-job",
+        null,
+        true,
+        "PositionID",
+        {}
+      );
+    }
+    if (!event.target.checked) {
+      executeHandleTracks(
+        "delete",
+        deleteInstance,
+        { PositionID: job.PositionID },
+        "http://localhost:3000/api/applicants/tracks-job",
+        job.PositionID,
+        true,
+        null,
+        {}
+      );
+      setStillTracks(false);
+    }
+  }
   return (
     <>
       <form
@@ -479,6 +526,12 @@ function Job({ company, job, index }) {
           />
         </Box>
 
+        <FormControlLabel
+          sx={{ gridArea: "TrackThisJob" }}
+          control={<Checkbox checked={stillTracks} onChange={handleTracks} />}
+          label="Track this job"
+        />
+
         <Button
           sx={{
             marginTop: "1rem",
@@ -492,6 +545,7 @@ function Job({ company, job, index }) {
           Update
         </Button>
       </form>
+      <hr style={{ marginTop: "5rem", marginBottom: "5rem" }} />
     </>
   );
 }
@@ -630,7 +684,8 @@ function NewCompanyForm({ companies, setCompanies }) {
       "http://localhost:3000/api/companies",
       null,
       false,
-      null
+      null,
+      {}
     );
   }
 

@@ -59,7 +59,7 @@ router
   .patch(applicantController.updateApplicantKnowsContact);
 
 router
-  .route("/tracked-jobs")
+  .route("/tracks-job")
   .post(applicantController.createApplicantTracksJob)
   .delete(applicantController.deleteApplicantTracksJob)
   .patch(applicantController.updateApplicantTracksJob);
