@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Input, Typography } from "@mui/material";
 
 import { useGet, useUpdate } from "hooks/useHttpMethod";
 
@@ -143,12 +143,14 @@ function Job({ company, job }) {
     const JobPostFile = data.JobPostFile[0];
     const newData = { ...data };
     delete newData.JobPostFile;
+    if (JobPostFile) {
+      newData.JobPostFile = JobPostFile;
+    }
 
     update(
       {
         CompName: company.CompanyName,
         ...newData,
-        JobPostFile,
       },
       "http://localhost:3000/api/companies/company/jobs",
       {
@@ -237,7 +239,17 @@ function Job({ company, job }) {
             marginRight: { xs: "0rem" },
           }}
         />
-        <input {...register("JobPostFile")} type="file" name="JobPostFile" />
+        <Input
+          sx={{ marginTop: "1rem" }}
+          {...register("JobPostFile")}
+          type="file"
+          name="JobPostFile"
+        />
+        {job.JobPostFile && (
+          <Typography noWrap sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}>
+            Existing File: {job.JobPostFile.split("/").pop()}
+          </Typography>
+        )}
         <Button sx={{ marginTop: "1rem" }} type="submit" variant="outlined">
           Update
         </Button>

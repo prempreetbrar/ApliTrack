@@ -12,6 +12,7 @@ exports.uploadJobPostFile = errorHandling.catchAsync(
     // Check if a file was uploaded
     if (!request.file) {
       next();
+      return;
     }
 
     // Write the file to the upload directory
@@ -33,10 +34,10 @@ exports.uploadJobPostFile = errorHandling.catchAsync(
     writeStream.on("finish", () => {
       console.log("File written successfully");
       fs.unlinkSync(request.file.path);
-      next();
     });
 
     request.body.JobPostFile = filePath;
+    next();
   }
 );
 
