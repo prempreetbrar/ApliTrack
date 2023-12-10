@@ -37,6 +37,8 @@ export default function Companies() {
     React.useState(null);
   const [mostRecentLatestDateToApply, setMostRecentLatestDateToApply] =
     React.useState(null);
+  const [mostRecentApplicationDeadline, setMostRecentApplicationDeadline] =
+    React.useState(null);
 
   const { user } = useAuthContext();
   const { executeRequest: get } = useGet();
@@ -135,6 +137,61 @@ export default function Companies() {
             attributeName={"CompanyName"}
             allowUnauthenticated
           />
+          <SingleDate
+            handleSubmit={handleSubmit}
+            attributeName={"ApplicationDeadline"}
+            maxLength={64}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: { xs: "0rem" },
+              marginTop: { xs: "1rem", sm: "0rem" },
+            }}
+            additionalFieldStyles={{
+              marginRight: { xs: "1rem" },
+            }}
+            date={mostRecentApplicationDeadline}
+            setDate={setMostRecentApplicationDeadline}
+          />
+          {user && onlyShowJobsITrack && (
+            <SingleDate
+              handleSubmit={handleSubmit}
+              attributeName={"EarliestDateToApply"}
+              maxLength={64}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: { xs: "0rem" },
+                marginTop: { xs: "1rem", sm: "0rem" },
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+              date={mostRecentEarliestDateToApply}
+              setDate={setMostRecentEarliestDateToApply}
+            />
+          )}
+          {user && onlyShowJobsITrack && (
+            <SingleDate
+              handleSubmit={handleSubmit}
+              attributeName={"LatestDateToApply"}
+              maxLength={64}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: { xs: "0rem" },
+                marginTop: { xs: "1rem", sm: "0rem" },
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+              date={mostRecentLatestDateToApply}
+              setDate={setMostRecentLatestDateToApply}
+            />
+          )}
           <IconButton type="submit">
             <SearchIcon color="primary" />
           </IconButton>
@@ -154,7 +211,12 @@ export default function Companies() {
   );
 }
 
-function Company({ company, onlyShowJobsITrack }) {
+function Company({
+  company,
+  onlyShowJobsITrack,
+  mostRecentEarliestDateToApply,
+  mostRecentLatestDateToApply,
+}) {
   const { user } = useAuthContext();
   const { register, handleSubmit, setValue } = useForm();
   const { executeRequest: get } = useGet();
@@ -183,7 +245,12 @@ function Company({ company, onlyShowJobsITrack }) {
       }
     };
     fetchTrackedJobs();
-  }, [user, company]);
+  }, [
+    user,
+    company,
+    mostRecentEarliestDateToApply,
+    mostRecentLatestDateToApply,
+  ]);
 
   React.useEffect(() => {
     /*
