@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
-const { Company } = require("./companyModel");
 
 const Job = sequelize.define(
   "JOB",
@@ -47,19 +46,6 @@ const Job = sequelize.define(
     timestamps: false,
   }
 );
-
-Job.belongsTo(Company, {
-  foreignKey: "CompanyName",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-
-Company.hasMany(Job, {
-  foreignKey: "CompanyName",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-  as: "Jobs",
-});
 
 // ---
 
@@ -130,7 +116,6 @@ Job.hasMany(JobResponsibility, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-
 // ---
 
 /*
@@ -141,3 +126,62 @@ sequelize.sync();
 exports.Job = Job;
 exports.JobQualification = JobQualification;
 exports.JobResponsibility = JobResponsibility;
+const { Company } = require("./companyModel");
+const { Interview } = require("./interviewModel");
+
+Job.belongsTo(Company, {
+  as: "Companies",
+  foreignKey: "CompanyName",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+Company.hasMany(Job, {
+  as: "Jobs",
+  foreignKey: "CompanyName",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+//Job has a many-to-many relationship with interview
+const JobMentionsInterview = sequelize.define(
+  "MENTIONS",
+  {
+    PositionID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      references: {
+        model: Job,
+        key: "PositionID",
+      },
+    },
+    InterviewID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      references: {
+        model: Interview,
+        key: "InterviewID",
+      },
+    },
+  },
+  {
+    timestamps: false,
+  }
+);
+
+Job.belongsToMany(Interview, {
+  as: "Interviews",
+  through: JobMentionsInterview,
+  foreignKey: "PositionID",
+  otherKey: "InterviewID",
+});
+Interview.belongsToMany(Job, {
+  as: "Jobs",
+  through: JobMentionsInterview,
+  foreignKey: "InterviewID",
+  otherKey: "PositionID",
+});
+
+exports.JobMentionsInterview = JobMentionsInterview;

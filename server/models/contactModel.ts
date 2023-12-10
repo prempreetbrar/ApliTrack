@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
-const { Company } = require("./companyModel");
+
 
 const Contact = sequelize.define(
   "CONTACT",
@@ -93,15 +93,14 @@ const ContactPhone = sequelize.define(
   {
     ContactID: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       primaryKey: true,
+      allowNull: false,
       references: {
         model: Contact,
         key: "ContactID",
       },
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
-      unique: "actions_unique",
     },
     Phone: {
       type: DataTypes.STRING(16),
@@ -149,6 +148,18 @@ const ContactWorksAtCompany = sequelize.define(
     otherKey: "CompanyName",
   }
 );
+
+// definition of many-to-many relationship b/t Contact and Company
+
+
+/*
+  If any changes occurred to the model, sequelize.sync just ensures that they are
+  applied to the database.
+*/
+sequelize.sync();
+const {Company} = require("./companyModel");
+const { Interview } = require("./interviewModel");
+
 Contact.belongsToMany(Company, {
   through: ContactWorksAtCompany,
   as: "Companies",
@@ -162,14 +173,44 @@ Company.belongsToMany(Contact, {
   otherKey: "ContactID",
 });
 
-// definition of many-to-many relationship b/t Contact and Company
+//contact has a many-to-many relationship with interview
+const ContactAttendsInterview = sequelize.define(
+  "ATTENDS",
+  {
+      ContactID: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          allowNull: false,
+          references: {
+              model: Contact,
+              key: "ContactID",
+          }
+      },
+      InterviewID: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          allowNull: false,
+          references: {
+              model: Interview,
+              key: "InterviewID",
+          }
+      }
+  },
+  {
+      timestamps: false,
+  }
+);
 
-/*
-  If any changes occurred to the model, sequelize.sync just ensures that they are
-  applied to the database.
-*/
-sequelize.sync();
+Contact.belongsToMany(Interview, {
+  through: ContactAttendsInterview,
+  foreignKey: "ContactID",
+});
+Interview.belongsToMany(Contact, {
+  through: ContactAttendsInterview,
+  foreignKey: "InterviewID",
+});
 exports.Contact = Contact;
 exports.ContactEmail = ContactEmail;
 exports.ContactPhone = ContactPhone;
 exports.ContactWorksAtCompany = ContactWorksAtCompany;
+exports.ContactAttendsInterview = ContactAttendsInterview;

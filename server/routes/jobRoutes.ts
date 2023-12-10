@@ -7,6 +7,7 @@ const multer = require("multer");
 
 const upload = multer({ dest: "../uploads/jobPosts" });
 
+
 router
   .route("")
   .post(
@@ -28,10 +29,16 @@ router
   .route("/:PositionID")
   .get(jobController.addFilterID, jobController.getJob);
 
+
+router.route("/responsibilities")
+.post(jobController.createJobResp)
+.delete(jobController.deleteJobResp);
+
 router
   .route("/qualifications")
   .post(authController.checkIfLoggedIn, jobController.createJobQual)
   .delete(authController.checkIfLoggedIn, jobController.deleteJobQual);
+
 
 router
   .route("/responsibilities")
@@ -41,5 +48,6 @@ router
 router
   .route("/company-jobs")
   .get(jobController.addFilterCompany, jobController.getAllCompanyJobs);
+
 
 module.exports = router;

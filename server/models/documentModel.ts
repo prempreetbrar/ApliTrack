@@ -5,15 +5,21 @@ const { Applicant } = require("./applicantModel");
 const Document = sequelize.define(
   "DOCUMENT",
   {
+    DocumentID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     ApplicantUsername: {
       type: DataTypes.STRING(32),
       allowNull: false,
-      primaryKey: true,
+      //unique: 'uniqueTag',
     },
     DocFileName: {
       type: DataTypes.STRING(32),
       allowNull: false,
-      primaryKey: true,
+      unique: 'uniqueTag',
     },
     DocType: {
       type: DataTypes.STRING(32),
@@ -25,6 +31,7 @@ const Document = sequelize.define(
     },
   },
   {
+    initialAutoIncrement: 1,
     timestamps: false,
   }
 );

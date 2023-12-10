@@ -1,20 +1,19 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../server");
-const { Applicant } = require("./applicantModel");
 
 const Interview = sequelize.define(
   "INTERVIEW",
   {
     InterviewID: {
       type: DataTypes.INTEGER,
-      autoIncrement: false,
       primaryKey: true,
       allowNull: false,
+      //autoIncrement: true,
       defaultValue: 0,
     },
     ApplicantUsername: {
       type: DataTypes.STRING(32),
-      primaryKey: true,
+      //primaryKey: true,
       allowNull: false,
     },
     Stage: {
@@ -25,31 +24,16 @@ const Interview = sequelize.define(
       type: DataTypes.TEXT, //change maybde to date only
       allowNull: false,
     },
-    //   ApplicationName: {
-    //     type: DataTypes.STRING(32),
-    //     allowNull: false,
-    //   },
+    ApplicationID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
+    initialAutoIncrement: 1,
     timestamps: false,
   }
 );
-
-//Applicant has a one-to-many relationship with Interview
-Applicant.hasMany(Interview, {
-  foreignKey: "ApplicantUsername",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-Interview.belongsTo(Applicant, {
-  foreignKey: "ApplicantUsername",
-});
-
-//   APPLICATION.hasMany(INTERVIEW, {
-//     foreignKey: 'ApplicationName',
-//     onDelete: 'CASCADE',
-//     onUpdate: 'CASCADE',
-//   });
 
 // Implementing a beforeCreate hook to manually increment the InterviewID
 Interview.beforeCreate(async (instance, options) => {
@@ -67,3 +51,28 @@ Interview.beforeCreate(async (instance, options) => {
 
 sequelize.sync();
 exports.Interview = Interview;
+
+const { Applicant } = require("./applicantModel");
+const { Application } = require("./applicationModel");
+
+//Applicant has a one-to-many relationship with Interview
+Applicant.hasMany(Interview, {
+  foreignKey: "ApplicantUsername",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Interview.belongsTo(Applicant, {
+  foreignKey: "ApplicantUsername",
+});
+
+//Application has a one-to-many relationship with Interview
+Application.hasMany(Interview, {
+  foreignKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Interview.belongsTo(Application, {
+  foreignKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});

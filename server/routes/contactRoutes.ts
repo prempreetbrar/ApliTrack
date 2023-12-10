@@ -44,4 +44,9 @@ router
     contactController.updateContactWorksAtCompany
   );
 
+//TODO: CHECK
+router.route("/attends")
+.post(authController.checkIfLoggedIn, contactController.createContactAttendsInterview)
+.delete(authController.checkIfLoggedIn, contactController.deleteContactAttendsInterview);
+
 module.exports = router;
