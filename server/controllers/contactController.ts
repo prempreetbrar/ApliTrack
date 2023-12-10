@@ -53,7 +53,7 @@ exports.addFilter = errorHandling.catchAsync(
       request.body.filter.LastContactDate = {
         [Op.between]: [
           request.query.EarliestLastContactDate,
-          request.query.LastLastContactDate,
+          request.query.LatestLastContactDate,
         ],
       };
     } else if (
@@ -61,14 +61,14 @@ exports.addFilter = errorHandling.catchAsync(
       request.query.EarliestLastContactDate !== "MM/DD/YYYY"
     ) {
       request.body.filter.LastContactDate = {
-        [Op.gte]: [request.query.EarliestLastContactDate],
+        [Op.gte]: request.query.EarliestLastContactDate,
       };
     } else if (
       request.query.LatestLastContactDate &&
       request.query.LatestLastContactDate !== "MM/DD/YYYY"
     ) {
       request.body.filter.LastContactDate = {
-        [Op.lte]: [request.query.LatestLastContactDate],
+        [Op.lte]: request.query.LatestLastContactDate,
       };
     }
 
