@@ -7,12 +7,12 @@ const router = express.Router();
 router
   .route("")
   .get(companyController.getAllCompanies)
-  .post(authController.checkIfLoggedIn, companyController.createCompany);
+  .post(authController.checkIfLoggedIn, companyController.createCompany)
+  .patch(authController.checkIfLoggedIn, companyController.updateCompany)
+  .delete(companyController.deleteCompany);
 
 router
-  .route("/details")
-  .delete(companyController.deleteCompany)
-  .put(companyController.updateCompany)
+  .route("/company")
   .get(companyController.addFilter, companyController.getCompany);
 
 module.exports = router;

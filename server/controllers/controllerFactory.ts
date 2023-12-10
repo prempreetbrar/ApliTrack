@@ -53,7 +53,9 @@ exports.getOne = (Model) => {
 
 exports.getAll = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
-    console.log("FILTER!", request.body.filter);
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
 
     const documents = await Model.findAll({
       where: request.body.filter,
