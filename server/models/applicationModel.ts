@@ -1,6 +1,9 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../server");
 const { Applicant } = require("./applicantModel");
+const { Document } = require("./documentModel");
+
+//TODO: changes from main creating errors
 const {Job} = require("./jobModel");
 
 const Application = sequelize.define(
@@ -36,6 +39,7 @@ const Application = sequelize.define(
     },
   },
   {
+    initialAutoIncrement: 1,
     timestamps: false,
   }
 );
@@ -116,10 +120,8 @@ Appl_Category.belongsTo(Application, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
-// Appl_Category.belongsTo(Applicant, {
-//     foreignKey: 'ApplicantUsername',
-// });
 
+//TODO: changes from main creating errors
 // definition of many-to-many relationship b/t Application and Job
 const ApplicationCorrespondsToJob = sequelize.define(
   'CORRESPONDS_TO', 
@@ -134,10 +136,47 @@ Application.belongsToMany(Job, {through: ApplicationCorrespondsToJob});
 Job.belongsToMany(Application, {through: ApplicationCorrespondsToJob});
 
 //Application has a many-to-many relationship with Document
+const ApplicationSubmitWithDoc = sequelize.define(
+  "SUBMIT_WITH",
+  {
+      ApplicationID: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          allowNull: false,
+          references: {
+              model: Application,
+              key: "ApplicationID",
+          }
+      },
+      DocumentID: {
+          type: DataTypes.STRING(32),
+          primaryKey: true,
+          allowNull: false,
+          references: {
+              model: Document,
+              key: "DocumentID",
+          }
+      }
+  },
+  {
+      timestamps: false,
+  }
+);
 
+Document.belongsToMany(Application, {
+  through: ApplicationSubmitWithDoc,
+  foreignKey: "DocumentID",
+});
+Application.belongsToMany(Document, {
+  through: ApplicationSubmitWithDoc,
+  foreignKey: "ApplicationID",
+});
 
 sequelize.sync();
 exports.Application = Application;
 exports.Appl_Relevant_URL = Appl_Relevant_URL;
 exports.Appl_Category = Appl_Category;
+exports.ApplicationSubmitWithDoc = ApplicationSubmitWithDoc;
+
+//TODO: changes from main creating errors
 exports.ApplicationCorrespondsToJob = ApplicationCorrespondsToJob;
