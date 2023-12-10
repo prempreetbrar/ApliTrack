@@ -13,6 +13,7 @@ export default function SingleForm({
   additionalStyles,
   additionalFieldStyles,
   isTextArea,
+  allowUnauthenticated,
 }) {
   const { user } = useAuthContext();
   return (
@@ -28,7 +29,7 @@ export default function SingleForm({
               ...additionalFieldStyles,
             }}
             minRows={3}
-            disabled={!user}
+            disabled={!user && !allowUnauthenticated}
           />
         </FormControl>
       )}
@@ -44,7 +45,7 @@ export default function SingleForm({
           inputProps={{
             maxLength,
           }}
-          disabled={!user}
+          disabled={!user && !allowUnauthenticated}
         />
       )}
       {actionOnAttribute && user && (

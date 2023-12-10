@@ -5,13 +5,19 @@ import {
   Box,
   Button,
   Checkbox,
+  FormControl,
+  Radio,
   FormControlLabel,
   Input,
   Tooltip,
   Typography,
+  IconButton,
+  Switch,
+  RadioGroup,
 } from "@mui/material";
 import BusinessIcon from "@mui/icons-material/Business";
 import WorkIcon from "@mui/icons-material/Work";
+import SearchIcon from "@mui/icons-material/Search";
 
 import { useCreate, useDelete, useGet, useUpdate } from "hooks/useHttpMethod";
 
@@ -25,9 +31,16 @@ import SingleDate from "components/SingleDate";
 import useAuthContext from "hooks/useAuthContext";
 
 export default function Companies() {
-  const { executeRequest: get } = useGet();
-
   const [companies, setCompanies] = React.useState([]);
+
+  const { user } = useAuthContext();
+  const { executeRequest: get } = useGet();
+  const { register, handleSubmit, setValue } = useForm();
+  const { executeHandle } = useHandleOperation(
+    undefined,
+    setCompanies,
+    companies
+  );
 
   React.useEffect(() => {
     const fetchCompanies = async () => {
@@ -40,8 +53,89 @@ export default function Companies() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  async function handleGet(data) {
+    executeHandle(
+      "get",
+      get,
+      data,
+      "http://localhost:3000/api/companies",
+      null,
+      false,
+      null,
+      {}
+    );
+  }
+
   return (
     <MainBox>
+      <Box
+        display="flex"
+        alignItems="center"
+        marginBottom="1rem"
+        justifyContent="space-between"
+      >
+        <form onSubmit={handleSubmit(handleGet)}>
+          {user && (
+            <FormControlLabel
+              control={
+                <Switch
+                // checked={onlyShowContactsIKnow}
+                // onChange={(event) => {
+                //   setOnlyShowContactsIKnow(event.target.checked);
+                //   if (!event.target.checked) {
+                //     setMostRecentEarliestLastContactDate(null);
+                //     setMostRecentLatestLastContactDate(null);
+                //   }
+                // }}
+                />
+              }
+              label="Only Show Jobs I Track"
+            />
+          )}
+
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="ASC"
+              name="radio-buttons-group"
+              sx={{ display: "flex" }}
+            >
+              <FormControlLabel
+                value="ASC"
+                control={<Radio />}
+                label="Sort Ascending"
+                labelPlacement="start"
+              />
+              <FormControlLabel
+                value="DESC"
+                control={<Radio />}
+                label="Sort Descending"
+                labelPlacement="start"
+              />
+            </RadioGroup>
+          </FormControl>
+
+          <Typography
+            variant="h3"
+            sx={{ fontSize: "1rem", marginRight: "1rem" }}
+          >
+            Search by:
+          </Typography>
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            additionalStyles={{
+              marginTop: { xs: "1rem", sm: "0rem" },
+            }}
+            attributeName={"CompanyName"}
+            allowUnauthenticated
+          />
+          <IconButton type="submit">
+            <SearchIcon color="primary" />
+          </IconButton>
+        </form>
+      </Box>
+
       {companies &&
         companies.map((company, index) => (
           <Company key={index} company={company} />

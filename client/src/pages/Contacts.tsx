@@ -163,7 +163,7 @@ export default function Contacts() {
             }
             label="Only Show Contacts I Know"
           />
-        )}{" "}
+        )}
         <form onSubmit={handleSubmit(handleGet)}>
           <Box
             display="flex"
