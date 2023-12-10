@@ -53,6 +53,7 @@ Company.hasMany(Job, {
   foreignKey: "CompName",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
+  as: "Jobs",
 });
 
 // ---
