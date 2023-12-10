@@ -22,6 +22,7 @@ import SingleForm from "components/SingleForm";
 import ChipDisplayer from "components/ChipDisplayer";
 import useHandleOperation from "hooks/useHandleOperation";
 import SingleDate from "components/SingleDate";
+import useAuthContext from "hooks/useAuthContext";
 
 export default function Companies() {
   const { executeRequest: get } = useGet();
@@ -51,9 +52,35 @@ export default function Companies() {
 }
 
 function Company({ company }) {
+  const { user } = useAuthContext();
   const { register, handleSubmit, setValue } = useForm();
+  const { executeRequest: get } = useGet();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
-  const [jobs, setJobs] = React.useState(company?.jobs);
+  const [jobs, setJobs] = React.useState(company?.jobs || []);
+  const [trackedJobs, setTrackedJobs] = React.useState({});
+
+  React.useEffect(() => {
+    const fetchTrackedJobs = async () => {
+      if (user && company) {
+        const trackedResponse = await get(
+          {
+            // EarliestLastContactDate: mostRecentEarliestLastContactDate,
+            // LatestLastContactDate: mostRecentLatestLastContactDate,
+          },
+          "http://localhost:3000/api/applicants/tracks-job"
+        );
+
+        const hashtableTrackedJobs = {};
+        for (const job of trackedResponse.tracks) {
+          hashtableTrackedJobs[job.PositionID] = {
+            ...job,
+          };
+        }
+        setTrackedJobs(hashtableTrackedJobs);
+      }
+    };
+    fetchTrackedJobs();
+  }, [user, company]);
 
   React.useEffect(() => {
     /*
@@ -167,7 +194,20 @@ function Company({ company }) {
           />
         </Box>
         {jobs?.map((job, index) => (
-          <Job key={index} company={company} job={job} />
+          <Job
+            key={index}
+            index={index}
+            company={company}
+            job={job}
+            isTracked={job.PositionID in trackedJobs}
+            trackedJobs={trackedJobs}
+            setTrackedJobs={setTrackedJobs}
+            Notes={trackedJobs[job.PositionID]?.Notes}
+            DateToApply={trackedJobs[job.PositionID]?.DateToApply}
+            // handleOpenDeleteConfirmationDialog={
+            //   handleOpenDeleteConfirmationDialog
+            // }
+          />
         ))}
         <NewJobForm
           companyName={company.CompanyName}
@@ -179,10 +219,20 @@ function Company({ company }) {
   );
 }
 
-function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
+function Job({
+  company,
+  job,
+  index,
+  trackedJobs,
+  setTrackedJobs,
+  isTracked,
+  Notes,
+  DateToApply,
+}) {
   const [responsibilitiesArray, setResponsibilitiesArray] = React.useState([]);
   const [qualificationsArray, setQualificationsArray] = React.useState([]);
 
+  const { user } = useAuthContext();
   const { register, handleSubmit, setValue, reset, getValues } = useForm();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
   const { executeRequest: get, isLoading: getIsLoading } = useGet();
@@ -207,13 +257,17 @@ function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
   const [applicationDeadline, setApplicationDeadline] = React.useState(
     job.ApplicationDeadline
   );
-  const [stillTracks, setStillTracks] = React.useState(false);
+  const [stillTracks, setStillTracks] = React.useState(isTracked);
+  React.useEffect(() => {
+    setStillTracks(isTracked);
+  }, [isTracked]);
 
+  const [date, setDate] = React.useState(DateToApply);
   const [currentlyUploadedJobPostFile, setCurrentlyUploadedJobPostFile] =
     React.useState(job?.JobPostFile?.split("/")?.pop());
 
   async function updateJob(data) {
-    const JobPostFile = data.JobPostFile[0];
+    const JobPostFile = data?.JobPostFile?.[0];
     const newData = { ...data };
     delete newData.JobPostFile;
     if (JobPostFile !== "/") {
@@ -233,7 +287,7 @@ function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
         },
       }
     );
-    if (success && JobPostFile !== "/") {
+    if (success && JobPostFile && JobPostFile !== "/") {
       setCurrentlyUploadedJobPostFile(JobPostFile.name);
     }
   }
@@ -302,6 +356,11 @@ function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
     }
   }, [job]);
 
+  React.useEffect(() => {
+    setDate(DateToApply);
+    setValue("Notes", Notes);
+  }, [DateToApply, Notes]);
+
   async function handleCreateQualification() {
     const success = await executeHandleQualifications(
       "create",
@@ -369,6 +428,18 @@ function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
       setStillTracks(false);
     }
   }
+
+  function updateTracks(data) {
+    update(
+      {
+        PositionID: job.PositionID,
+        ...data,
+        DateToApply: date,
+      },
+      "http://localhost:3000/api/applicants/tracks-job"
+    );
+  }
+
   return (
     <>
       <form
@@ -378,12 +449,12 @@ function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
           gridTemplateAreas: `
             'PositionName ApplicationDeadline Qualification Responsibility' 
             'PositionType Salary Qualification Responsibility'
-            'Description Description Qualification Responsibility'
-            'Description Description Qualification Responsibility'
-            'JobPostFile JobPostFile TrackThisJob CheckMark'
-            'JobPostFile JobPostFile DateToApply DateToApply'
-            'JobPostFile JobPostFile Notes Notes'
-            'JobPostFile JobPostFile Notes Notes'
+            '. .  Qualification Responsibility'
+            'Description Description Track Track'
+            'Description Description Track Track'
+            'JobPostFile JobPostFile Track Track'
+            'JobPostFile JobPostFile Track Track'
+            'JobPostFile JobPostFile Track Track'
             '. Update Update .'
           `,
           marginTop: "2rem",
@@ -474,23 +545,25 @@ function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
             type="file"
             name="JobPostFile"
           />
-          {job.JobPostFile && (
-            <Tooltip
-              title={job.JobPostFile.split("/").pop()}
-              placement="top"
-              arrow
-            >
+          {currentlyUploadedJobPostFile && (
+            <Tooltip title={currentlyUploadedJobPostFile} placement="top" arrow>
               <Typography
                 noWrap
                 sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
               >
-                Existing File: {job.JobPostFile.split("/").pop()}
+                Existing File: {currentlyUploadedJobPostFile}
               </Typography>
             </Tooltip>
           )}
         </Box>
 
-        <Box sx={{ gridArea: "Qualification", marginLeft: "2rem" }}>
+        <Box
+          sx={{
+            gridArea: "Qualification",
+            marginLeft: "2rem",
+            marginTop: "-1.5rem",
+          }}
+        >
           <Typography>Qualifications</Typography>
           <ChipDisplayer
             onUpdateSectionArray={qualificationsArray}
@@ -507,7 +580,7 @@ function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
           />
         </Box>
 
-        <Box sx={{ gridArea: "Responsibility" }}>
+        <Box sx={{ gridArea: "Responsibility", marginTop: "-1.6rem" }}>
           <Typography sx={{ alignSelf: "flex-start" }}>
             Responsibilities
           </Typography>
@@ -526,11 +599,49 @@ function Job({ company, job, index, trackedJobs, setTrackedJobs }) {
           />
         </Box>
 
-        <FormControlLabel
-          sx={{ gridArea: "TrackThisJob" }}
-          control={<Checkbox checked={stillTracks} onChange={handleTracks} />}
-          label="Track this job"
-        />
+        {user && (
+          <Box
+            sx={{
+              gridArea: "Track",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <FormControlLabel
+              control={
+                <Checkbox checked={stillTracks} onChange={handleTracks} />
+              }
+              label="Track this job"
+            />
+            {stillTracks && (
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"DateToApply"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                date={date || null}
+                setDate={setDate}
+              />
+            )}
+            {stillTracks && (
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                actionOnAttribute={updateTracks}
+                attributeName={"Notes"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+                isLoading={updateIsLoading}
+                isTextArea
+              />
+            )}
+          </Box>
+        )}
 
         <Button
           sx={{

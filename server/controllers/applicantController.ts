@@ -43,6 +43,7 @@ exports.updateApplicantKnowsContact = factory.updateOneWithKey(
   Applicant.ApplicantKnowsContact
 );
 
+exports.getApplicantTracksJob = factory.getAll(Applicant.ApplicantTracksJob);
 exports.createApplicantTracksJob = factory.createOne(
   Applicant.ApplicantTracksJob
 );
