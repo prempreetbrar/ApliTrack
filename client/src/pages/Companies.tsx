@@ -32,6 +32,11 @@ import useAuthContext from "hooks/useAuthContext";
 
 export default function Companies() {
   const [companies, setCompanies] = React.useState([]);
+  const [onlyShowJobsITrack, setOnlyShowJobsITrack] = React.useState(false);
+  const [mostRecentEarliestDateToApply, setMostRecentEarliestDateToApply] =
+    React.useState(null);
+  const [mostRecentLatestDateToApply, setMostRecentLatestDateToApply] =
+    React.useState(null);
 
   const { user } = useAuthContext();
   const { executeRequest: get } = useGet();
@@ -79,14 +84,14 @@ export default function Companies() {
             <FormControlLabel
               control={
                 <Switch
-                // checked={onlyShowContactsIKnow}
-                // onChange={(event) => {
-                //   setOnlyShowContactsIKnow(event.target.checked);
-                //   if (!event.target.checked) {
-                //     setMostRecentEarliestLastContactDate(null);
-                //     setMostRecentLatestLastContactDate(null);
-                //   }
-                // }}
+                  checked={onlyShowJobsITrack}
+                  onChange={(event) => {
+                    setOnlyShowJobsITrack(event.target.checked);
+                    if (!event.target.checked) {
+                      setMostRecentEarliestDateToApply(null);
+                      setMostRecentLatestDateToApply(null);
+                    }
+                  }}
                 />
               }
               label="Only Show Jobs I Track"
@@ -138,14 +143,18 @@ export default function Companies() {
 
       {companies &&
         companies.map((company, index) => (
-          <Company key={index} company={company} />
+          <Company
+            key={index}
+            company={company}
+            onlyShowJobsITrack={onlyShowJobsITrack}
+          />
         ))}
       <NewCompanyForm companies={companies} setCompanies={setCompanies} />
     </MainBox>
   );
 }
 
-function Company({ company }) {
+function Company({ company, onlyShowJobsITrack }) {
   const { user } = useAuthContext();
   const { register, handleSubmit, setValue } = useForm();
   const { executeRequest: get } = useGet();
@@ -287,22 +296,28 @@ function Company({ company }) {
             sx={{ marginLeft: "1rem", width: "2rem", height: "2rem" }}
           />
         </Box>
-        {jobs?.map((job, index) => (
-          <Job
-            key={index}
-            index={index}
-            company={company}
-            job={job}
-            isTracked={job.PositionID in trackedJobs}
-            trackedJobs={trackedJobs}
-            setTrackedJobs={setTrackedJobs}
-            Notes={trackedJobs[job.PositionID]?.Notes}
-            DateToApply={trackedJobs[job.PositionID]?.DateToApply}
-            // handleOpenDeleteConfirmationDialog={
-            //   handleOpenDeleteConfirmationDialog
-            // }
-          />
-        ))}
+        {jobs?.map((job, index) => {
+          if (onlyShowJobsITrack && !(job.PositionID in trackedJobs)) {
+            return <></>;
+          } else {
+            return (
+              <Job
+                key={index}
+                index={index}
+                company={company}
+                job={job}
+                isTracked={job.PositionID in trackedJobs}
+                trackedJobs={trackedJobs}
+                setTrackedJobs={setTrackedJobs}
+                Notes={trackedJobs[job.PositionID]?.Notes}
+                DateToApply={trackedJobs[job.PositionID]?.DateToApply}
+                // handleOpenDeleteConfirmationDialog={
+                //   handleOpenDeleteConfirmationDialog
+                // }
+              />
+            );
+          }
+        })}
         <NewJobForm
           companyName={company.CompanyName}
           jobs={jobs}
