@@ -1,11 +1,22 @@
 const express = require("express");
 const jobController = require("../controllers/jobController");
 const authController = require("../controllers/authController");
+const fs = require("fs");
 
 const router = express.Router();
 const multer = require("multer");
 
-const upload = multer({ dest: "./uploads/jobPosts" });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/jobPosts");
+  },
+  filename: function (req, file, cb) {
+    fs.readdir("./uploads/jobPosts", (err, files) => {
+      cb(null, files.length + 1 + "-" + file.originalname);
+    });
+  },
+});
+const upload = multer({ storage: storage });
 
 router
   .route("")
