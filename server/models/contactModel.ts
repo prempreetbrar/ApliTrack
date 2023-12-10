@@ -148,18 +148,6 @@ const ContactWorksAtCompany = sequelize.define(
     otherKey: "CompanyName",
   }
 );
-Contact.belongsToMany(Company, {
-  through: ContactWorksAtCompany,
-  as: "Companies",
-  foreignKey: "ContactID",
-  otherKey: "CompanyName",
-});
-Company.belongsToMany(Contact, {
-  as: "Contacts",
-  through: ContactWorksAtCompany,
-  foreignKey: "CompanyName",
-  otherKey: "ContactID",
-});
 
 // definition of many-to-many relationship b/t Contact and Company
 
@@ -172,8 +160,18 @@ sequelize.sync();
 const {Company} = require("./companyModel");
 const { Interview } = require("./interviewModel");
 
-Contact.belongsToMany(Company, {through: ContactWorksAtCompany});
-Company.belongsToMany(Contact, {through: ContactWorksAtCompany});
+Contact.belongsToMany(Company, {
+  through: ContactWorksAtCompany,
+  as: "Companies",
+  foreignKey: "ContactID",
+  otherKey: "CompanyName",
+});
+Company.belongsToMany(Contact, {
+  as: "Contacts",
+  through: ContactWorksAtCompany,
+  foreignKey: "CompanyName",
+  otherKey: "ContactID",
+});
 
 //contact has a many-to-many relationship with interview
 const ContactAttendsInterview = sequelize.define(

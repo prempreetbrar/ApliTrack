@@ -263,15 +263,9 @@ exports.ApplicantCompetition = ApplicantCompetition;
 exports.ApplicantKnowsContact = ApplicantKnowsContact;
 exports.ApplicantTracksJob = ApplicantTracksJob;
 //TODO: changes from main creating errors
-const User = require("./userModel");
+const {User} = require("./userModel");
 const {Contact} = require("./contactModel");
 const {Job} = require("./jobModel");
-
-Applicant.belongsToMany(Contact, {through: ApplicantKnowsContact});
-Contact.belongsToMany(Applicant, {through: ApplicantKnowsContact});
-
-Applicant.belongsToMany(Job, {through: ApplicantTracksJob});
-Job.belongsToMany(Applicant, {through: ApplicantTracksJob});
 
 User.hasMany(Applicant, {
   foreignKey: "Username",
@@ -284,3 +278,19 @@ Applicant.belongsTo(User, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+
+Applicant.belongsToMany(Contact, {
+  as: "Contacts",
+  through: ApplicantKnowsContact,
+  foreignKey: "Username",
+  otherKey: "ContactID",
+});
+Contact.belongsToMany(Applicant, {
+  as: "Applicants",
+  through: ApplicantKnowsContact,
+  foreignKey: "ContactID",
+  otherKey: "Username",
+});
+
+Applicant.belongsToMany(Job, {through: ApplicantTracksJob});
+Job.belongsToMany(Applicant, {through: ApplicantTracksJob});
