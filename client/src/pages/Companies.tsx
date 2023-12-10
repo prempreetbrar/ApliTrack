@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 import { Box, Button, Input, Tooltip, Typography } from "@mui/material";
+import BusinessIcon from "@mui/icons-material/Business";
+import WorkIcon from "@mui/icons-material/Work";
 
 import { useCreate, useDelete, useGet, useUpdate } from "hooks/useHttpMethod";
 
@@ -71,75 +73,99 @@ function Company({ company }) {
     <MainPaper
       overrideStyles={{ flexDirection: "column", alignItems: "flex-start" }}
     >
-      <Typography variant="h2" sx={{ fontSize: "3rem", fontWeight: "bold" }}>
-        {company.CompanyName}
-      </Typography>
+      <Box display="flex" flexDirection="row" alignItems="center">
+        <Typography
+          variant="h2"
+          sx={{ fontSize: "3rem", fontWeight: "bold", display: "inline-block" }}
+        >
+          {company.CompanyName}
+        </Typography>
+        <BusinessIcon
+          sx={{ marginLeft: "1rem", width: "4rem", height: "4rem" }}
+        />
 
-      <Box display="flex" flexDirection="row">
-        <form onSubmit={handleSubmit(updateCompany)}>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <SingleForm
-              register={register}
-              attributeName={"Industry"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: "2.5rem",
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "0rem" },
-              }}
-            />
-            <SingleForm
-              register={register}
-              attributeName={"HomePageURL"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: "1rem",
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "0rem" },
-              }}
-            />
-            <SingleForm
-              register={register}
-              attributeName={"Description"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: "1rem",
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "0rem" },
-              }}
-              isTextArea
-            />
-            <Button sx={{ marginTop: "1rem" }} type="submit" variant="outlined">
-              Update
-            </Button>
-          </Box>
+        <form
+          onSubmit={handleSubmit(updateCompany)}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            marginLeft: "5rem",
+          }}
+        >
+          <SingleForm
+            register={register}
+            attributeName={"Industry"}
+            maxLength={64}
+            isLoading={updateIsLoading}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            additionalFieldStyles={{
+              marginRight: { xs: "1rem" },
+            }}
+          />
+          <SingleForm
+            register={register}
+            attributeName={"HomePageURL"}
+            maxLength={64}
+            isLoading={updateIsLoading}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            additionalFieldStyles={{
+              marginRight: { xs: "1rem" },
+            }}
+          />
+          <SingleForm
+            register={register}
+            attributeName={"Description"}
+            maxLength={64}
+            isLoading={updateIsLoading}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            additionalFieldStyles={{
+              marginRight: { xs: "1rem" },
+            }}
+            isTextArea
+          />
+          <Button
+            sx={{ marginTop: "1rem", height: "min-content" }}
+            type="submit"
+            variant="outlined"
+          >
+            Update
+          </Button>
         </form>
-        <Box marginLeft="2.5rem">
-          <Typography sx={{ fontWeight: "bold" }}>Jobs</Typography>
-          {jobs?.map((job, index) => (
-            <Job key={index} company={company} job={job} />
-          ))}
-          <NewJobForm
-            companyName={company.CompanyName}
-            jobs={jobs}
-            setJobs={setJobs}
+      </Box>
+
+      <Box marginLeft="2.5rem">
+        <Box display="flex" alignItems="center">
+          <Typography
+            variant="h3"
+            sx={{ fontWeight: "bold", fontSize: "2rem" }}
+          >
+            Jobs
+          </Typography>
+          <WorkIcon
+            sx={{ marginLeft: "1rem", width: "2rem", height: "2rem" }}
           />
         </Box>
+        {jobs?.map((job, index) => (
+          <Job key={index} company={company} job={job} />
+        ))}
+        <NewJobForm
+          companyName={company.CompanyName}
+          jobs={jobs}
+          setJobs={setJobs}
+        />
       </Box>
     </MainPaper>
   );
@@ -298,169 +324,173 @@ function Job({ company, job, index }) {
 
   return (
     <>
-      <form onSubmit={handleSubmit(updateJob)}>
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          marginBottom="5rem"
-        >
-          <Box display="flex" flexDirection="row" alignItems="flex-start">
-            <Box>
-              <SingleForm
-                register={register}
-                attributeName={"PositionName"}
-                maxLength={64}
-                isLoading={updateIsLoading}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: "1rem",
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "0rem" },
-                }}
-              />
-              <SingleForm
-                register={register}
-                attributeName={"Description"}
-                maxLength={64}
-                isLoading={updateIsLoading}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: "1rem",
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "0rem" },
-                }}
-                isTextArea
-              />
-              <SingleForm
-                register={register}
-                attributeName={"PositionType"}
-                maxLength={64}
-                isLoading={updateIsLoading}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: "1rem",
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "0rem" },
-                }}
-              />
-              <SingleForm
-                register={register}
-                attributeName={"Salary"}
-                maxLength={64}
-                isLoading={updateIsLoading}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: "1rem",
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "0rem" },
-                }}
-              />
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"ApplicationDeadline"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem" },
-                }}
-                date={applicationDeadline}
-                setDate={setApplicationDeadline}
-              />
-            </Box>
-            <Box
-              display="flex"
-              flexDirection="column"
-              paddingLeft="2.5rem"
-              paddingRight="2.5rem"
-            >
-              <Typography>Qualifications</Typography>
-              <ChipDisplayer
-                onUpdateSectionArray={qualificationsArray}
-                attributeName={"Qualification"}
-                handleDelete={handleDeleteQualifications}
-              />
-              <NewEntry
-                attributeName={"Qualification"}
-                maxCreateLength={64}
-                handleCreate={handleCreateQualification}
-                createIsLoading={createIsLoading}
-                register={register}
-              />
-              <Typography sx={{ alignSelf: "flex-start", marginTop: "2.5rem" }}>
-                Responsibilities
-              </Typography>
-              <ChipDisplayer
-                onUpdateSectionArray={responsibilitiesArray}
-                attributeName={"Responsibility"}
-                handleDelete={handleDeleteResponsibilities}
-              />
-              <NewEntry
-                attributeName={"Responsibility"}
-                maxCreateLength={64}
-                handleCreate={handleCreateResponsibility}
-                createIsLoading={createIsLoading}
-                register={register}
-              />
-            </Box>
-            <Box display="flex" flexDirection="column">
-              <Typography>Job Posting</Typography>
-              {job.JobPostFile && (
-                <iframe
-                  src={`http://localhost:3000/uploads/jobPosts/${currentlyUploadedJobPostFile}`}
-                  title={currentlyUploadedJobPostFile}
-                  width="fit-content"
-                  style={{
-                    height: "20rem",
-                  }}
-                ></iframe>
-              )}
-              <Input
-                sx={{ marginTop: "1rem" }}
-                {...register("JobPostFile")}
-                type="file"
-                name="JobPostFile"
-              />
-              {job.JobPostFile && (
-                <Tooltip
-                  title={job.JobPostFile.split("/").pop()}
-                  placement="top"
-                  arrow
-                >
-                  <Typography
-                    noWrap
-                    sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
-                  >
-                    Existing File: {job.JobPostFile.split("/").pop()}
-                  </Typography>
-                </Tooltip>
-              )}
-            </Box>
-          </Box>
+      <form
+        onSubmit={handleSubmit(updateJob)}
+        style={{
+          display: "grid",
+          gridTemplateAreas: `
+            'PositionName ApplicationDeadline Qualification Responsibility' 
+            'PositionType Salary Qualification Responsibility'
+            'Description Description Qualification Responsibility'
+            'Description Description Qualification Responsibility'
+            'JobPostFile JobPostFile TrackThisJob CheckMark'
+            'JobPostFile JobPostFile DateToApply DateToApply'
+            'JobPostFile JobPostFile Notes Notes'
+            'JobPostFile JobPostFile Notes Notes'
+            '. Update Update .'
+          `,
+          marginTop: "2rem",
+          alignItems: "start",
+        }}
+      >
+        <SingleForm
+          register={register}
+          attributeName={"PositionName"}
+          maxLength={64}
+          isLoading={updateIsLoading}
+          additionalStyles={{
+            gridArea: "PositionName",
+          }}
+        />
 
-          <Button
-            sx={{ marginTop: "1rem", alignSelf: "center" }}
-            type="submit"
-            variant="outlined"
-          >
-            Update
-          </Button>
+        <SingleForm
+          register={register}
+          attributeName={"PositionType"}
+          maxLength={64}
+          isLoading={updateIsLoading}
+          additionalStyles={{
+            gridArea: "PositionType",
+          }}
+          additionalFieldStyles={{
+            marginTop: "1rem",
+          }}
+        />
+        <SingleDate
+          handleSubmit={handleSubmit}
+          attributeName={"ApplicationDeadline"}
+          maxLength={64}
+          additionalStyles={{
+            gridArea: "ApplicationDeadline",
+          }}
+          date={applicationDeadline}
+          setDate={setApplicationDeadline}
+        />
+        <SingleForm
+          register={register}
+          attributeName={"Salary"}
+          maxLength={64}
+          isLoading={updateIsLoading}
+          additionalStyles={{
+            gridArea: "Salary",
+          }}
+          additionalFieldStyles={{
+            marginTop: "1rem",
+          }}
+        />
+        <SingleForm
+          register={register}
+          attributeName={"Description"}
+          maxLength={64}
+          isLoading={updateIsLoading}
+          additionalStyles={{
+            gridArea: "Description",
+            marginTop: "1rem",
+          }}
+          additionalFieldStyles={{
+            marginRight: { xs: "0rem" },
+          }}
+          isTextArea
+        />
+
+        <Box
+          sx={{
+            gridArea: "JobPostFile",
+            display: "flex",
+            flexDirection: "column",
+            marginTop: "2rem",
+          }}
+        >
+          <Typography>Job Posting</Typography>
+          {job.JobPostFile && (
+            <iframe
+              src={`http://localhost:3000/uploads/jobPosts/${currentlyUploadedJobPostFile}`}
+              title={currentlyUploadedJobPostFile}
+              width="fit-content"
+              style={{
+                height: "20rem",
+              }}
+            ></iframe>
+          )}
+          <Input
+            sx={{ marginTop: "1rem" }}
+            {...register("JobPostFile")}
+            type="file"
+            name="JobPostFile"
+          />
+          {job.JobPostFile && (
+            <Tooltip
+              title={job.JobPostFile.split("/").pop()}
+              placement="top"
+              arrow
+            >
+              <Typography
+                noWrap
+                sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
+              >
+                Existing File: {job.JobPostFile.split("/").pop()}
+              </Typography>
+            </Tooltip>
+          )}
         </Box>
+
+        <Box sx={{ gridArea: "Qualification", marginLeft: "2rem" }}>
+          <Typography>Qualifications</Typography>
+          <ChipDisplayer
+            onUpdateSectionArray={qualificationsArray}
+            attributeName={"Qualification"}
+            handleDelete={handleDeleteQualifications}
+          />
+          <NewEntry
+            attributeName={"Qualification"}
+            maxCreateLength={64}
+            handleCreate={handleCreateQualification}
+            createIsLoading={createIsLoading}
+            register={register}
+            additionalStyles={{ marginTop: 0 }}
+          />
+        </Box>
+
+        <Box sx={{ gridArea: "Responsibility" }}>
+          <Typography sx={{ alignSelf: "flex-start" }}>
+            Responsibilities
+          </Typography>
+          <ChipDisplayer
+            onUpdateSectionArray={responsibilitiesArray}
+            attributeName={"Responsibility"}
+            handleDelete={handleDeleteResponsibilities}
+          />
+          <NewEntry
+            attributeName={"Responsibility"}
+            maxCreateLength={64}
+            handleCreate={handleCreateResponsibility}
+            createIsLoading={createIsLoading}
+            register={register}
+            additionalStyles={{ marginTop: 0 }}
+          />
+        </Box>
+
+        <Button
+          sx={{
+            marginTop: "1rem",
+            gridArea: "Update",
+            width: "min-content",
+            justifySelf: "center",
+          }}
+          type="submit"
+          variant="outlined"
+        >
+          Update
+        </Button>
       </form>
     </>
   );
@@ -591,7 +621,6 @@ function NewCompanyForm({ companies, setCompanies }) {
   const { executeHandle } = useHandleOperation(reset, setCompanies, companies);
 
   async function handleCreate(data) {
-    console.log(data);
     const result = await executeHandle(
       "create",
       create,

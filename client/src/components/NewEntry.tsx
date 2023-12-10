@@ -9,6 +9,7 @@ export default function NewEntry({
   createIsLoading,
   register,
   doNotShowButton,
+  additionalStyles,
 }) {
   const { user } = useAuthContext();
 
@@ -20,6 +21,7 @@ export default function NewEntry({
           display="flex"
           marginTop="2rem"
           alignItems="center"
+          sx={{ ...additionalStyles }}
         >
           <TextField
             {...register(attributeName, { maxLength: maxCreateLength })}
