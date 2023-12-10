@@ -15,6 +15,7 @@ import Profile from "./pages/profile/Profile";
 import Navbar from "./components/Navbar";
 import Interview from "pages/Interviews";
 import Contacts from "pages/Contacts";
+import Companies from "pages/Companies";
 
 function App() {
   const { user } = useAuthContext();
@@ -54,6 +55,7 @@ function App() {
           element={user ? <Interview /> : <Navigate to="/auth/login" />}
         />
         <Route path="/contacts" element={<Contacts />} />
+        <Route path="/companies" element={<Companies />} />
       </Routes>
     </Router>
   );

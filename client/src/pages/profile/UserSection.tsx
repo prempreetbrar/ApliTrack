@@ -11,7 +11,8 @@ import {
 } from "@mui/material";
 
 import { useUpdate } from "../../hooks/useHttpMethod";
-import NameUpdater from "components/NameUpdater";
+import NameUpdater from "components/NameForm";
+import MainPaper from "components/MainPaper";
 
 export default function UserSection({ applicantInfo }) {
   const { register, handleSubmit, setValue } = useForm();
@@ -45,18 +46,7 @@ export default function UserSection({ applicantInfo }) {
   }
 
   return (
-    <Paper
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "2rem",
-        padding: "1rem",
-        backgroundColor: "white",
-        height: "40rem",
-      }}
-    >
+    <MainPaper>
       <Avatar src="/broken-image.jpg" sx={{ width: 100, height: 100 }} />
       <Typography fontWeight="bold">YOU</Typography>
       <NameUpdater
@@ -123,6 +113,6 @@ export default function UserSection({ applicantInfo }) {
           Update Password
         </Button>
       </Box>
-    </Paper>
+    </MainPaper>
   );
 }

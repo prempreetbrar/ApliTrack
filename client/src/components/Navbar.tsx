@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
 import useAuthContext from "../hooks/useAuthContext";
 
@@ -16,7 +16,13 @@ export default function Navbar() {
   const { user } = useAuthContext();
   const { logout } = useLogout();
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [currentPage, setCurrentPage] = React.useState("");
+
+  React.useEffect(() => {
+    setCurrentPage(location.pathname.split("/").pop().toUpperCase());
+  }, [location]);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -37,32 +43,66 @@ export default function Navbar() {
 
   function handleLoginClick() {
     navigate("/auth/login");
+    setCurrentPage("");
   }
 
   function handleSignupClick() {
     navigate("/auth/signup");
+    setCurrentPage("");
   }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={handleMenuClick}
+        <Toolbar sx={{ display: "flex" }}>
+          <Box display="flex" alignItems="center" flex="1" marginRight="auto">
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={handleMenuClick}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              variant="h2"
+              component="div"
+              sx={{
+                fontSize: "1.5rem",
+                fontWeight: "500",
+                display: { xs: "none", sm: "block" },
+              }}
+            >
+              ApliTrack
+            </Typography>
+          </Box>
+
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: "1.5rem",
+              fontWeight: "500",
+              display: "flex",
+              flex: "1",
+              justifyContent: "center",
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            ApliTrack
+            {currentPage}
           </Typography>
           {user && (
-            <Box display="flex" alignItems="center">
-              <Typography component="div" sx={{ flexGrow: 1 }}>
+            <Box
+              display="flex"
+              alignItems="center"
+              flex="1"
+              marginLeft="auto"
+              justifyContent="flex-end"
+            >
+              <Typography
+                sx={{ display: { xs: "none", md: "block" } }}
+                component="div"
+              >
                 {user.data.user.Username}
               </Typography>
               <Button
@@ -76,7 +116,12 @@ export default function Navbar() {
             </Box>
           )}
           {!user && (
-            <>
+            <Box
+              display="flex"
+              flex="1"
+              marginLeft="auto"
+              justifyContent="flex-end"
+            >
               <Button
                 color="primary"
                 onClick={handleLoginClick}
@@ -93,7 +138,7 @@ export default function Navbar() {
               >
                 Sign Up
               </Button>
-            </>
+            </Box>
           )}
         </Toolbar>
       </AppBar>
@@ -102,14 +147,23 @@ export default function Navbar() {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={() => handleMenuItemClick("/applicants/profile")}>
-          Profile
-        </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick("/applicants/interviews")}>
-          Interviews
-        </MenuItem>
+        {user && (
+          <MenuItem onClick={() => handleMenuItemClick("/applicants/profile")}>
+            Profile
+          </MenuItem>
+        )}
+        {user && (
+          <MenuItem
+            onClick={() => handleMenuItemClick("/applicants/interviews")}
+          >
+            Interviews
+          </MenuItem>
+        )}
         <MenuItem onClick={() => handleMenuItemClick("/contacts")}>
           Contacts
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuItemClick("/companies")}>
+          Companies
         </MenuItem>
       </Menu>
     </Box>

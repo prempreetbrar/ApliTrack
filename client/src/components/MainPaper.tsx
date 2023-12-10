@@ -2,7 +2,7 @@ import React from "react";
 
 import { Paper } from "@mui/material";
 
-export default function MainPaper({ key, overrideStyles, children }) {
+export default function MainPaper({ paperKey, overrideStyles, children }) {
   return (
     <Paper
       sx={{
@@ -12,9 +12,10 @@ export default function MainPaper({ key, overrideStyles, children }) {
         backgroundColor: "white",
         flexDirection: { xs: "column", sm: "row" },
         alignItems: { xs: "center" },
+        width: "100%",
         ...overrideStyles,
       }}
-      key={key}
+      key={paperKey}
     >
       {children}
     </Paper>

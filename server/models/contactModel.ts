@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
 
+
 const Contact = sequelize.define(
   "CONTACT",
   {
@@ -12,18 +13,27 @@ const Contact = sequelize.define(
     },
     LinkedInURL: {
       type: DataTypes.STRING(64),
+      unique: "actions_unique",
     },
     Fname: {
       type: DataTypes.STRING(16),
       allowNull: false,
+      unique: "actions_unique",
     },
     Lname: {
       type: DataTypes.STRING(16),
       allowNull: false,
+      unique: "actions_unique",
     },
   },
   {
+    uniqueKeys: {
+      actions_unique: {
+        fields: ["LinkedInURL", "Fname", "Lname"],
+      },
+    },
     timestamps: false,
+    id: false,
   }
 );
 
@@ -36,6 +46,7 @@ const ContactEmail = sequelize.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+      unique: "actions_unique",
       references: {
         model: Contact,
         key: "ContactID",
@@ -45,8 +56,9 @@ const ContactEmail = sequelize.define(
     },
     Email: {
       type: DataTypes.STRING(64),
-      primaryKey: false,
+      primaryKey: true,
       allowNull: false,
+      unique: "actions_unique",
     },
   },
   {
@@ -56,6 +68,7 @@ const ContactEmail = sequelize.define(
       },
     },
     timestamps: false,
+    id: false,
   }
 );
 
@@ -91,8 +104,9 @@ const ContactPhone = sequelize.define(
     },
     Phone: {
       type: DataTypes.STRING(16),
-      primaryKey: false,
+      primaryKey: true,
       allowNull: false,
+      unique: "actions_unique",
     },
   },
   {
@@ -102,6 +116,7 @@ const ContactPhone = sequelize.define(
       },
     },
     timestamps: false,
+    id: false,
   }
 );
 
@@ -121,15 +136,30 @@ Contact.hasMany(ContactPhone, {
 
 // ---
 const ContactWorksAtCompany = sequelize.define(
-  'WORKS_AT', 
-{
-  Role: {
-    type: DataTypes.STRING(64),
+  "WORKS_AT",
+  {
+    Role: {
+      type: DataTypes.STRING(64),
+    },
   },
-}, {
-  timestamps: false
-})
-
+  {
+    timestamps: false,
+    foreignKey: "ContactID",
+    otherKey: "CompanyName",
+  }
+);
+Contact.belongsToMany(Company, {
+  through: ContactWorksAtCompany,
+  as: "Companies",
+  foreignKey: "ContactID",
+  otherKey: "CompanyName",
+});
+Company.belongsToMany(Contact, {
+  as: "Contacts",
+  through: ContactWorksAtCompany,
+  foreignKey: "CompanyName",
+  otherKey: "ContactID",
+});
 
 // definition of many-to-many relationship b/t Contact and Company
 
@@ -139,7 +169,6 @@ const ContactWorksAtCompany = sequelize.define(
   applied to the database.
 */
 sequelize.sync();
-
 const {Company} = require("./companyModel");
 const { Interview } = require("./interviewModel");
 
@@ -182,7 +211,6 @@ Interview.belongsToMany(Contact, {
   through: ContactAttendsInterview,
   foreignKey: "InterviewID",
 });
-
 exports.Contact = Contact;
 exports.ContactEmail = ContactEmail;
 exports.ContactPhone = ContactPhone;

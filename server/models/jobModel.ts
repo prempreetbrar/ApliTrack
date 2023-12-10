@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
 
+
 const Job = sequelize.define(
     "JOB",
     {
@@ -40,6 +41,8 @@ const Job = sequelize.define(
     {
       timestamps: false,
     });
+
+
 
   // ---
 
@@ -117,7 +120,6 @@ sequelize.sync();
 exports.Job = Job;
 exports.JobQualification = JobQualification;
 exports.JobResponsibility = JobResponsibility;
-
 const {Company} = require("./companyModel");
 const {Interview} = require("./interviewModel");
 

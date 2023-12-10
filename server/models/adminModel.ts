@@ -7,9 +7,9 @@ a developer/admin's permissions and abilities are normally managed in the GitHub
 NOT in the actual application itself. 
 */
 
-const { DataTypes } = require('sequelize');
-const sequelize = require('../server');
-const User = require('./userModel');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../server");
+const { User } = require("./userModel");
 //const {Permission} = require('./permissionModel');
 
 /*
@@ -46,7 +46,8 @@ User.hasMany(Admin,
 */
 
 const Admin_Responsibility = sequelize.define(
-    'ADMIN_RESPONSIBILITY', {
+  "ADMIN_RESPONSIBILITY",
+  {
     Username: {
       type: DataTypes.STRING(32),
       primaryKey: true,
@@ -57,23 +58,26 @@ const Admin_Responsibility = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
-  }, {
+  },
+  {
     timestamps: false,
-  });
+  }
+);
 
 User.hasMany(Admin_Responsibility, {
-    foreignKey: 'Username',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+  foreignKey: "Username",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Admin_Responsibility.belongsTo(User, {
-    foreignKey: "Username",
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+  foreignKey: "Username",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 const Dev_Specialization = sequelize.define(
-    'DEV_SPECIALIZATION', {
+  "DEV_SPECIALIZATION",
+  {
     Username: {
       type: DataTypes.STRING(32),
       primaryKey: true,
@@ -84,19 +88,21 @@ const Dev_Specialization = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
-  }, {
+  },
+  {
     timestamps: false,
-  });
+  }
+);
 
 User.hasMany(Dev_Specialization, {
-    foreignKey: 'Username',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+  foreignKey: "Username",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Dev_Specialization.belongsTo(User, {
-    foreignKey: "Username",
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+  foreignKey: "Username",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 /*

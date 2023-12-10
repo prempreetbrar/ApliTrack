@@ -17,6 +17,7 @@ const APIFeatures = require("../utils/apiFeatures");
 exports.createOne = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
     const document = await Model.create(request.body);
+
     response.status(201).json({
       status: "success",
       data: {
@@ -52,29 +53,25 @@ exports.getOne = (Model) => {
 
 exports.getAll = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
-    const cleanedQuery = new APIFeatures(
-      request.query,
-      Model.findAll({
-        where: request.body.filter,
-        include: {
-          all: true,
-          required: false,
-          nested: false,
-        },
-      })
-    )
-      .filter()
-      .sort()
-      .project()
-      .paginate();
-    const instances = await cleanedQuery.dbQuery;
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    const documents = await Model.findAll({
+      where: request.body.filter,
+      include: {
+        all: true,
+        required: false,
+        nested: false,
+      },
+    });
+
+    // console.log("\nAll results", documents, "\n");
 
     response.status(200).json({
       status: "success",
-      //   page: cleanedQuery.pageNumber,
-      results: instances.length,
       data: {
-        [Model.name.toLowerCase()]: instances,
+        [Model.name.toLowerCase()]: documents,
       },
     });
   });
@@ -120,36 +117,6 @@ exports.updateInstance = (Model) => {
     });
 
     console.log(instance.toJSON());
-  });
-};
-
-exports.deleteInstance = (Model) => {
-  return errorHandling.catchAsync(async (request, response) => {
-    //get a list of the model's primary key attributes
-    const pkAttributes = Model.primaryKeyAttributes;
-
-    //get the keys and the new values of the request
-    var keys = {};
-    for (let x in request.body) {
-      var obj = { [x]: request.body[x] };
-
-      if (pkAttributes.includes(x)) {
-        Object.assign(keys, obj);
-      }
-    }
-
-    //debug output
-    console.log("KEYS:");
-    console.log(keys);
-
-    //delete the instance
-    await Model.destroy({
-      where: keys,
-    });
-
-    response.status(201).json({
-      status: "success",
-    });
   });
 };
 
@@ -227,14 +194,15 @@ exports.deleteInstance = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
     //get a list of the model's primary key attributes
     const pkAttributes = Model.primaryKeyAttributes;
+    const uniqueAttributes = getUniqueAttributes(Model);
 
     //get the keys and the new values of the request
     var keys = {};
-    console.log(request.body);
+    console.log("\nRequest body for deletion!", request.body, "\n");
     for (let x in request.body) {
       var obj = { [x]: request.body[x] };
 
-      if (pkAttributes.includes(x)) {
+      if (pkAttributes.includes(x) || uniqueAttributes.includes(x)) {
         Object.assign(keys, obj);
       }
     }

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const util = require("util");
 
-const User = require("../models/userModel");
+const { User } = require("../models/userModel");
 const errorHandling = require("../utils/errorHandling");
 const { Applicant } = require("../models/applicantModel");
 
@@ -160,6 +160,29 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
     next();
   }
 );
+
+/*
+  What we can do is add a list of permissionLevels as a middleware function for a given route. Then,
+  before you "next()" and move to that route, we check if the user belongs to one of those permissionLevels.
+  If they don't, then they don't get access to that function.
+*/
+exports.DELETE_ONLY = 1;
+exports.DELETE_AND_CREATE = 2;
+exports.DELETE_AND_CREATE_AND_UPDATE = 3;
+exports.restrictTo = (permissionLevel) => {
+  return (request, response, next) => {
+    if (
+      request.body.user.dataValues.PermissionLevel < permissionLevel ||
+      !request.body.user.dataValues.AdminFlag
+    )
+      throw new errorHandling.AppError(
+        "You do not have permission to perform this action.",
+        403
+      );
+
+    next();
+  };
+};
 
 /*
   This function allows the user to change their password assuming they know their

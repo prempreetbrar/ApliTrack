@@ -30,13 +30,28 @@ exports.deleteCompetition = factory.deleteInstance(
 );
 
 // for many-to-many relationships
-exports.createApplicantKnowsContact = factory.createOne(Applicant.ApplicantKnowsContact);
-exports.deleteApplicantKnowsContact = factory.deleteInstance(Applicant.ApplicantKnowsContact);
-exports.updateApplicantKnowsContact = factory.updateInstance(Applicant.ApplicantKnowsContact);
+exports.getApplicantKnowsContact = factory.getAll(
+  Applicant.ApplicantKnowsContact
+);
+exports.createApplicantKnowsContact = factory.createOne(
+  Applicant.ApplicantKnowsContact
+);
+exports.deleteApplicantKnowsContact = factory.deleteInstance(
+  Applicant.ApplicantKnowsContact
+);
+exports.updateApplicantKnowsContact = factory.updateOneWithKey(
+  Applicant.ApplicantKnowsContact
+);
 
-exports.createApplicantTracksJob = factory.createOne(Applicant.ApplicantTracksJob);
-exports.deleteApplicantTracksJob = factory.deleteInstance(Applicant.ApplicantTracksJob);
-exports.updateApplicantTracksJob = factory.updateInstance(Applicant.ApplicantTracksJob);
+exports.createApplicantTracksJob = factory.createOne(
+  Applicant.ApplicantTracksJob
+);
+exports.deleteApplicantTracksJob = factory.deleteInstance(
+  Applicant.ApplicantTracksJob
+);
+exports.updateApplicantTracksJob = factory.updateInstance(
+  Applicant.ApplicantTracksJob
+);
 
 /*
   Why aren't we adding this filter in the authController.checkIfLoggedIn function?

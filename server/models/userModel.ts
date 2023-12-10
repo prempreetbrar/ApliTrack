@@ -1,9 +1,9 @@
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const sequelize = require("../server");
-const {Permission} = require('./permissionModel');
 
 const { AppError } = require("../utils/errorHandling");
+const authController = require("../controllers/authController");
 
 const User = sequelize.define(
   "USER",
@@ -44,6 +44,7 @@ const User = sequelize.define(
     },
     PermissionLevel: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   },
   {
@@ -84,7 +85,7 @@ User.belongsTo(Permission, {
   ahead and hashing it.
 */
 User.beforeSave(async (user, options) => {
-  if (user.Password) {
+  if (user.Password && user.PasswordConfirm) {
     user.Password = await bcrypt.hash(user.Password, 12);
     user.PasswordConfirm = undefined;
   }
@@ -97,9 +98,35 @@ User.prototype.isPasswordCorrect = async function (
   return await bcrypt.compare(candidatePassword, actualPassword);
 };
 
+exports.User = User;
+const { Applicant } = require("../models/applicantModel");
+
+async function createAdminUser() {
+  try {
+    const adminUser = await User.create({
+      Username: "admin@admin.com",
+      Password: "admin",
+      PasswordConfirm: "admin",
+      AdminFlag: true,
+    });
+
+    adminUser.PermissionLevel = authController.DELETE_ONLY;
+    await adminUser.save();
+
+    const newApplicant = await Applicant.create({
+      Username: "admin@admin.com",
+    });
+
+    console.log("Admin user created:", adminUser);
+  } catch (error) {
+    console.error("Error creating admin user:", error);
+  }
+}
+
+createAdminUser();
+
 /*
   If any changes occurred to the model, sequelize.sync just ensures that they are
   applied to the database.
 */
 sequelize.sync();
-module.exports = User;

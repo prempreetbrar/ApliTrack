@@ -8,6 +8,7 @@ export default function NewEntry({
   handleCreate,
   createIsLoading,
   register,
+  doNotShowButton,
 }) {
   const { user } = useAuthContext();
 
@@ -27,13 +28,15 @@ export default function NewEntry({
             required
             inputProps={{ maxLength: maxCreateLength }}
           />
-          <Button
-            onClick={handleCreate}
-            sx={{ ml: 1, fontSize: "1.5rem" }}
-            disabled={createIsLoading}
-          >
-            +
-          </Button>
+          {!doNotShowButton && (
+            <Button
+              onClick={handleCreate}
+              sx={{ ml: 1, fontSize: "1.5rem" }}
+              disabled={createIsLoading}
+            >
+              +
+            </Button>
+          )}
         </Box>
       )}
     </>

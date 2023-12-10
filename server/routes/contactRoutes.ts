@@ -6,16 +6,19 @@ const router = express.Router();
 
 router
   .route("")
-  .get(contactController.getAllContacts)
+  .get(contactController.addFilter, contactController.getAllContacts)
   .post(authController.checkIfLoggedIn, contactController.createContact)
-  .delete(authController.checkIfLoggedIn, contactController.deleteContact)
+  .delete(
+    authController.checkIfLoggedIn,
+    authController.restrictTo(authController.DELETE_ONLY),
+    contactController.deleteContact
+  )
   .patch(authController.checkIfLoggedIn, contactController.updateContact);
 
 router
   .route("/contact")
   .get(contactController.addFilter, contactController.getContact);
 
-// router.delete("/details", contactController.deleteContact);
 router
   .route("/phones")
   .post(authController.checkIfLoggedIn, contactController.createContactPhone)
@@ -27,10 +30,19 @@ router
   .delete(authController.checkIfLoggedIn, contactController.deleteContactEmail);
 
 router
-.route("/works-at")
-.post(authController.checkIfLoggedIn, contactController.createContactWorksAtCompany)
-.delete(authController.checkIfLoggedIn, contactController.deleteContactWorksAtCompany)
-.patch(authController.checkIfLoggedIn, contactController.updateContactWorksAtCompany);
+  .route("/works-at")
+  .post(
+    authController.checkIfLoggedIn,
+    contactController.createContactWorksAtCompany
+  )
+  .delete(
+    authController.checkIfLoggedIn,
+    contactController.deleteContactWorksAtCompany
+  )
+  .patch(
+    authController.checkIfLoggedIn,
+    contactController.updateContactWorksAtCompany
+  );
 
 //TODO: CHECK
 router.route("/attends")

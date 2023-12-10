@@ -2,16 +2,20 @@ import { Box, TextField, Button } from "@mui/material";
 import useAuthContext from "hooks/useAuthContext";
 import React from "react";
 
-export default function NameUpdater({
+export default function NameForm({
   register,
   handleSubmit,
-  updateName,
-  updateIsLoading,
+  actionOnAttribute,
+  isLoading,
+  additionalStyles,
+  additionalLnameStyles,
+  buttonName,
+  allowUnauthenticated,
 }) {
   const { user } = useAuthContext();
 
   return (
-    <Box display="flex" alignItems="center">
+    <Box display="flex" alignItems="center" sx={{ ...additionalStyles }}>
       <TextField
         InputLabelProps={{ shrink: true }}
         {...register("Fname")}
@@ -19,26 +23,27 @@ export default function NameUpdater({
         sx={{
           marginRight: "1rem",
         }}
-        disabled={!user}
+        disabled={!user && !allowUnauthenticated}
       />
       <TextField
         InputLabelProps={{ shrink: true }}
         {...register("Lname")}
         label="Last Name"
         sx={{
-          marginRight: "1rem",
+          marginRight: { xs: "0", md: "1rem" },
+          ...additionalLnameStyles,
         }}
-        disabled={!user}
+        disabled={!user && !allowUnauthenticated}
       />
-      {user && (
+      {user && actionOnAttribute && (
         <Button
-          onClick={handleSubmit(updateName)}
+          onClick={handleSubmit(actionOnAttribute)}
           type="submit"
           variant="outlined"
           sx={{ mt: 3, mb: 2 }}
-          disabled={updateIsLoading}
+          disabled={isLoading}
         >
-          Update
+          {buttonName}
         </Button>
       )}
     </Box>

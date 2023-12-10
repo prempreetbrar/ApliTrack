@@ -8,6 +8,8 @@
   and afterwards we register all of our routes (our urls).
 */
 
+import path from "path";
+
 const morgan = require("morgan");
 const express = require("express");
 const cors = require("cors");
@@ -49,14 +51,15 @@ app.use(express.json());
   Above, our middleware stack is CORS, ... , express.JSON. Below, after we register the routes,
   it is CORS, ... , lastRoute, errorController.
 */
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/applicants", applicantRouter);
 app.use("/api/documents", documentRouter);
 app.use("/api/applications", applicationRouter);
 app.use("/api/contacts", contactRouter);
-app.use("/api/company", companyRouter);
-app.use("/api/job", jobRouter);
+app.use("/api/companies", companyRouter);
+app.use("/api/jobs", jobRouter);
 app.use("/api/offer", offerRouter);
 app.use("/api/referral", referralRouter);
 app.use("/api/interviews", interviewRouter);

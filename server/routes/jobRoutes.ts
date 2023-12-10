@@ -1,32 +1,56 @@
 const express = require("express");
 const jobController = require("../controllers/jobController");
+const authController = require("../controllers/authController");
 
 const router = express.Router();
+const multer = require("multer");
 
-//do we want to add authentication here?
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ dest: "../uploads/jobPosts" });
 
-router.route("/details")
-.post(jobController.createJob)
-.delete(jobController.deleteJob)
-.put(jobController.updateJob)
-.get(jobController.addFilterID, jobController.getJob);
 
-router.route("/qualifications")
-.post(jobController.createJobQual)
-.delete(jobController.deleteJobQual);
+router
+  .route("")
+  .post(authController.checkIfLoggedIn, jobController.createJob)
+  .delete(authController.checkIfLoggedIn, jobController.deleteJob)
+  .patch(
+    authController.checkIfLoggedIn,
+    upload.single("JobPostFile"),
+    jobController.uploadJobPostFile,
+    jobController.updateJob
+  )
+  .get(jobController.getAllJobs);
+
+router
+  .route("/:PositionID")
+  .get(jobController.addFilterID, jobController.getJob);
+
 
 router.route("/responsibilities")
 .post(jobController.createJobResp)
 .delete(jobController.deleteJobResp);
 
-router.route("").get(jobController.getAllJobs);
+router
+  .route("/qualifications")
+  .post(authController.checkIfLoggedIn, jobController.createJobQual)
+  .delete(authController.checkIfLoggedIn, jobController.deleteJobQual);
 
-router.route("/company-jobs")
-.get(jobController.addFilterCompany, jobController.getAllCompanyJobs);
 
-//for many-to-many relationships
-router.route("/mentions")
-.post(jobController.createJobMentionsInterview)
-.delete(jobController.deleteJobMentionsInterview);
+router
+  .route("/responsibilities")
+  .post(jobController.createJobResp)
+  .delete(jobController.deleteJobResp);
+
+router
+  .route("/company-jobs")
+  .get(jobController.addFilterCompany, jobController.getAllCompanyJobs);
+
 
 module.exports = router;
