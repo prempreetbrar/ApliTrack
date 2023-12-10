@@ -10,6 +10,7 @@ export default function NameForm({
   additionalStyles,
   additionalLnameStyles,
   buttonName,
+  allowUnauthenticated,
 }) {
   const { user } = useAuthContext();
 
@@ -22,7 +23,7 @@ export default function NameForm({
         sx={{
           marginRight: "1rem",
         }}
-        disabled={!user}
+        disabled={!user && !allowUnauthenticated}
       />
       <TextField
         InputLabelProps={{ shrink: true }}
@@ -32,7 +33,7 @@ export default function NameForm({
           marginRight: { xs: "0", md: "1rem" },
           ...additionalLnameStyles,
         }}
-        disabled={!user}
+        disabled={!user && !allowUnauthenticated}
       />
       {user && actionOnAttribute && (
         <Button

@@ -1,5 +1,6 @@
 import { FormControl, FormLabel, Textarea } from "@mui/joy";
 import { TextField, Button, Box } from "@mui/material";
+import useAuthContext from "hooks/useAuthContext";
 import React from "react";
 
 export default function SingleForm({
@@ -13,6 +14,7 @@ export default function SingleForm({
   additionalFieldStyles,
   isTextArea,
 }) {
+  const { user } = useAuthContext();
   return (
     <Box sx={{ ...additionalStyles }}>
       {isTextArea && (
@@ -26,6 +28,7 @@ export default function SingleForm({
               ...additionalFieldStyles,
             }}
             minRows={3}
+            disabled={!user}
           />
         </FormControl>
       )}
@@ -41,9 +44,10 @@ export default function SingleForm({
           inputProps={{
             maxLength,
           }}
+          disabled={!user}
         />
       )}
-      {actionOnAttribute && (
+      {actionOnAttribute && user && (
         <Button
           onClick={handleSubmit(actionOnAttribute)}
           type="submit"

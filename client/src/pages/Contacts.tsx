@@ -189,6 +189,7 @@ export default function Contacts() {
               additionalLnameStyles={{
                 marginRight: { xs: "1rem" },
               }}
+              allowUnauthenticated
             />
             <Box display="flex" alignItems="center">
               {user && onlyShowContactsIKnow && (
@@ -505,6 +506,7 @@ function Contact({
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            marginTop: "1rem",
           }}
           additionalFieldStyles={{
             marginRight: { xs: "1rem" },
