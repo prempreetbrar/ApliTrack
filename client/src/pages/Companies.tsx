@@ -281,125 +281,140 @@ function Job({ company, job, index }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(updateJob)}>
-      <Box display="flex" flexDirection="column" alignItems="flex-start">
-        <SingleForm
-          register={register}
-          attributeName={"PositionName"}
-          maxLength={64}
-          isLoading={updateIsLoading}
-          additionalStyles={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: "1rem",
-          }}
-          additionalFieldStyles={{
-            marginRight: { xs: "0rem" },
-          }}
-        />
-        <SingleForm
-          register={register}
-          attributeName={"Description"}
-          maxLength={64}
-          isLoading={updateIsLoading}
-          additionalStyles={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: "1rem",
-          }}
-          additionalFieldStyles={{
-            marginRight: { xs: "0rem" },
-          }}
-          isTextArea
-        />
-        <SingleForm
-          register={register}
-          attributeName={"PositionType"}
-          maxLength={64}
-          isLoading={updateIsLoading}
-          additionalStyles={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: "1rem",
-          }}
-          additionalFieldStyles={{
-            marginRight: { xs: "0rem" },
-          }}
-        />
-        <SingleForm
-          register={register}
-          attributeName={"Salary"}
-          maxLength={64}
-          isLoading={updateIsLoading}
-          additionalStyles={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: "1rem",
-          }}
-          additionalFieldStyles={{
-            marginRight: { xs: "0rem" },
-          }}
-        />
-        <Typography sx={{ alignSelf: "flex-start", fontWeight: "bold" }}>
-          Qualifications:
-        </Typography>
-        <ChipDisplayer
-          onUpdateSectionArray={qualificationsArray}
-          attributeName={"Qualification"}
-          handleDelete={handleDeleteQualifications}
-        />
-        <NewEntry
-          attributeName={"Qualification"}
-          maxCreateLength={64}
-          handleCreate={handleCreateQualification}
-          createIsLoading={createIsLoading}
-          register={register}
-        />
-        <Typography sx={{ alignSelf: "flex-start", fontWeight: "bold" }}>
-          Responsibilities:
-        </Typography>
-        <ChipDisplayer
-          onUpdateSectionArray={responsibilitiesArray}
-          attributeName={"Responsibility"}
-          handleDelete={handleDeleteResponsibilities}
-        />
-        <NewEntry
-          attributeName={"Responsibility"}
-          maxCreateLength={64}
-          handleCreate={handleCreateResponsibility}
-          createIsLoading={createIsLoading}
-          register={register}
-        />
-        <Input
-          sx={{ marginTop: "1rem" }}
-          {...register("JobPostFile")}
-          type="file"
-          name="JobPostFile"
-        />
-        {job.JobPostFile && (
-          <Tooltip
-            title={job.JobPostFile.split("/").pop()}
-            placement="top"
-            arrow
-          >
-            <Typography noWrap sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}>
-              Existing File: {job.JobPostFile.split("/").pop()}
+    <>
+      <form onSubmit={handleSubmit(updateJob)}>
+        <Box display="flex" flexDirection="row" alignItems="flex-start">
+          <Box>
+            <SingleForm
+              register={register}
+              attributeName={"PositionName"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: "1rem",
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "0rem" },
+              }}
+            />
+            <SingleForm
+              register={register}
+              attributeName={"Description"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: "1rem",
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "0rem" },
+              }}
+              isTextArea
+            />
+            <SingleForm
+              register={register}
+              attributeName={"PositionType"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: "1rem",
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "0rem" },
+              }}
+            />
+            <SingleForm
+              register={register}
+              attributeName={"Salary"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: "1rem",
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "0rem" },
+              }}
+            />
+          </Box>
+          <Box display="flex" flexDirection="column">
+            <Typography sx={{ fontWeight: "bold" }}>Qualifications:</Typography>
+            <ChipDisplayer
+              onUpdateSectionArray={qualificationsArray}
+              attributeName={"Qualification"}
+              handleDelete={handleDeleteQualifications}
+            />
+            <NewEntry
+              attributeName={"Qualification"}
+              maxCreateLength={64}
+              handleCreate={handleCreateQualification}
+              createIsLoading={createIsLoading}
+              register={register}
+            />
+            <Typography sx={{ alignSelf: "flex-start", fontWeight: "bold" }}>
+              Responsibilities:
             </Typography>
-          </Tooltip>
-        )}
+            <ChipDisplayer
+              onUpdateSectionArray={responsibilitiesArray}
+              attributeName={"Responsibility"}
+              handleDelete={handleDeleteResponsibilities}
+            />
+            <NewEntry
+              attributeName={"Responsibility"}
+              maxCreateLength={64}
+              handleCreate={handleCreateResponsibility}
+              createIsLoading={createIsLoading}
+              register={register}
+            />
+          </Box>
+          {job.JobPostFile && (
+            <iframe
+              src={`http://localhost:3000/uploads/jobPosts/${job.JobPostFile.split(
+                "/"
+              ).pop()}`}
+              title={job.JobPostFile}
+            ></iframe>
+          )}
+          <Input
+            sx={{ marginTop: "1rem" }}
+            {...register("JobPostFile")}
+            type="file"
+            name="JobPostFile"
+          />
+          {job.JobPostFile && (
+            <Tooltip
+              title={job.JobPostFile.split("/").pop()}
+              placement="top"
+              arrow
+            >
+              <Typography
+                noWrap
+                sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
+              >
+                Existing File: {job.JobPostFile.split("/").pop()}
+              </Typography>
+            </Tooltip>
+          )}
 
-        <Button
-          sx={{ marginTop: "1rem", alignSelf: "center" }}
-          type="submit"
-          variant="outlined"
-        >
-          Update
-        </Button>
-      </Box>
-    </form>
+          <Button
+            sx={{ marginTop: "1rem", alignSelf: "center" }}
+            type="submit"
+            variant="outlined"
+          >
+            Update
+          </Button>
+        </Box>
+      </form>
+    </>
   );
 }
