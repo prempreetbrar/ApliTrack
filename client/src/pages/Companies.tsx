@@ -35,6 +35,7 @@ export default function Companies() {
         companies.map((company, index) => (
           <Company key={index} company={company} />
         ))}
+      <NewCompanyForm companies={companies} setCompanies={setCompanies} />
     </MainBox>
   );
 }
@@ -70,7 +71,7 @@ function Company({ company }) {
     <MainPaper
       overrideStyles={{ flexDirection: "column", alignItems: "flex-start" }}
     >
-      <Typography variant="h2" sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+      <Typography variant="h2" sx={{ fontSize: "3rem", fontWeight: "bold" }}>
         {company.CompanyName}
       </Typography>
 
@@ -468,7 +469,7 @@ function Job({ company, job, index }) {
 function NewJobForm({ companyName, jobs, setJobs }) {
   const { register, handleSubmit, setValue, reset, getValues } = useForm();
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
-  const { executeHandle } = useHandleOperation(undefined, setJobs, jobs);
+  const { executeHandle } = useHandleOperation(reset, setJobs, jobs);
   const [applicationDeadline, setApplicationDeadline] = React.useState(null);
 
   async function handleCreate(data) {
@@ -514,6 +515,9 @@ function NewJobForm({ companyName, jobs, setJobs }) {
 
   return (
     <>
+      <Typography variant="h2" sx={{ fontSize: "1.5rem", fontWeight: "500" }}>
+        Add New Job
+      </Typography>
       <SingleForm
         register={register}
         handleSubmit={handleSubmit}
@@ -578,5 +582,77 @@ function NewJobForm({ companyName, jobs, setJobs }) {
         Create
       </Button>
     </>
+  );
+}
+
+function NewCompanyForm({ companies, setCompanies }) {
+  const { register, handleSubmit, setValue, reset, getValues } = useForm();
+  const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { executeHandle } = useHandleOperation(reset, setCompanies, companies);
+
+  async function handleCreate(data) {
+    console.log(data);
+    const result = await executeHandle(
+      "create",
+      create,
+      {
+        ...data,
+      },
+      "http://localhost:3000/api/companies",
+      null,
+      false,
+      null
+    );
+  }
+
+  return (
+    <MainPaper>
+      <Typography variant="h2" sx={{ fontSize: "1.5rem", fontWeight: "500" }}>
+        Add New Company
+      </Typography>
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        actionOnAttribute={null}
+        attributeName={"CompanyName"}
+        isLoading={createIsLoading}
+        maxLength={64}
+      />
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        actionOnAttribute={null}
+        attributeName={"Industry"}
+        isLoading={createIsLoading}
+        maxLength={64}
+        isTextArea
+      />
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        actionOnAttribute={null}
+        attributeName={"HomePageURL"}
+        isLoading={createIsLoading}
+        maxLength={64}
+      />
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        actionOnAttribute={null}
+        attributeName={"Description"}
+        isLoading={createIsLoading}
+        maxLength={64}
+      />
+
+      <Button
+        onClick={handleSubmit(handleCreate)}
+        type="submit"
+        variant="outlined"
+        sx={{ mt: 3, mb: 2 }}
+        disabled={createIsLoading}
+      >
+        Create
+      </Button>
+    </MainPaper>
   );
 }
