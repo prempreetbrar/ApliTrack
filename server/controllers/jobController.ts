@@ -54,7 +54,7 @@ exports.getAllCompanyJobs = factory.getAll(Job.Job);
 exports.addFilterID = errorHandling.catchAsync(
   async (request, response, next) => {
     request.body.filter = {
-      PositionID: request.body.PositionID,
+      PositionID: request.body.PositionID || request.params.PositionID,
     };
     next();
   }

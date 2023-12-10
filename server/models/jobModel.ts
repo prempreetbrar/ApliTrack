@@ -78,12 +78,14 @@ const JobQualification = sequelize.define(
 );
 
 JobQualification.belongsTo(Job, {
+  as: "Job",
   foreignKey: "PositionID",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 Job.hasMany(JobQualification, {
+  as: "Qualifications",
   foreignKey: "PositionID",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
@@ -111,12 +113,14 @@ const JobResponsibility = sequelize.define(
 );
 
 JobResponsibility.belongsTo(Job, {
+  as: "Job",
   foreignKey: "PositionID",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 Job.hasMany(JobResponsibility, {
+  as: "Responsibilities",
   foreignKey: "PositionID",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
