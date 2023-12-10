@@ -36,8 +36,12 @@ export default function SingleDate({
               error: false,
             },
           }}
-          onChange={(newValue) => setMostRecentLastContactDate(newValue)}
-          value={dayjs(mostRecentLastContactDate)}
+          onChange={(newValue) => {
+            setMostRecentLastContactDate(
+              (newValue as any)?.format("YYYY-MM-DD")
+            );
+          }}
+          value={dayjs(mostRecentLastContactDate || null)}
         />
       </LocalizationProvider>
 

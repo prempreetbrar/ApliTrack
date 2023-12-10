@@ -45,7 +45,11 @@ export default function Contacts() {
     React.useState(null);
   const [onlyShowContactsIKnow, setOnlyShowContactsIKnow] =
     React.useState(false);
-  const [mostRecentLastContactDate, setMostRecentLastContactDate] =
+  const [
+    mostRecentEarliestLastContactDate,
+    setMostRecentEarliestLastContactDate,
+  ] = React.useState(null);
+  const [mostRecentLatestLastContactDate, setMostRecentLatestLastContactDate] =
     React.useState(null);
 
   const handleOpenDeleteConfirmationDialog = (index) => {
@@ -111,7 +115,10 @@ export default function Contacts() {
     const fetchKnownContactsInfo = async () => {
       if (user && contactsInfo) {
         const knownResponse = await get(
-          {},
+          {
+            EarliestLastContactDate: mostRecentEarliestLastContactDate,
+            LatestLastContactDate: mostRecentLatestLastContactDate,
+          },
           "http://localhost:3000/api/applicants/known-contacts"
         );
 
@@ -123,10 +130,11 @@ export default function Contacts() {
         }
 
         setKnownContactsInfo(hashtableKnownContacts);
+        console.log(hashtableKnownContacts);
       }
     };
     fetchKnownContactsInfo();
-  }, [user, contactsInfo]);
+  }, [user, contactsInfo, onlyShowContactsIKnow]);
 
   return (
     <MainBox>
@@ -145,9 +153,13 @@ export default function Contacts() {
             control={
               <Switch
                 checked={onlyShowContactsIKnow}
-                onChange={(event) =>
-                  setOnlyShowContactsIKnow(event.target.checked)
-                }
+                onChange={(event) => {
+                  setOnlyShowContactsIKnow(event.target.checked);
+                  if (!event.target.checked) {
+                    setMostRecentEarliestLastContactDate(null);
+                    setMostRecentLatestLastContactDate(null);
+                  }
+                }}
               />
             }
             label="Only Show Contacts I Know"
@@ -179,25 +191,51 @@ export default function Contacts() {
               }}
             />
             <Box display="flex" alignItems="center">
-              {user && (
-                <SingleDate
-                  register={register}
-                  handleSubmit={handleSubmit}
-                  attributeName={"LastContactDate"}
-                  maxLength={64}
-                  additionalStyles={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: { xs: "0rem" },
-                    marginTop: { xs: "1rem", sm: "0rem" },
-                  }}
-                  additionalFieldStyles={{
-                    marginRight: { xs: "1rem" },
-                  }}
-                  mostRecentLastContactDate={null}
-                  setMostRecentLastContactDate={setMostRecentLastContactDate}
-                />
+              {user && onlyShowContactsIKnow && (
+                <>
+                  <SingleDate
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    attributeName={"EarliestLastContactDate"}
+                    maxLength={64}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: { xs: "0rem" },
+                      marginTop: { xs: "1rem", sm: "0rem" },
+                    }}
+                    additionalFieldStyles={{
+                      marginRight: { xs: "1rem" },
+                    }}
+                    mostRecentLastContactDate={
+                      mostRecentEarliestLastContactDate
+                    }
+                    setMostRecentLastContactDate={
+                      setMostRecentEarliestLastContactDate
+                    }
+                  />
+                  <SingleDate
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    attributeName={"LatestLastContactDate"}
+                    maxLength={64}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: { xs: "0rem" },
+                      marginTop: { xs: "1rem", sm: "0rem" },
+                    }}
+                    additionalFieldStyles={{
+                      marginRight: { xs: "1rem" },
+                    }}
+                    mostRecentLastContactDate={mostRecentLatestLastContactDate}
+                    setMostRecentLastContactDate={
+                      setMostRecentLatestLastContactDate
+                    }
+                  />
+                </>
               )}
               <IconButton type="submit">
                 <SearchIcon color="primary" />

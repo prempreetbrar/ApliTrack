@@ -1,5 +1,6 @@
 const express = require("express");
 const applicantController = require("../controllers/applicantController");
+const contactController = require("../controllers/contactController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
@@ -50,6 +51,7 @@ router
   .route("/known-contacts")
   .get(
     applicantController.addFilter,
+    contactController.addFilter,
     applicantController.getApplicantKnowsContact
   )
   .post(applicantController.createApplicantKnowsContact)

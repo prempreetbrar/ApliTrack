@@ -64,6 +64,8 @@ exports.getAll = (Model) => {
       },
     });
 
+    // console.log("\nAll results", documents, "\n");
+
     response.status(200).json({
       status: "success",
       data: {

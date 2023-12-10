@@ -44,6 +44,34 @@ exports.addFilter = errorHandling.catchAsync(
         [Op.like]: `%${request.body.Lname || request.query.Lname}%`,
       };
     }
+    if (
+      request.query.EarliestLastContactDate &&
+      request.query.LatestLastContactDate &&
+      request.query.EarliestLastContactDate !== "MM/DD/YYYY" &&
+      request.query.LatestLastContactDate !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.LastContactDate = {
+        [Op.between]: [
+          request.query.EarliestLastContactDate,
+          request.query.LastLastContactDate,
+        ],
+      };
+    } else if (
+      request.query.EarliestLastContactDate &&
+      request.query.EarliestLastContactDate !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.LastContactDate = {
+        [Op.gte]: [request.query.EarliestLastContactDate],
+      };
+    } else if (
+      request.query.LatestLastContactDate &&
+      request.query.LatestLastContactDate !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.LastContactDate = {
+        [Op.lte]: [request.query.LatestLastContactDate],
+      };
+    }
+
     next();
   }
 );
