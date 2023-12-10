@@ -11,6 +11,7 @@ import MainPaper from "components/MainPaper";
 import SingleForm from "components/SingleForm";
 import ChipDisplayer from "components/ChipDisplayer";
 import useHandleOperation from "hooks/useHandleOperation";
+import SingleDate from "components/SingleDate";
 
 export default function Companies() {
   const { executeRequest: get } = useGet();
@@ -41,6 +42,7 @@ export default function Companies() {
 function Company({ company }) {
   const { register, handleSubmit, setValue } = useForm();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
+  const [jobs, setJobs] = React.useState(company?.jobs);
 
   React.useEffect(() => {
     /*
@@ -50,6 +52,7 @@ function Company({ company }) {
     setValue("Industry", company.Industry);
     setValue("HomePageURL", company.HomePageURL);
     setValue("Description", company.Description);
+    setJobs(company.Jobs);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [company]);
 
@@ -62,8 +65,6 @@ function Company({ company }) {
       "http://localhost:3000/api/companies"
     );
   }
-
-  console.log(company);
 
   return (
     <MainPaper
@@ -85,7 +86,7 @@ function Company({ company }) {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-                marginTop: "1rem",
+                marginTop: "2.5rem",
               }}
               additionalFieldStyles={{
                 marginRight: { xs: "0rem" },
@@ -129,9 +130,14 @@ function Company({ company }) {
         </form>
         <Box marginLeft="2.5rem">
           <Typography sx={{ fontWeight: "bold" }}>Jobs</Typography>
-          {company?.Jobs?.map((job, index) => (
+          {jobs?.map((job, index) => (
             <Job key={index} company={company} job={job} />
           ))}
+          <NewJobForm
+            companyName={company.CompanyName}
+            jobs={jobs}
+            setJobs={setJobs}
+          />
         </Box>
       </Box>
     </MainPaper>
@@ -157,8 +163,13 @@ function Job({ company, job, index }) {
     qualificationsArray
   );
   const { executeRequest: deleteInstance } = useDelete();
+  const [applicationDeadline, setApplicationDeadline] = React.useState(
+    job.ApplicationDeadline
+  );
+  const [currentlyUploadedJobPostFile, setCurrentlyUploadedJobPostFile] =
+    React.useState(job?.JobPostFile?.split("/")?.pop());
 
-  function updateJob(data) {
+  async function updateJob(data) {
     const JobPostFile = data.JobPostFile[0];
     const newData = { ...data };
     delete newData.JobPostFile;
@@ -166,9 +177,10 @@ function Job({ company, job, index }) {
       newData.JobPostFile = JobPostFile;
     }
 
-    update(
+    const success = await update(
       {
         PositionID: job.PositionID,
+        ApplicationDeadline: applicationDeadline,
         ...newData,
       },
       "http://localhost:3000/api/companies/company/jobs",
@@ -178,6 +190,9 @@ function Job({ company, job, index }) {
         },
       }
     );
+    if (success && JobPostFile !== "/") {
+      setCurrentlyUploadedJobPostFile(JobPostFile.name);
+    }
   }
 
   async function handleDeleteQualifications(index) {
@@ -219,7 +234,7 @@ function Job({ company, job, index }) {
     setValue("Description", job.Description);
     setValue("JobPostFile", job.JobPostFile);
     setValue("PositionType", job.PositionType);
-    setValue("ApplicationDeadline", job.ApplicationDeadline);
+    setApplicationDeadline(job.ApplicationDeadline);
     setValue("Salary", job.Salary);
 
     const fetchQualifications = async () => {
@@ -283,128 +298,159 @@ function Job({ company, job, index }) {
   return (
     <>
       <form onSubmit={handleSubmit(updateJob)}>
-        <Box display="flex" flexDirection="row" alignItems="flex-start">
-          <Box>
-            <SingleForm
-              register={register}
-              attributeName={"PositionName"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: "1rem",
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "0rem" },
-              }}
-            />
-            <SingleForm
-              register={register}
-              attributeName={"Description"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: "1rem",
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "0rem" },
-              }}
-              isTextArea
-            />
-            <SingleForm
-              register={register}
-              attributeName={"PositionType"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: "1rem",
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "0rem" },
-              }}
-            />
-            <SingleForm
-              register={register}
-              attributeName={"Salary"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: "1rem",
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "0rem" },
-              }}
-            />
-          </Box>
-          <Box display="flex" flexDirection="column">
-            <Typography sx={{ fontWeight: "bold" }}>Qualifications:</Typography>
-            <ChipDisplayer
-              onUpdateSectionArray={qualificationsArray}
-              attributeName={"Qualification"}
-              handleDelete={handleDeleteQualifications}
-            />
-            <NewEntry
-              attributeName={"Qualification"}
-              maxCreateLength={64}
-              handleCreate={handleCreateQualification}
-              createIsLoading={createIsLoading}
-              register={register}
-            />
-            <Typography sx={{ alignSelf: "flex-start", fontWeight: "bold" }}>
-              Responsibilities:
-            </Typography>
-            <ChipDisplayer
-              onUpdateSectionArray={responsibilitiesArray}
-              attributeName={"Responsibility"}
-              handleDelete={handleDeleteResponsibilities}
-            />
-            <NewEntry
-              attributeName={"Responsibility"}
-              maxCreateLength={64}
-              handleCreate={handleCreateResponsibility}
-              createIsLoading={createIsLoading}
-              register={register}
-            />
-          </Box>
-          {job.JobPostFile && (
-            <iframe
-              src={`http://localhost:3000/uploads/jobPosts/${job.JobPostFile.split(
-                "/"
-              ).pop()}`}
-              title={job.JobPostFile}
-            ></iframe>
-          )}
-          <Input
-            sx={{ marginTop: "1rem" }}
-            {...register("JobPostFile")}
-            type="file"
-            name="JobPostFile"
-          />
-          {job.JobPostFile && (
-            <Tooltip
-              title={job.JobPostFile.split("/").pop()}
-              placement="top"
-              arrow
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          marginBottom="5rem"
+        >
+          <Box display="flex" flexDirection="row" alignItems="flex-start">
+            <Box>
+              <SingleForm
+                register={register}
+                attributeName={"PositionName"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: "1rem",
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "0rem" },
+                }}
+              />
+              <SingleForm
+                register={register}
+                attributeName={"Description"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: "1rem",
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "0rem" },
+                }}
+                isTextArea
+              />
+              <SingleForm
+                register={register}
+                attributeName={"PositionType"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: "1rem",
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "0rem" },
+                }}
+              />
+              <SingleForm
+                register={register}
+                attributeName={"Salary"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: "1rem",
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "0rem" },
+                }}
+              />
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"ApplicationDeadline"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem" },
+                }}
+                date={applicationDeadline}
+                setDate={setApplicationDeadline}
+              />
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              paddingLeft="2.5rem"
+              paddingRight="2.5rem"
             >
-              <Typography
-                noWrap
-                sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
-              >
-                Existing File: {job.JobPostFile.split("/").pop()}
+              <Typography>Qualifications</Typography>
+              <ChipDisplayer
+                onUpdateSectionArray={qualificationsArray}
+                attributeName={"Qualification"}
+                handleDelete={handleDeleteQualifications}
+              />
+              <NewEntry
+                attributeName={"Qualification"}
+                maxCreateLength={64}
+                handleCreate={handleCreateQualification}
+                createIsLoading={createIsLoading}
+                register={register}
+              />
+              <Typography sx={{ alignSelf: "flex-start", marginTop: "2.5rem" }}>
+                Responsibilities
               </Typography>
-            </Tooltip>
-          )}
+              <ChipDisplayer
+                onUpdateSectionArray={responsibilitiesArray}
+                attributeName={"Responsibility"}
+                handleDelete={handleDeleteResponsibilities}
+              />
+              <NewEntry
+                attributeName={"Responsibility"}
+                maxCreateLength={64}
+                handleCreate={handleCreateResponsibility}
+                createIsLoading={createIsLoading}
+                register={register}
+              />
+            </Box>
+            <Box display="flex" flexDirection="column">
+              <Typography>Job Posting</Typography>
+              {job.JobPostFile && (
+                <iframe
+                  src={`http://localhost:3000/uploads/jobPosts/${currentlyUploadedJobPostFile}`}
+                  title={currentlyUploadedJobPostFile}
+                  width="fit-content"
+                  style={{
+                    height: "20rem",
+                  }}
+                ></iframe>
+              )}
+              <Input
+                sx={{ marginTop: "1rem" }}
+                {...register("JobPostFile")}
+                type="file"
+                name="JobPostFile"
+              />
+              {job.JobPostFile && (
+                <Tooltip
+                  title={job.JobPostFile.split("/").pop()}
+                  placement="top"
+                  arrow
+                >
+                  <Typography
+                    noWrap
+                    sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
+                  >
+                    Existing File: {job.JobPostFile.split("/").pop()}
+                  </Typography>
+                </Tooltip>
+              )}
+            </Box>
+          </Box>
 
           <Button
             sx={{ marginTop: "1rem", alignSelf: "center" }}
@@ -415,6 +461,122 @@ function Job({ company, job, index }) {
           </Button>
         </Box>
       </form>
+    </>
+  );
+}
+
+function NewJobForm({ companyName, jobs, setJobs }) {
+  const { register, handleSubmit, setValue, reset, getValues } = useForm();
+  const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { executeHandle } = useHandleOperation(undefined, setJobs, jobs);
+  const [applicationDeadline, setApplicationDeadline] = React.useState(null);
+
+  async function handleCreate(data) {
+    const JobPostFile = data.JobPostFile[0];
+    const newData = { ...data };
+    delete newData.JobPostFile;
+    if (JobPostFile !== "/") {
+      newData.JobPostFile = JobPostFile;
+    }
+
+    const result = await executeHandle(
+      "create",
+      create,
+      {
+        ...newData,
+        CompanyName: companyName,
+        ApplicationDeadline: applicationDeadline,
+      },
+      "http://localhost:3000/api/companies/company/jobs",
+      null,
+      false,
+      null,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    /*
+      Done manually here because for some reason, when executeHandle is running reset(), it 
+      isn't working.
+    */
+    if (result) {
+      setValue("PositionName", "");
+      setValue("Description", "");
+      setValue("PositionType", "");
+      setValue("Salary", "");
+      setValue("JobPostFile", "");
+      setApplicationDeadline(null);
+    }
+  }
+
+  return (
+    <>
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        actionOnAttribute={null}
+        attributeName={"PositionName"}
+        isLoading={createIsLoading}
+        maxLength={64}
+      />
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        actionOnAttribute={null}
+        attributeName={"Description"}
+        isLoading={createIsLoading}
+        maxLength={64}
+        isTextArea
+      />
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        actionOnAttribute={null}
+        attributeName={"PositionType"}
+        isLoading={createIsLoading}
+        maxLength={64}
+      />
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        actionOnAttribute={null}
+        attributeName={"Salary"}
+        isLoading={createIsLoading}
+        maxLength={64}
+      />
+      <SingleDate
+        handleSubmit={handleSubmit}
+        attributeName={"ApplicationDeadline"}
+        maxLength={64}
+        additionalStyles={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: { xs: "0rem" },
+          marginTop: { xs: "1rem" },
+        }}
+        date={applicationDeadline}
+        setDate={setApplicationDeadline}
+      />
+      <Input
+        sx={{ marginTop: "1rem" }}
+        {...register("JobPostFile")}
+        type="file"
+        name="JobPostFile"
+      />
+
+      <Button
+        onClick={handleSubmit(handleCreate)}
+        type="submit"
+        variant="outlined"
+        sx={{ mt: 3, mb: 2 }}
+        disabled={createIsLoading}
+      >
+        Create
+      </Button>
     </>
   );
 }

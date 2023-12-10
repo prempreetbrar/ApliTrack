@@ -130,7 +130,6 @@ export default function Contacts() {
         }
 
         setKnownContactsInfo(hashtableKnownContacts);
-        console.log(hashtableKnownContacts);
       }
     };
     fetchKnownContactsInfo();
@@ -195,7 +194,6 @@ export default function Contacts() {
               {user && onlyShowContactsIKnow && (
                 <>
                   <SingleDate
-                    register={register}
                     handleSubmit={handleSubmit}
                     attributeName={"EarliestLastContactDate"}
                     maxLength={64}
@@ -209,15 +207,10 @@ export default function Contacts() {
                     additionalFieldStyles={{
                       marginRight: { xs: "1rem" },
                     }}
-                    mostRecentLastContactDate={
-                      mostRecentEarliestLastContactDate
-                    }
-                    setMostRecentLastContactDate={
-                      setMostRecentEarliestLastContactDate
-                    }
+                    date={mostRecentEarliestLastContactDate}
+                    setDate={setMostRecentEarliestLastContactDate}
                   />
                   <SingleDate
-                    register={register}
                     handleSubmit={handleSubmit}
                     attributeName={"LatestLastContactDate"}
                     maxLength={64}
@@ -231,10 +224,8 @@ export default function Contacts() {
                     additionalFieldStyles={{
                       marginRight: { xs: "1rem" },
                     }}
-                    mostRecentLastContactDate={mostRecentLatestLastContactDate}
-                    setMostRecentLastContactDate={
-                      setMostRecentLatestLastContactDate
-                    }
+                    date={mostRecentLatestLastContactDate}
+                    setDate={setMostRecentLatestLastContactDate}
                   />
                 </>
               )}
@@ -320,8 +311,7 @@ function Contact({
     useDelete();
   const { user } = useAuthContext();
   const [stillKnown, setStillKnown] = React.useState(isKnown);
-  const [mostRecentLastContactDate, setMostRecentLastContactDate] =
-    React.useState(LastContactDate);
+  const [date, setDate] = React.useState(LastContactDate);
 
   React.useEffect(() => {
     /*
@@ -341,7 +331,7 @@ function Contact({
   }, [isKnown]);
 
   React.useEffect(() => {
-    setMostRecentLastContactDate(LastContactDate);
+    setDate(LastContactDate);
   }, [LastContactDate]);
 
   function updateNameOrLinkedInURL(data) {
@@ -384,7 +374,7 @@ function Contact({
       {
         ContactID: contact.ContactID,
         ...data,
-        LastContactDate: mostRecentLastContactDate,
+        LastContactDate: date,
       },
       "http://localhost:3000/api/applicants/known-contacts"
     );
@@ -438,7 +428,6 @@ function Contact({
             )}
             {stillKnown && (
               <SingleDate
-                register={register}
                 handleSubmit={handleSubmit}
                 actionOnAttribute={updateKnows}
                 attributeName={"LastContactDate"}
@@ -449,8 +438,8 @@ function Contact({
                   flexDirection: "row",
                   alignItems: "center",
                 }}
-                mostRecentLastContactDate={mostRecentLastContactDate || null}
-                setMostRecentLastContactDate={setMostRecentLastContactDate}
+                date={date || null}
+                setDate={setDate}
                 additionalFieldStyles={{
                   marginRight: { xs: "1rem" },
                 }}

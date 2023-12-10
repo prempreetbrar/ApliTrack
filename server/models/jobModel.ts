@@ -11,7 +11,7 @@ const Job = sequelize.define(
       autoIncrement: true,
       allowNull: false,
     },
-    CompName: {
+    CompanyName: {
       type: DataTypes.STRING(64),
       allowNull: false,
       unique: "uniqueTag",
@@ -39,18 +39,23 @@ const Job = sequelize.define(
     },
   },
   {
+    uniqueKeys: {
+      uniqueTag: {
+        fields: ["CompanyName", "PositionName"],
+      },
+    },
     timestamps: false,
   }
 );
 
 Job.belongsTo(Company, {
-  foreignKey: "CompName",
+  foreignKey: "CompanyName",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
 Company.hasMany(Job, {
-  foreignKey: "CompName",
+  foreignKey: "CompanyName",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
   as: "Jobs",

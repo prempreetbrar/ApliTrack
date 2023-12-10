@@ -12,9 +12,10 @@ export default function useHandleOperation(
     url,
     indexOrKey = 0,
     isObject,
-    attributeNameForMappingObject
+    attributeNameForMappingObject,
+    config
   ) => {
-    const data = await action(body, url);
+    const data = await action(body, url, config);
     if (operation === "create" && data) {
       const tableName = Object.keys(data)[0];
 

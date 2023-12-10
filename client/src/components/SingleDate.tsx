@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import React from "react";
 
 export default function SingleDate({
-  register,
   handleSubmit,
   actionOnAttribute,
   attributeName,
@@ -14,14 +13,13 @@ export default function SingleDate({
   maxLength,
   additionalStyles,
   additionalFieldStyles,
-  mostRecentLastContactDate,
-  setMostRecentLastContactDate,
+  date,
+  setDate,
 }) {
   return (
     <Box sx={{ ...additionalStyles }}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
-          {...register(attributeName)}
           label={attributeName}
           sx={{
             marginRight: { xs: "0", md: "1rem" },
@@ -37,11 +35,9 @@ export default function SingleDate({
             },
           }}
           onChange={(newValue) => {
-            setMostRecentLastContactDate(
-              (newValue as any)?.format("YYYY-MM-DD")
-            );
+            setDate((newValue as any)?.format("YYYY-MM-DD"));
           }}
-          value={dayjs(mostRecentLastContactDate || null)}
+          value={dayjs(date || null)}
         />
       </LocalizationProvider>
 
