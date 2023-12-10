@@ -1,10 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
-const User = require("./userModel");
-
-//TODO: changes from main creating errors
-const {Contact} = require("./contactModel");
-const {Job} = require("./jobModel");
 
 const Applicant = sequelize.define(
   "APPLICANT",
@@ -22,18 +17,6 @@ const Applicant = sequelize.define(
     timestamps: false,
   }
 );
-
-User.hasMany(Applicant, {
-  foreignKey: "Username",
-});
-
-// Define the foreign key relationship
-Applicant.belongsTo(User, {
-  as: "User",
-  foreignKey: "Username",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
 
 // ------------------------------------------------------------------------------------------------------------------
 
@@ -248,8 +231,7 @@ const ApplicantKnowsContact = sequelize.define(
 }, {
   timestamps: false
 });
-Applicant.belongsToMany(Contact, {through: ApplicantKnowsContact});
-Contact.belongsToMany(Applicant, {through: ApplicantKnowsContact});
+
 
 // definition of many-to-many relationship b/t Applicant and Job, for tracking jobs
 const ApplicantTracksJob = sequelize.define(
@@ -264,8 +246,7 @@ const ApplicantTracksJob = sequelize.define(
 }, {
   timestamps: false
 });
-Applicant.belongsToMany(Job, {through: ApplicantTracksJob});
-Job.belongsToMany(Applicant, {through: ApplicantTracksJob});
+
 
 /*
   If any changes occurred to the model, sequelize.sync just ensures that they are
@@ -282,3 +263,27 @@ exports.ApplicantCompetition = ApplicantCompetition;
 //TODO: changes from main creating errors
 exports.ApplicantKnowsContact = ApplicantKnowsContact;
 exports.ApplicantTracksJob = ApplicantTracksJob;
+
+//TODO: changes from main creating errors
+const User = require("./userModel");
+const {Contact} = require("./contactModel");
+const {Job} = require("./jobModel");
+
+Applicant.belongsToMany(Contact, {through: ApplicantKnowsContact});
+Contact.belongsToMany(Applicant, {through: ApplicantKnowsContact});
+
+Applicant.belongsToMany(Job, {through: ApplicantTracksJob});
+Job.belongsToMany(Applicant, {through: ApplicantTracksJob});
+
+User.hasMany(Applicant, {
+  foreignKey: "Username",
+});
+
+// Define the foreign key relationship
+Applicant.belongsTo(User, {
+  as: "User",
+  foreignKey: "Username",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+

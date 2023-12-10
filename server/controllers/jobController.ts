@@ -34,7 +34,6 @@ exports.addFilterID = errorHandling.catchAsync(
     }
   );
 
-//TODO: CHECK LATER FOR ERRORS
 // for many-to-many relationship(s)
-// exports.createJobMentionsInterview = factory.createOne(Job.JobMentionsInterview);
-// exports.deleteJobMentionsInterview = factory.deleteInstance(Job.JobMentionsInterview);
+exports.createJobMentionsInterview = factory.createOne(Job.JobMentionsInterview);
+exports.deleteJobMentionsInterview = factory.deleteInstance(Job.JobMentionsInterview);

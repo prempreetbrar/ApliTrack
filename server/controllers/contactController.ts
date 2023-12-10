@@ -21,8 +21,8 @@ exports.deleteContactWorksAtCompany = factory.deleteInstance(Contact.ContactWork
 exports.updateContactWorksAtCompany = factory.updateInstance(Contact.ContactWorksAtCompany);
 
 //TODO: CHECK
-// exports.createContactAttendsInterview = factory.createOne(Contact.ContactAttendsInterview);
-// exports.deleteContactAttendsInterview = factory.deleteInstance(Contact.ContactAttendsInterview);
+exports.createContactAttendsInterview = factory.createOne(Contact.ContactAttendsInterview);
+exports.deleteContactAttendsInterview = factory.deleteInstance(Contact.ContactAttendsInterview);
 
 exports.addFilter = errorHandling.catchAsync(
     async (request, response, next) => {

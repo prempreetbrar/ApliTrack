@@ -1,7 +1,5 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../server");
-const { Applicant } = require("./applicantModel");
-const { Application } = require("./applicationModel");
 
 const Interview = sequelize.define(
   "INTERVIEW",
@@ -15,7 +13,7 @@ const Interview = sequelize.define(
     },
     ApplicantUsername: {
       type: DataTypes.STRING(32),
-      primaryKey: true,
+      //primaryKey: true,
       allowNull: false,
     },
     Stage: {
@@ -36,6 +34,26 @@ const Interview = sequelize.define(
     timestamps: false,
   }
 );
+
+// Implementing a beforeCreate hook to manually increment the InterviewID
+Interview.beforeCreate(async (instance, options) => {
+  try {
+    const maxInterviewID = await Interview.max("InterviewID", {
+      where: { ApplicantUsername: instance.ApplicantUsername },
+    });
+
+    instance.InterviewID = maxInterviewID ? maxInterviewID + 1 : 1;
+  } catch (error) {
+    // Handle any potential errors
+    console.error("Error during beforeCreate hook:", error);
+  }
+});
+
+sequelize.sync();
+exports.Interview = Interview;
+
+const { Applicant } = require("./applicantModel");
+const { Application } = require("./applicationModel");
 
 //Applicant has a one-to-many relationship with Interview
 Applicant.hasMany(Interview, {
@@ -58,20 +76,3 @@ Interview.belongsTo(Application, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-
-// Implementing a beforeCreate hook to manually increment the InterviewID
-Interview.beforeCreate(async (instance, options) => {
-  try {
-    const maxInterviewID = await Interview.max("InterviewID", {
-      where: { ApplicantUsername: instance.ApplicantUsername },
-    });
-
-    instance.InterviewID = maxInterviewID ? maxInterviewID + 1 : 1;
-  } catch (error) {
-    // Handle any potential errors
-    console.error("Error during beforeCreate hook:", error);
-  }
-});
-
-sequelize.sync();
-exports.Interview = Interview;
