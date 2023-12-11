@@ -26,7 +26,11 @@ router
     jobController.uploadJobPostFile,
     jobController.createJob
   )
-  .delete(authController.checkIfLoggedIn, jobController.deleteJob)
+  .delete(
+    authController.checkIfLoggedIn,
+    authController.restrictTo(authController.DELETE_ONLY),
+    jobController.deleteJob
+  )
   .patch(
     authController.checkIfLoggedIn,
     upload.single("JobPostFile"),

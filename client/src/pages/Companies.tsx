@@ -325,6 +325,25 @@ function Company({
   const [jobs, setJobs] = React.useState(company?.jobs || []);
   const [trackedJobs, setTrackedJobs] = React.useState({});
 
+  const [deleteJobConfirmationDialogOpen, setDeleteJobConfirmationDialogOpen] =
+    React.useState(false);
+  const [selectedJobIndexToDelete, setSelectedJobIndexToDelete] =
+    React.useState(null);
+
+  const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
+    useDelete();
+  const { executeHandle } = useHandleOperation(undefined, setJobs, jobs);
+
+  const handleOpenDeleteJobConfirmationDialog = (index) => {
+    setSelectedJobIndexToDelete(index);
+    setDeleteJobConfirmationDialogOpen(true);
+  };
+
+  const handleCloseDeleteJobConfirmationDialog = () => {
+    setSelectedJobIndexToDelete(null);
+    setDeleteJobConfirmationDialogOpen(false);
+  };
+
   React.useEffect(() => {
     const fetchTrackedJobs = async () => {
       if (user && company) {
@@ -367,6 +386,22 @@ function Company({
         ...data,
       },
       "http://localhost:3000/api/companies"
+    );
+  }
+
+  async function handleDeleteJob(index) {
+    executeHandle(
+      "delete",
+      deleteInstance,
+      {
+        PositionID: jobs[index].PositionID,
+      },
+      "http://localhost:3000/api/companies/company/jobs",
+      index,
+      false,
+      null,
+      {},
+      false
     );
   }
 
@@ -499,9 +534,9 @@ function Company({
                 setTrackedJobs={setTrackedJobs}
                 Notes={trackedJobs[job.PositionID]?.Notes}
                 DateToApply={trackedJobs[job.PositionID]?.DateToApply}
-                // handleOpenDeleteConfirmationDialog={
-                //   handleOpenDeleteConfirmationDialog
-                // }
+                handleOpenDeleteJobConfirmationDialog={
+                  handleOpenDeleteJobConfirmationDialog
+                }
               />
             );
           }
@@ -512,6 +547,14 @@ function Company({
           setJobs={setJobs}
         />
       </Box>
+      {deleteJobConfirmationDialogOpen && (
+        <DeleteConfirmationDialog
+          open={deleteJobConfirmationDialogOpen}
+          handleClose={handleCloseDeleteJobConfirmationDialog}
+          handleConfirm={() => handleDeleteJob(selectedJobIndexToDelete)}
+          itemName={jobs[selectedJobIndexToDelete]?.PositionName}
+        />
+      )}
     </MainPaper>
   );
 }
@@ -525,6 +568,7 @@ function Job({
   isTracked,
   Notes,
   DateToApply,
+  handleOpenDeleteJobConfirmationDialog,
 }) {
   const [responsibilitiesArray, setResponsibilitiesArray] = React.useState([]);
   const [qualificationsArray, setQualificationsArray] = React.useState([]);
@@ -600,7 +644,9 @@ function Job({
       "http://localhost:3000/api/companies/company/jobs/qualifications",
       index,
       false,
-      undefined
+      undefined,
+      {},
+      false
     );
   }
 
@@ -615,7 +661,9 @@ function Job({
       "http://localhost:3000/api/companies/company/jobs/responsibilities",
       index,
       false,
-      undefined
+      undefined,
+      {},
+      false
     );
   }
 
@@ -670,7 +718,8 @@ function Job({
       null,
       false,
       null,
-      {}
+      {},
+      false
     );
     if (success) {
       setValue("Qualification", "");
@@ -689,7 +738,8 @@ function Job({
       null,
       false,
       null,
-      {}
+      {},
+      false
     );
     if (success) {
       setValue("Responsibility", "");
@@ -708,7 +758,8 @@ function Job({
         null,
         true,
         "PositionID",
-        {}
+        {},
+        false
       );
     }
     if (!event.target.checked) {
@@ -720,7 +771,8 @@ function Job({
         job.PositionID,
         true,
         null,
-        {}
+        {},
+        false
       );
       setStillTracks(false);
     }
@@ -971,6 +1023,20 @@ function Job({
           </Button>
         )}
       </form>
+      {user?.data?.user?.AdminFlag &&
+        user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+          <IconButton
+            sx={{
+              marginLeft: "auto",
+              order: { xs: 1, md: 3 },
+            }}
+            aria-label="delete"
+            size="large"
+            onClick={() => handleOpenDeleteJobConfirmationDialog(index)}
+          >
+            <Delete sx={{ width: "2rem", height: "2rem" }} />
+          </IconButton>
+        )}
       <hr style={{ marginTop: "5rem", marginBottom: "5rem" }} />
     </>
   );
@@ -1007,7 +1073,8 @@ function NewJobForm({ companyName, jobs, setJobs }) {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
+      false
     );
 
     /*
@@ -1119,7 +1186,8 @@ function NewCompanyForm({ companies, setCompanies }) {
       null,
       false,
       null,
-      {}
+      {},
+      false
     );
   }
 
