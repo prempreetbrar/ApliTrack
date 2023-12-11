@@ -349,10 +349,11 @@ function Company({
   latestApplicationDeadline,
 }) {
   const { user } = useAuthContext();
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, reset } = useForm();
   const { executeRequest: get } = useGet();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
-  const [jobs, setJobs] = React.useState(company?.jobs || []);
+  const [jobs, setJobs] = React.useState(company?.Jobs || []);
+
   const [trackedJobs, setTrackedJobs] = React.useState({});
 
   const [deleteJobConfirmationDialogOpen, setDeleteJobConfirmationDialogOpen] =
@@ -362,12 +363,18 @@ function Company({
 
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
-  const { executeHandle } = useHandleOperation(undefined, setJobs, jobs);
+  const { executeHandle } = useHandleOperation(reset, setJobs, jobs);
 
   const handleOpenDeleteJobConfirmationDialog = (index) => {
     setSelectedJobIndexToDelete(index);
     setDeleteJobConfirmationDialogOpen(true);
   };
+
+  React.useEffect(() => {
+    if (jobs === undefined) {
+      setJobs([]);
+    }
+  }, [jobs]);
 
   const handleCloseDeleteJobConfirmationDialog = () => {
     setSelectedJobIndexToDelete(null);
@@ -1322,6 +1329,12 @@ function NewCompanyForm({ companies, setCompanies }) {
       {},
       false
     );
+    if (result) {
+      setValue("CompanyName", "");
+      setValue("Industry", "");
+      setValue("HomePageURL", "");
+      setValue("Description", "");
+    }
   }
 
   return (
