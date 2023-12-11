@@ -449,7 +449,7 @@ function Contact({
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: { xs: "center", md: "flex-start" },
       }}
       paperKey={index}
     >
@@ -558,6 +558,7 @@ function Contact({
         display="flex"
         sx={{
           alignItems: { xs: "center", md: "flex-start" },
+          alignSelf: { xs: "center", md: "flex-start" },
           order: { xs: 3, md: 2 },
         }}
         flexDirection="column"
