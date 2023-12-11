@@ -139,147 +139,177 @@ export default function Companies() {
 
   return (
     <MainBox>
-      <Box
-        display="flex"
-        alignItems="center"
-        marginBottom="1rem"
-        justifyContent="space-between"
-      >
-        <form onSubmit={handleSubmit(handleGet)}>
-          {user && (
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={onlyShowJobsITrack}
-                  onChange={(event) => {
-                    setOnlyShowJobsITrack(event.target.checked);
-                    if (!event.target.checked) {
-                      setMostRecentEarliestDateToApply(null);
-                      setMostRecentLatestDateToApply(null);
-                    }
-                  }}
-                />
-              }
-              label="Only Show Jobs I Track"
-            />
-          )}
-
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="ASC"
-              name="radio-buttons-group"
-              sx={{ display: "flex" }}
-            >
-              <FormControlLabel
-                value="ASC"
-                control={<Radio {...register("Sort")} />}
-                label="Sort Ascending"
-                labelPlacement="start"
-              />
-              <FormControlLabel
-                value="DESC"
-                control={<Radio {...register("Sort")} />}
-                label="Sort Descending"
-                labelPlacement="start"
-              />
-            </RadioGroup>
-          </FormControl>
-
-          <Typography
-            variant="h3"
-            sx={{ fontSize: "1rem", marginRight: "1rem" }}
+      <form onSubmit={handleSubmit(handleGet)} style={{ width: "100%" }}>
+        <Box
+          display="flex"
+          sx={{
+            flexDirection: { xs: "row", xl: "column" },
+          }}
+          alignItems="center"
+          justifyContent="center"
+          marginBottom="1rem"
+        >
+          <Box
+            display="flex"
+            sx={{
+              flexDirection: { xs: "column", xl: "row" },
+            }}
+            alignItems="center"
+            marginRight="2.5rem"
           >
-            Search by:
-          </Typography>
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            additionalStyles={{
-              marginTop: { xs: "1rem", sm: "0rem" },
+            {user && (
+              <FormControlLabel
+                labelPlacement="start"
+                control={
+                  <Switch
+                    checked={onlyShowJobsITrack}
+                    onChange={(event) => {
+                      setOnlyShowJobsITrack(event.target.checked);
+                      if (!event.target.checked) {
+                        setMostRecentEarliestDateToApply(null);
+                        setMostRecentLatestDateToApply(null);
+                      }
+                    }}
+                  />
+                }
+                label="Only Show Jobs I Track"
+              />
+            )}
+
+            <FormControl>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="ASC"
+                name="radio-buttons-group"
+                sx={{ display: "flex" }}
+                row
+              >
+                <FormControlLabel
+                  value="ASC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort Ascending"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value="DESC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort Descending"
+                  labelPlacement="start"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Box>
+
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            marginTop="1rem"
+            sx={{
+              flexDirection: { xs: "column", xl: "row" },
             }}
-            attributeName={"CompanyName"}
-            allowUnauthenticated
-          />
-          <SingleDate
-            handleSubmit={handleSubmit}
-            attributeName={"EarliestApplicationDeadline"}
-            maxLength={64}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: { xs: "0rem" },
-              marginTop: { xs: "1rem", sm: "0rem" },
-            }}
-            additionalFieldStyles={{
-              marginRight: { xs: "1rem" },
-            }}
-            date={mostRecentEarliestApplicationDeadline}
-            setDate={setMostRecentEarliestApplicationDeadline}
-            allowUnauthenticated
-          />
-          <SingleDate
-            handleSubmit={handleSubmit}
-            attributeName={"LatestApplicationDeadline"}
-            maxLength={64}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: { xs: "0rem" },
-              marginTop: { xs: "1rem", sm: "0rem" },
-            }}
-            additionalFieldStyles={{
-              marginRight: { xs: "1rem" },
-            }}
-            date={mostRecentLatestApplicationDeadline}
-            setDate={setMostRecentLatestApplicationDeadline}
-            allowUnauthenticated
-          />
-          {user && onlyShowJobsITrack && (
+          >
+            <Typography
+              variant="h3"
+              sx={{ fontSize: "1rem", marginRight: "1rem", flexShrink: 0 }}
+            >
+              Search by:
+            </Typography>
+            <SingleForm
+              register={register}
+              handleSubmit={handleSubmit}
+              additionalStyles={{
+                marginTop: { xs: "1rem", xl: "0rem" },
+                flexShrink: 0,
+              }}
+              attributeName={"CompanyName"}
+              allowUnauthenticated
+            />
             <SingleDate
               handleSubmit={handleSubmit}
-              attributeName={"EarliestDateToApply"}
+              attributeName={"EarliestApplicationDeadline"}
               maxLength={64}
               additionalStyles={{
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
                 marginBottom: { xs: "0rem" },
-                marginTop: { xs: "1rem", sm: "0rem" },
+                marginTop: { xs: "1rem", xl: "0rem" },
+                flexShrink: 0,
               }}
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
               }}
-              date={mostRecentEarliestDateToApply}
-              setDate={setMostRecentEarliestDateToApply}
+              date={mostRecentEarliestApplicationDeadline}
+              setDate={setMostRecentEarliestApplicationDeadline}
+              allowUnauthenticated
             />
-          )}
-          {user && onlyShowJobsITrack && (
             <SingleDate
               handleSubmit={handleSubmit}
-              attributeName={"LatestDateToApply"}
+              attributeName={"LatestApplicationDeadline"}
               maxLength={64}
               additionalStyles={{
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
                 marginBottom: { xs: "0rem" },
-                marginTop: { xs: "1rem", sm: "0rem" },
+                marginTop: { xs: "1rem", xl: "0rem" },
+                flexShrink: 0,
               }}
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
               }}
-              date={mostRecentLatestDateToApply}
-              setDate={setMostRecentLatestDateToApply}
+              date={mostRecentLatestApplicationDeadline}
+              setDate={setMostRecentLatestApplicationDeadline}
+              allowUnauthenticated
             />
-          )}
-          <IconButton type="submit">
-            <SearchIcon color="primary" />
-          </IconButton>
-        </form>
-      </Box>
+
+            {user && onlyShowJobsITrack && (
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"EarliestDateToApply"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={mostRecentEarliestDateToApply}
+                setDate={setMostRecentEarliestDateToApply}
+              />
+            )}
+            {user && onlyShowJobsITrack && (
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"LatestDateToApply"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={mostRecentLatestDateToApply}
+                setDate={setMostRecentLatestDateToApply}
+              />
+            )}
+            <IconButton type="submit">
+              <SearchIcon color="primary" />
+            </IconButton>
+          </Box>
+        </Box>
+      </form>
 
       {companies &&
         companies.map((company, index) => (
@@ -415,7 +445,13 @@ function Company({
         width: "100%",
       }}
     >
-      <Box display="flex" flexDirection="row" alignItems="center" width="100%">
+      <Box
+        display="flex"
+        flexDirection="row"
+        flexWrap="wrap"
+        alignItems="center"
+        width="100%"
+      >
         <Typography
           variant="h2"
           sx={{ fontSize: "3rem", fontWeight: "bold", display: "inline-block" }}
@@ -426,13 +462,16 @@ function Company({
           sx={{ marginLeft: "1rem", width: "4rem", height: "4rem" }}
         />
 
-        <form
+        <FormControl
           onSubmit={handleSubmit(updateCompany)}
-          style={{
+          sx={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
-            marginLeft: "5rem",
+            width: { xs: "100%", md: "fit-content" },
+            marginTop: { xs: "2rem", md: 0 },
+            marginLeft: { xs: "0rem", lg: "5rem" },
+            order: { xs: 4, lg: 3 },
           }}
         >
           <SingleForm
@@ -460,6 +499,7 @@ function Company({
               alignItems: "center",
             }}
             additionalFieldStyles={{
+              marginTop: { xs: "1.5rem", md: 0 },
               marginRight: { xs: "1rem" },
             }}
           />
@@ -472,6 +512,7 @@ function Company({
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
+              marginTop: { xs: "1.5rem", md: 0 },
             }}
             additionalFieldStyles={{
               marginRight: { xs: "1rem" },
@@ -487,13 +528,13 @@ function Company({
               Update
             </Button>
           )}
-        </form>
+        </FormControl>
         {user?.data?.user?.AdminFlag &&
           user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
             <IconButton
               sx={{
                 marginLeft: "auto",
-                order: { xs: 1, md: 3 },
+                order: { xs: 3, lg: 4 },
               }}
               aria-label="delete"
               size="large"
@@ -504,7 +545,11 @@ function Company({
           )}
       </Box>
 
-      <Box marginLeft="2.5rem">
+      <Box
+        sx={{ marginLeft: { xs: 0, md: "1rem" } }}
+        marginTop="2.5rem"
+        width="100%"
+      >
         <Box display="flex" alignItems="center">
           <Typography
             variant="h3"
@@ -793,11 +838,12 @@ function Job({
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit(updateJob)}
-        style={{
-          display: "grid",
-          gridTemplateAreas: `
+      <form onSubmit={handleSubmit(updateJob)}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateAreas: {
+              lg: `
             'PositionName ApplicationDeadline Qualification Responsibility' 
             'PositionType Salary Qualification Responsibility'
             '. .  Qualification Responsibility'
@@ -806,240 +852,297 @@ function Job({
             'JobPostFile JobPostFile Track Track'
             'JobPostFile JobPostFile Track Track'
             'JobPostFile JobPostFile Track Track'
-            '. Update Update .'
+            'Update Update d d'
           `,
-          marginTop: "2rem",
-          alignItems: "start",
-        }}
-      >
-        <SingleForm
-          register={register}
-          attributeName={"PositionName"}
-          maxLength={64}
-          isLoading={updateIsLoading}
-          additionalStyles={{
-            gridArea: "PositionName",
-          }}
-        />
 
-        <SingleForm
-          register={register}
-          attributeName={"PositionType"}
-          maxLength={64}
-          isLoading={updateIsLoading}
-          additionalStyles={{
-            gridArea: "PositionType",
-          }}
-          additionalFieldStyles={{
-            marginTop: "1rem",
-          }}
-        />
-        <SingleDate
-          handleSubmit={handleSubmit}
-          attributeName={"ApplicationDeadline"}
-          maxLength={64}
-          additionalStyles={{
-            gridArea: "ApplicationDeadline",
-          }}
-          date={applicationDeadline}
-          setDate={setApplicationDeadline}
-        />
-        <SingleForm
-          register={register}
-          attributeName={"Salary"}
-          maxLength={64}
-          isLoading={updateIsLoading}
-          additionalStyles={{
-            gridArea: "Salary",
-          }}
-          additionalFieldStyles={{
-            marginTop: "1rem",
-          }}
-        />
-        <SingleForm
-          register={register}
-          attributeName={"Description"}
-          maxLength={64}
-          isLoading={updateIsLoading}
-          additionalStyles={{
-            gridArea: "Description",
-            marginTop: "1rem",
-          }}
-          additionalFieldStyles={{
-            marginRight: { xs: "0rem" },
-          }}
-          isTextArea
-        />
-
-        <Box
-          sx={{
-            gridArea: "JobPostFile",
-            display: "flex",
-            flexDirection: "column",
+              md: `
+          'PositionName ApplicationDeadline Qualification Qualification' 
+          'PositionType Salary Responsibility Responsibility'
+          'Description Description Track Track'
+          'Description Description Track Track'
+          'JobPostFile JobPostFile Track Track'
+          'JobPostFile JobPostFile Track Track'
+          'JobPostFile JobPostFile Track Track'
+          'Update Update d d'
+        `,
+              xs: `
+        'PositionName ApplicationDeadline' 
+        'PositionType Salary'
+        'Description Description'
+        'Qualification Qualification'
+        'Responsibility Responsibility'
+        'JobPostFile JobPostFile'
+        'JobPostFile JobPostFile'
+        'JobPostFile JobPostFile'
+        'Update Update'
+        'Track Track'
+        'Track Track'
+        'd d'
+      `,
+            },
             marginTop: "2rem",
+            alignItems: "start",
+            gridGap: "0.75rem",
           }}
         >
-          <Typography>Job Posting</Typography>
-          {job.JobPostFile && (
-            <iframe
-              src={`http://localhost:3000/uploads/jobPosts/${currentlyUploadedJobPostFile}`}
-              title={currentlyUploadedJobPostFile}
-              width="fit-content"
-              style={{
-                height: "20rem",
-              }}
-            ></iframe>
-          )}
-          {user && (
-            <Input
-              sx={{ marginTop: "1rem" }}
-              {...register("JobPostFile")}
-              type="file"
-              name="JobPostFile"
-            />
-          )}
-          {currentlyUploadedJobPostFile && (
-            <Tooltip title={currentlyUploadedJobPostFile} placement="top" arrow>
-              <Typography
-                noWrap
-                sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
-              >
-                Existing File: {currentlyUploadedJobPostFile}
-              </Typography>
-            </Tooltip>
-          )}
-          {!currentlyUploadedJobPostFile && (
-            <Tooltip
-              title={"No File Has Been Uploaded for the Job Posting"}
-              placement="top"
-              arrow
-            >
-              <Typography
-                noWrap
-                sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
-              >
-                No File Has Been Uploaded for the Job Posting
-              </Typography>
-            </Tooltip>
-          )}
-        </Box>
-
-        <Box
-          sx={{
-            gridArea: "Qualification",
-            marginLeft: "2rem",
-            marginTop: "-1.5rem",
-          }}
-        >
-          <Typography>Qualifications</Typography>
-          <ChipDisplayer
-            onUpdateSectionArray={qualificationsArray}
-            attributeName={"Qualification"}
-            handleDelete={handleDeleteQualifications}
-          />
-          <NewEntry
-            attributeName={"Qualification"}
-            maxCreateLength={64}
-            handleCreate={handleCreateQualification}
-            createIsLoading={createIsLoading}
+          <SingleForm
             register={register}
-            additionalStyles={{ marginTop: 0 }}
+            attributeName={"PositionName"}
+            maxLength={64}
+            isLoading={updateIsLoading}
+            additionalStyles={{
+              gridArea: "PositionName",
+            }}
           />
-        </Box>
 
-        <Box sx={{ gridArea: "Responsibility", marginTop: "-1.6rem" }}>
-          <Typography sx={{ alignSelf: "flex-start" }}>
-            Responsibilities
-          </Typography>
-          <ChipDisplayer
-            onUpdateSectionArray={responsibilitiesArray}
-            attributeName={"Responsibility"}
-            handleDelete={handleDeleteResponsibilities}
-          />
-          <NewEntry
-            attributeName={"Responsibility"}
-            maxCreateLength={64}
-            handleCreate={handleCreateResponsibility}
-            createIsLoading={createIsLoading}
+          <SingleForm
             register={register}
-            additionalStyles={{ marginTop: 0 }}
+            attributeName={"PositionType"}
+            maxLength={64}
+            isLoading={updateIsLoading}
+            additionalStyles={{
+              gridArea: "PositionType",
+            }}
+            additionalFieldStyles={{
+              marginTop: "1rem",
+            }}
           />
-        </Box>
+          <SingleDate
+            handleSubmit={handleSubmit}
+            attributeName={"ApplicationDeadline"}
+            maxLength={64}
+            additionalStyles={{
+              gridArea: "ApplicationDeadline",
+            }}
+            additionalFieldStyles={{
+              width: "100%",
+            }}
+            date={applicationDeadline}
+            setDate={setApplicationDeadline}
+          />
+          <SingleForm
+            register={register}
+            attributeName={"Salary"}
+            maxLength={64}
+            isLoading={updateIsLoading}
+            additionalStyles={{
+              gridArea: "Salary",
+            }}
+            additionalFieldStyles={{
+              marginTop: "1rem",
+              width: "100%",
+            }}
+          />
+          <SingleForm
+            register={register}
+            attributeName={"Description"}
+            maxLength={64}
+            isLoading={updateIsLoading}
+            additionalStyles={{
+              gridArea: "Description",
+              marginTop: "1rem",
+            }}
+            additionalFieldStyles={{
+              marginRight: { xs: "0rem" },
+            }}
+            isTextArea
+          />
 
-        {user && (
           <Box
             sx={{
-              gridArea: "Track",
+              gridArea: "JobPostFile",
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
+              marginTop: "2rem",
             }}
           >
-            <FormControlLabel
-              control={
-                <Checkbox checked={stillTracks} onChange={handleTracks} />
-              }
-              label="Track this job"
-            />
-            {stillTracks && (
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"DateToApply"}
-                maxLength={64}
-                isLoading={updateIsLoading}
-                date={date || null}
-                setDate={setDate}
+            <Typography>Job Posting</Typography>
+            {job.JobPostFile && (
+              <iframe
+                src={`http://localhost:3000/uploads/jobPosts/${currentlyUploadedJobPostFile}`}
+                title={currentlyUploadedJobPostFile}
+                width="fit-content"
+                style={{
+                  height: "20rem",
+                }}
+              ></iframe>
+            )}
+            {user && (
+              <Input
+                sx={{ marginTop: "1rem" }}
+                {...register("JobPostFile")}
+                type="file"
+                name="JobPostFile"
               />
             )}
-            {stillTracks && (
-              <SingleForm
-                register={register}
-                handleSubmit={handleSubmit}
-                actionOnAttribute={updateTracks}
-                attributeName={"Notes"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-                isLoading={updateIsLoading}
-                isTextArea
-              />
+            {currentlyUploadedJobPostFile && (
+              <Tooltip
+                title={currentlyUploadedJobPostFile}
+                placement="top"
+                arrow
+              >
+                <Typography
+                  noWrap
+                  sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
+                >
+                  Existing File: {currentlyUploadedJobPostFile}
+                </Typography>
+              </Tooltip>
+            )}
+            {!currentlyUploadedJobPostFile && (
+              <Tooltip
+                title={"No File Has Been Uploaded for the Job Posting"}
+                placement="top"
+                arrow
+              >
+                <Typography
+                  noWrap
+                  sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
+                >
+                  No File Has Been Uploaded for the Job Posting
+                </Typography>
+              </Tooltip>
             )}
           </Box>
-        )}
 
-        {user && (
-          <Button
+          <Box
             sx={{
-              marginTop: "1rem",
-              gridArea: "Update",
-              width: "min-content",
-              justifySelf: "center",
+              gridArea: "Qualification",
+              marginLeft: "2rem",
+              marginTop: { sm: 0, md: "-1.5rem" },
             }}
-            type="submit"
-            variant="outlined"
           >
-            Update
-          </Button>
-        )}
+            <Typography>Qualifications</Typography>
+            <ChipDisplayer
+              onUpdateSectionArray={qualificationsArray}
+              attributeName={"Qualification"}
+              handleDelete={handleDeleteQualifications}
+            />
+            <NewEntry
+              attributeName={"Qualification"}
+              maxCreateLength={64}
+              handleCreate={handleCreateQualification}
+              createIsLoading={createIsLoading}
+              register={register}
+              additionalStyles={{ marginTop: 0 }}
+            />
+          </Box>
+
+          {user?.data?.user?.AdminFlag &&
+            user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+              <Box
+                sx={{
+                  gridArea: "d",
+                  textAlign: "center",
+                }}
+              >
+                <IconButton
+                  aria-label="delete"
+                  size="large"
+                  onClick={() => handleOpenDeleteJobConfirmationDialog(index)}
+                >
+                  <Delete sx={{ width: "2rem", height: "2rem" }} />
+                </IconButton>
+              </Box>
+            )}
+
+          <Box
+            sx={{
+              gridArea: "Responsibility",
+              marginTop: { xs: "-0.5rem", lg: "-1.5rem" },
+              marginLeft: { xs: "2rem", lg: 0 },
+            }}
+          >
+            <Typography sx={{ alignSelf: "flex-start" }}>
+              Responsibilities
+            </Typography>
+            <ChipDisplayer
+              onUpdateSectionArray={responsibilitiesArray}
+              attributeName={"Responsibility"}
+              handleDelete={handleDeleteResponsibilities}
+            />
+            <NewEntry
+              attributeName={"Responsibility"}
+              maxCreateLength={64}
+              handleCreate={handleCreateResponsibility}
+              createIsLoading={createIsLoading}
+              register={register}
+              additionalStyles={{ marginTop: 0 }}
+            />
+          </Box>
+
+          {user && (
+            <Box
+              sx={{
+                gridArea: "Track",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginTop: { xs: "2rem", md: 0 },
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox checked={stillTracks} onChange={handleTracks} />
+                }
+                label="Track This Job"
+              />
+              {stillTracks && (
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"DateToApply"}
+                  maxLength={64}
+                  isLoading={updateIsLoading}
+                  date={date || null}
+                  setDate={setDate}
+                  additionalStyles={{
+                    marginTop: "1rem",
+                  }}
+                />
+              )}
+              {stillTracks && (
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  actionOnAttribute={updateTracks}
+                  attributeName={"Notes"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    marginTop: "1rem",
+                  }}
+                  isLoading={updateIsLoading}
+                  isTextArea
+                />
+              )}
+            </Box>
+          )}
+
+          {user && (
+            <Button
+              sx={{
+                marginTop: "1rem",
+                gridArea: "Update",
+                width: "min-content",
+                justifySelf: "center",
+              }}
+              type="submit"
+              variant="outlined"
+            >
+              Update
+            </Button>
+          )}
+        </Box>
       </form>
-      {user?.data?.user?.AdminFlag &&
-        user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
-          <IconButton
-            sx={{
-              marginLeft: "auto",
-              order: { xs: 1, md: 3 },
-            }}
-            aria-label="delete"
-            size="large"
-            onClick={() => handleOpenDeleteJobConfirmationDialog(index)}
-          >
-            <Delete sx={{ width: "2rem", height: "2rem" }} />
-          </IconButton>
-        )}
-      <hr style={{ marginTop: "5rem", marginBottom: "5rem" }} />
+
+      <hr
+        style={{
+          overflow: "hidden",
+          margin: "5rem auto",
+        }}
+      />
     </>
   );
 }
@@ -1096,10 +1199,33 @@ function NewJobForm({ companyName, jobs, setJobs }) {
   return (
     <>
       {user && (
-        <>
+        <Box
+          display="grid"
+          sx={{
+            gridTemplateAreas: {
+              md: `'Title Name Description Deadline Create'
+              'Title Type Salary File Create'
+            `,
+              xs: `'. Title Title .'
+            'Name Name Type Type'
+            'Salary Salary Deadline Deadline'
+            'Description Description File File'
+            '. Create Create .'
+          `,
+            },
+            alignItems: "center",
+            justifyItems: "center",
+            gridGap: "1rem",
+          }}
+        >
           <Typography
+            flexWrap="wrap"
             variant="h2"
-            sx={{ fontSize: "1.5rem", fontWeight: "500" }}
+            sx={{
+              fontSize: "1.5rem",
+              fontWeight: "500",
+              gridArea: "Title",
+            }}
           >
             Add New Job
           </Typography>
@@ -1110,6 +1236,7 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             attributeName={"PositionName"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{ gridArea: "Name" }}
           />
           <SingleForm
             register={register}
@@ -1118,6 +1245,10 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             attributeName={"Description"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{
+              gridArea: "Description",
+              marginTop: { xs: 0 },
+            }}
             isTextArea
           />
           <SingleForm
@@ -1125,6 +1256,7 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             handleSubmit={handleSubmit}
             actionOnAttribute={null}
             attributeName={"PositionType"}
+            additionalStyles={{ gridArea: "Type" }}
             isLoading={createIsLoading}
             maxLength={64}
           />
@@ -1133,6 +1265,7 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             handleSubmit={handleSubmit}
             actionOnAttribute={null}
             attributeName={"Salary"}
+            additionalStyles={{ gridArea: "Salary" }}
             isLoading={createIsLoading}
             maxLength={64}
           />
@@ -1145,13 +1278,13 @@ function NewJobForm({ companyName, jobs, setJobs }) {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: { xs: "0rem" },
-              marginTop: { xs: "1rem" },
+              gridArea: "Deadline",
             }}
             date={applicationDeadline}
             setDate={setApplicationDeadline}
           />
           <Input
-            sx={{ marginTop: "1rem" }}
+            sx={{ marginTop: "1rem", gridArea: "File" }}
             {...register("JobPostFile")}
             type="file"
             name="JobPostFile"
@@ -1160,12 +1293,12 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             onClick={handleSubmit(handleCreate)}
             type="submit"
             variant="outlined"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3, mb: 2, gridArea: "Create" }}
             disabled={createIsLoading}
           >
             Create
           </Button>
-        </>
+        </Box>
       )}
     </>
   );
@@ -1196,10 +1329,18 @@ function NewCompanyForm({ companies, setCompanies }) {
   return (
     <>
       {user && (
-        <MainPaper>
+        <MainPaper
+          overrideStyles={{
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+          }}
+        >
           <Typography
             variant="h2"
-            sx={{ fontSize: "1.5rem", fontWeight: "500" }}
+            sx={{
+              fontSize: "1.5rem",
+              fontWeight: "500",
+            }}
           >
             Add New Company
           </Typography>
@@ -1210,6 +1351,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             attributeName={"CompanyName"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
           />
           <SingleForm
             register={register}
@@ -1219,6 +1361,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             isLoading={createIsLoading}
             maxLength={64}
             isTextArea
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
           />
           <SingleForm
             register={register}
@@ -1227,6 +1370,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             attributeName={"HomePageURL"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
           />
           <SingleForm
             register={register}
@@ -1235,6 +1379,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             attributeName={"Description"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
           />
 
           <Button
@@ -1243,6 +1388,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             variant="outlined"
             sx={{ mt: 3, mb: 2 }}
             disabled={createIsLoading}
+            sx={{ marginTop: { xs: "1.5rem" } }}
           >
             Create
           </Button>
