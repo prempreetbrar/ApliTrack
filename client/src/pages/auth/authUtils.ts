@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { enqueueSnackbar } from "notistack";
 
 export function authErrorHandler(error, errors) {

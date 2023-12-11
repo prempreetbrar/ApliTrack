@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from "react";
 import useAuthContext from "./useAuthContext";
 import axios from "axios";

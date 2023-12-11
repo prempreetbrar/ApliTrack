@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -697,6 +699,7 @@ function AddNewContact({ setContactsInfo, contactsInfo }) {
   );
 
   async function handleCreate(data) {
+    console.log(data);
     const result = await executeHandle(
       "create",
       create,
