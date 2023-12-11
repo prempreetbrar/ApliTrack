@@ -13,7 +13,8 @@ export default function useHandleOperation(
     indexOrKey = 0,
     isObject,
     attributeNameForMappingObject,
-    config
+    config,
+    disableSnackbar
   ) => {
     const data = await action(body, url, config);
     if (operation === "create" && data) {
@@ -37,10 +38,12 @@ export default function useHandleOperation(
     if (operation === "get" && data) {
       const tableName = Object.keys(data)[0];
       setStateObjectOrArray(data[tableName]);
-      enqueueSnackbar(`Success!`, {
-        variant: "success",
-        autoHideDuration: 1000,
-      });
+      if (!disableSnackbar) {
+        enqueueSnackbar(`Success!`, {
+          variant: "success",
+          autoHideDuration: 1000,
+        });
+      }
     }
 
     if (operation === "delete" && data) {

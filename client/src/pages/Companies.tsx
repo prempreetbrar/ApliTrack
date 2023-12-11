@@ -18,9 +18,11 @@ import {
 import BusinessIcon from "@mui/icons-material/Business";
 import WorkIcon from "@mui/icons-material/Work";
 import SearchIcon from "@mui/icons-material/Search";
+import { Delete } from "@mui/icons-material";
 
 import { useCreate, useDelete, useGet, useUpdate } from "hooks/useHttpMethod";
 
+import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import NewEntry from "components/NewEntry";
 import MainBox from "components/MainBox";
 import MainPaper from "components/MainPaper";
@@ -29,6 +31,8 @@ import ChipDisplayer from "components/ChipDisplayer";
 import useHandleOperation from "hooks/useHandleOperation";
 import SingleDate from "components/SingleDate";
 import useAuthContext from "hooks/useAuthContext";
+
+import { DELETE_ONLY } from "Constants";
 
 export default function Companies() {
   const [companies, setCompanies] = React.useState([]);
@@ -52,8 +56,15 @@ export default function Companies() {
     setMostRecentLatestApplicationDeadline,
   ] = React.useState(null);
 
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
+    React.useState(false);
+  const [selectedIndexToDelete, setSelectedIndexToDelete] =
+    React.useState(null);
+
   const { user } = useAuthContext();
   const { executeRequest: get } = useGet();
+  const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
+    useDelete();
   const { register, handleSubmit, setValue } = useForm();
   const { executeHandle } = useHandleOperation(
     undefined,
@@ -61,8 +72,30 @@ export default function Companies() {
     companies
   );
 
+  const handleOpenDeleteConfirmationDialog = (index) => {
+    setSelectedIndexToDelete(index);
+    setDeleteConfirmationDialogOpen(true);
+  };
+
+  const handleCloseDeleteConfirmationDialog = () => {
+    setSelectedIndexToDelete(null);
+    setDeleteConfirmationDialogOpen(false);
+  };
+
   React.useEffect(() => {
-    handleGet({ Sort: "ASC" });
+    executeHandle(
+      "get",
+      get,
+      {
+        Sort: "ASC",
+      },
+      "http://localhost:3000/api/companies",
+      null,
+      false,
+      null,
+      {},
+      true
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -78,11 +111,28 @@ export default function Companies() {
       null,
       false,
       null,
-      {}
+      {},
+      false
     );
 
     setSavedEarliestApplicationDeadline(mostRecentEarliestApplicationDeadline);
     setSavedLatestApplicationDeadline(mostRecentLatestApplicationDeadline);
+  }
+
+  async function handleDelete(index) {
+    executeHandle(
+      "delete",
+      deleteInstance,
+      {
+        CompanyName: companies[index].CompanyName,
+      },
+      "http://localhost:3000/api/companies",
+      index,
+      false,
+      null,
+      {},
+      false
+    );
   }
 
   return (
@@ -233,6 +283,10 @@ export default function Companies() {
         companies.map((company, index) => (
           <Company
             key={index}
+            index={index}
+            handleOpenDeleteConfirmationDialog={
+              handleOpenDeleteConfirmationDialog
+            }
             company={company}
             onlyShowJobsITrack={onlyShowJobsITrack}
             mostRecentEarliestDateToApply={mostRecentEarliestDateToApply}
@@ -242,11 +296,21 @@ export default function Companies() {
           />
         ))}
       <NewCompanyForm companies={companies} setCompanies={setCompanies} />
+      {deleteConfirmationDialogOpen && (
+        <DeleteConfirmationDialog
+          open={deleteConfirmationDialogOpen}
+          handleClose={handleCloseDeleteConfirmationDialog}
+          handleConfirm={() => handleDelete(selectedIndexToDelete)}
+          itemName={companies[selectedIndexToDelete]?.CompanyName}
+        />
+      )}
     </MainBox>
   );
 }
 
 function Company({
+  index,
+  handleOpenDeleteConfirmationDialog,
   company,
   onlyShowJobsITrack,
   mostRecentEarliestDateToApply,
@@ -308,9 +372,13 @@ function Company({
 
   return (
     <MainPaper
-      overrideStyles={{ flexDirection: "column", alignItems: "flex-start" }}
+      overrideStyles={{
+        flexDirection: "column",
+        alignItems: "flex-start",
+        width: "100%",
+      }}
     >
-      <Box display="flex" flexDirection="row" alignItems="center">
+      <Box display="flex" flexDirection="row" alignItems="center" width="100%">
         <Typography
           variant="h2"
           sx={{ fontSize: "3rem", fontWeight: "bold", display: "inline-block" }}
@@ -383,6 +451,20 @@ function Company({
             </Button>
           )}
         </form>
+        {user?.data?.user?.AdminFlag &&
+          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+            <IconButton
+              sx={{
+                marginLeft: "auto",
+                order: { xs: 1, md: 3 },
+              }}
+              aria-label="delete"
+              size="large"
+              onClick={() => handleOpenDeleteConfirmationDialog(index)}
+            >
+              <Delete sx={{ width: "2rem", height: "2rem" }} />
+            </IconButton>
+          )}
       </Box>
 
       <Box marginLeft="2.5rem">
