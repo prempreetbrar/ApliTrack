@@ -27,7 +27,6 @@ const useHttpMethod = (method) => {
           Authorization: `Bearer ${user.token}`,
         };
       }
-
       let response;
 
       if (method === "delete" || method === "get") {
