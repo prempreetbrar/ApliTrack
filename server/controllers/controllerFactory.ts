@@ -56,9 +56,14 @@ exports.getAll = (Model) => {
     if (!request.body.filter) {
       request.body.filter = {};
     }
+    if (!request.body.order) {
+      request.body.order = [];
+    }
 
+    console.log(request.body.order);
     const documents = await Model.findAll({
       where: request.body.filter,
+      order: request.body.order,
       include: {
         all: true,
         required: false,

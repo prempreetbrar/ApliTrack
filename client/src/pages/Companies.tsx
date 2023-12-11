@@ -62,13 +62,8 @@ export default function Companies() {
   );
 
   React.useEffect(() => {
-    const fetchCompanies = async () => {
-      const response = await get({}, "http://localhost:3000/api/companies");
+    handleGet({ Sort: "ASC" });
 
-      setCompanies(response.company);
-    };
-
-    fetchCompanies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -126,13 +121,13 @@ export default function Companies() {
             >
               <FormControlLabel
                 value="ASC"
-                control={<Radio />}
+                control={<Radio {...register("Sort")} />}
                 label="Sort Ascending"
                 labelPlacement="start"
               />
               <FormControlLabel
                 value="DESC"
-                control={<Radio />}
+                control={<Radio {...register("Sort")} />}
                 label="Sort Descending"
                 labelPlacement="start"
               />

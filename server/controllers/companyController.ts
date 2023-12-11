@@ -23,11 +23,15 @@ exports.addFilter = errorHandling.catchAsync(
 exports.addSearch = errorHandling.catchAsync(
   async (request, response, next) => {
     request.body.filter = {};
+    request.body.order = [];
 
     if (request.query.CompanyName) {
       request.body.filter.CompanyName = {
         [Op.like]: `%${request.query.CompanyName}%`,
       };
+    }
+    if (request.query.Sort) {
+      request.body.order.push(["CompanyName", request.query.Sort]);
     }
 
     next();
