@@ -1321,10 +1321,18 @@ function NewCompanyForm({ companies, setCompanies }) {
   return (
     <>
       {user && (
-        <MainPaper>
+        <MainPaper
+          overrideStyles={{
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+          }}
+        >
           <Typography
             variant="h2"
-            sx={{ fontSize: "1.5rem", fontWeight: "500" }}
+            sx={{
+              fontSize: "1.5rem",
+              fontWeight: "500",
+            }}
           >
             Add New Company
           </Typography>
@@ -1335,6 +1343,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             attributeName={"CompanyName"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
           />
           <SingleForm
             register={register}
@@ -1344,6 +1353,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             isLoading={createIsLoading}
             maxLength={64}
             isTextArea
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
           />
           <SingleForm
             register={register}
@@ -1352,6 +1362,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             attributeName={"HomePageURL"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
           />
           <SingleForm
             register={register}
@@ -1360,6 +1371,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             attributeName={"Description"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
           />
 
           <Button
@@ -1368,6 +1380,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             variant="outlined"
             sx={{ mt: 3, mb: 2 }}
             disabled={createIsLoading}
+            sx={{ marginTop: { xs: "1.5rem" } }}
           >
             Create
           </Button>
