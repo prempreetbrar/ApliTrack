@@ -165,6 +165,9 @@ export default function Navbar() {
         <MenuItem onClick={() => handleMenuItemClick("/companies")}>
           Companies
         </MenuItem>
+        <MenuItem onClick={() => handleMenuItemClick("/applications")}>
+          Applications
+        </MenuItem>
       </Menu>
     </Box>
   );
