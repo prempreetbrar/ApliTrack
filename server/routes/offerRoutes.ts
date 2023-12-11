@@ -3,24 +3,77 @@ const offerController = require("../controllers/offerController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
+const multer = require("multer");
+const fs = require("fs");
 
-router.route("/details")
-.post(authController.checkIfLoggedIn, offerController.createOffer)
-.delete(authController.checkIfLoggedIn, offerController.deleteOffer)
-.put(authController.checkIfLoggedIn, offerController.updateOffer)
-.get(authController.checkIfLoggedIn, 
+const storage = multer.diskStorage({
+  destination: "./uploads/offers",
+  filename: function (req, file, cb) {
+    fs.readdir("./uploads/offers", (err, files) => {
+      if (files) {
+        cb(
+          null,
+          file.originalname.split(".")[0] +
+            " - " +
+            "[" +
+            files.length +
+            1 +
+            "]." +
+            file.originalname.split(".")[1]
+        );
+      }
+      cb(null, file.originalname);
+    });
+  },
+});
+const upload = multer({ storage: storage });
+
+router
+  .route("/details")
+  .post(authController.checkIfLoggedIn, offerController.createOffer)
+
+  .put(authController.checkIfLoggedIn, offerController.updateOffer)
+  .get(
+    authController.checkIfLoggedIn,
     offerController.filterApplicantFile,
-    offerController.getOffer);
+    offerController.getOffer
+  );
 
 router
-.route("")
-.get(offerController.getAllOffers);
+  .route("")
+  .get(
+    authController.checkIfLoggedIn,
+    offerController.filterApplicant,
+    offerController.getAllOffers
+  )
+  .post(
+    upload.single("OfferFileName"),
+    authController.checkIfLoggedIn,
+    offerController.filterApplicant,
+    offerController.uploadFile,
+    offerController.createOffer
+  )
+  .delete(
+    authController.checkIfLoggedIn,
+    offerController.filterApplicant,
+    offerController.deleteOffer
+  );
 
 router
-.route("/my-offers")
-.get(authController.checkIfLoggedIn, 
-    offerController.filterApplicant, 
-    offerController.getAllApplicantOffers);
+  .route("/:OfferFileName(*)")
+  .patch(
+    upload.single("OfferFileName"),
+    authController.checkIfLoggedIn,
+    offerController.filterApplicant,
+    offerController.uploadFile,
+    offerController.updateOffer
+  );
+
+// router
+// .route("/my-offers")
+// .get(authController.checkIfLoggedIn,
+//     offerController.filterApplicant,
+//     offerController.getAllApplicantOffers);
 
 // leaving this here in case auth doesn't work
 /* 

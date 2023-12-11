@@ -4,9 +4,14 @@ const contactController = require("../controllers/contactController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
+const offerRouter = require("./offerRoutes");
 const interviewRouter = require("./interviewRoutes");
+const referralRouter = require("./referralRoutes");
 
 router.post("/get-started", applicantController.createApplicant);
+router.use("/offers", offerRouter);
+router.use("/interviews", interviewRouter);
+router.use("/referrals", referralRouter);
 
 router.use(authController.checkIfLoggedIn);
 
@@ -44,8 +49,6 @@ router
   .route("/competitions")
   .post(applicantController.createCompetition)
   .delete(applicantController.deleteCompetition);
-
-router.use("/interviews", interviewRouter);
 
 router
   .route("/known-contacts")

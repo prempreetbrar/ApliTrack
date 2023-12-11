@@ -154,7 +154,16 @@ export default function Navbar() {
         )}
         {user && (
           <MenuItem
-            onClick={() => handleMenuItemClick("/applicants/interviews")}
+            onClick={() => handleMenuItemClick("/applicants/applicant/offers")}
+          >
+            Offers
+          </MenuItem>
+        )}
+        {user && (
+          <MenuItem
+            onClick={() =>
+              handleMenuItemClick("/applicants/applicant/interviews")
+            }
           >
             Interviews
           </MenuItem>
