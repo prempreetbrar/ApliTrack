@@ -9,7 +9,7 @@ const useHttpMethod = (method) => {
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
 
-  const executeRequest = async (data, url, config = {}) => {
+  const executeRequest = async (data, url, config = {} as any) => {
     setIsLoading(true);
     setError(null);
 
