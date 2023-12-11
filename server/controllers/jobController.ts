@@ -7,38 +7,9 @@ const errorHandling = require("../utils/errorHandling");
 exports.createJob = factory.createOne(Job.Job);
 exports.createJobQual = factory.createOne(Job.JobQualification);
 exports.createJobResp = factory.createOne(Job.JobResponsibility);
-exports.uploadJobPostFile = errorHandling.catchAsync(
-  async (request, response, next) => {
-    // Check if a file was uploaded
-    if (!request.file) {
-      next();
-      return;
-    }
-
-    // Write the file to the upload directory
-    // Resolve the absolute path to the uploads directory
-    const uploadsPath = path.resolve(__dirname, "../uploads/jobPosts");
-
-    // Ensure the directory exists, create it if not
-    if (!fs.existsSync(uploadsPath)) {
-      fs.mkdirSync(uploadsPath, { recursive: true });
-    }
-    // Construct the file path
-    const fileName = `${request.file.originalname}`;
-    const filePath = path.join(uploadsPath, fileName);
-
-    const readStream = fs.createReadStream(request.file.path);
-    const writeStream = fs.createWriteStream(filePath);
-    readStream.pipe(writeStream);
-
-    writeStream.on("finish", () => {
-      console.log("File written successfully");
-      fs.unlinkSync(request.file.path);
-    });
-
-    request.body.JobPostFile = filePath;
-    next();
-  }
+exports.uploadJobPostFile = factory.uploadFile(
+  "./uploads/jobPosts",
+  "JobPostFile"
 );
 
 exports.deleteJob = factory.deleteInstance(Job.Job);

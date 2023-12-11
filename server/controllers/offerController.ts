@@ -1,6 +1,3 @@
-const path = require("path");
-const fs = require("fs");
-
 const factory = require("./controllerFactory");
 const Offer = require("../models/offerModel");
 const errorHandling = require("../utils/errorHandling");
@@ -32,32 +29,7 @@ exports.filterApplicant = errorHandling.catchAsync(
   }
 );
 
-const util = require("util");
-const readdir = util.promisify(fs.readdir);
-
-exports.uploadFile = errorHandling.catchAsync(
-  async (request, response, next) => {
-    // Check if a file was uploaded
-    if (!request.file) {
-      next();
-      return;
-    }
-
-    let fileName = request.file.originalname;
-    // // Read files asynchronously using Promise
-    const files = await readdir("./uploads/offers");
-
-    if (files) {
-      // Update fileName with the special name
-      fileName =
-        fileName.split(".")[0] +
-        " - [" +
-        files.length +
-        "]." +
-        fileName.split(".")[1];
-    }
-
-    request.body.OfferFileName = fileName;
-    next();
-  }
+exports.uploadOfferFile = factory.uploadFile(
+  "./uploads/offers",
+  "OfferFileName"
 );

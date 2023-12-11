@@ -1,26 +1,15 @@
 const express = require("express");
+const multer = require("multer");
+
 const offerController = require("../controllers/offerController");
 const authController = require("../controllers/authController");
+const controllerFactory = require("../controllers/controllerFactory");
 
 const router = express.Router();
-const multer = require("multer");
-const fs = require("fs");
 
-const storage = multer.diskStorage({
-  destination: "./uploads/offers",
-  filename: function (req, file, cb) {
-    fs.readdir("./uploads/offers", (err, files) => {
-      const fileName =
-        file.originalname.split(".")[0] +
-        " - [" +
-        (files.length + 1) +
-        "]." +
-        file.originalname.split(".")[1];
-      cb(null, fileName);
-    });
-  },
+const upload = multer({
+  storage: controllerFactory.uploadStorage("./uploads/offers"),
 });
-const upload = multer({ storage: storage });
 
 router
   .route("/details")
@@ -44,7 +33,7 @@ router
     upload.single("OfferFileName"),
     authController.checkIfLoggedIn,
     offerController.filterApplicant,
-    offerController.uploadFile,
+    offerController.uploadOfferFile,
     offerController.createOffer
   )
   .delete(
@@ -56,7 +45,7 @@ router
     upload.single("OfferFileName"),
     authController.checkIfLoggedIn,
     offerController.filterApplicant,
-    offerController.uploadFile,
+    offerController.uploadOfferFile,
     offerController.updateOffer
   );
 

@@ -681,7 +681,7 @@ function Job({
       }
     );
     if (success && JobPostFile && JobPostFile !== "/") {
-      setCurrentlyUploadedJobPostFile(JobPostFile.name);
+      setCurrentlyUploadedJobPostFile(success.job.JobPostFile);
     }
   }
 
