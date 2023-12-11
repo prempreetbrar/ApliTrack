@@ -29,6 +29,7 @@ exports.addSearch = errorHandling.catchAsync(
         [Op.like]: `%${request.query.CompanyName}%`,
       };
     }
+
     next();
   }
 );

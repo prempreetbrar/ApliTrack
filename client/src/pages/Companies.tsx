@@ -37,8 +37,20 @@ export default function Companies() {
     React.useState(null);
   const [mostRecentLatestDateToApply, setMostRecentLatestDateToApply] =
     React.useState(null);
-  const [mostRecentApplicationDeadline, setMostRecentApplicationDeadline] =
+  const [
+    savedEarliestApplicationDeadline,
+    setSavedEarliestApplicationDeadline,
+  ] = React.useState(null);
+  const [savedLatestApplicationDeadline, setSavedLatestApplicationDeadline] =
     React.useState(null);
+  const [
+    mostRecentEarliestApplicationDeadline,
+    setMostRecentEarliestApplicationDeadline,
+  ] = React.useState(null);
+  const [
+    mostRecentLatestApplicationDeadline,
+    setMostRecentLatestApplicationDeadline,
+  ] = React.useState(null);
 
   const { user } = useAuthContext();
   const { executeRequest: get } = useGet();
@@ -64,13 +76,18 @@ export default function Companies() {
     executeHandle(
       "get",
       get,
-      data,
+      {
+        ...data,
+      },
       "http://localhost:3000/api/companies",
       null,
       false,
       null,
       {}
     );
+
+    setSavedEarliestApplicationDeadline(mostRecentEarliestApplicationDeadline);
+    setSavedLatestApplicationDeadline(mostRecentLatestApplicationDeadline);
   }
 
   return (
@@ -139,7 +156,7 @@ export default function Companies() {
           />
           <SingleDate
             handleSubmit={handleSubmit}
-            attributeName={"ApplicationDeadline"}
+            attributeName={"EarliestApplicationDeadline"}
             maxLength={64}
             additionalStyles={{
               display: "flex",
@@ -151,8 +168,25 @@ export default function Companies() {
             additionalFieldStyles={{
               marginRight: { xs: "1rem" },
             }}
-            date={mostRecentApplicationDeadline}
-            setDate={setMostRecentApplicationDeadline}
+            date={mostRecentEarliestApplicationDeadline}
+            setDate={setMostRecentEarliestApplicationDeadline}
+          />
+          <SingleDate
+            handleSubmit={handleSubmit}
+            attributeName={"LatestApplicationDeadline"}
+            maxLength={64}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: { xs: "0rem" },
+              marginTop: { xs: "1rem", sm: "0rem" },
+            }}
+            additionalFieldStyles={{
+              marginRight: { xs: "1rem" },
+            }}
+            date={mostRecentLatestApplicationDeadline}
+            setDate={setMostRecentLatestApplicationDeadline}
           />
           {user && onlyShowJobsITrack && (
             <SingleDate
@@ -206,6 +240,8 @@ export default function Companies() {
             onlyShowJobsITrack={onlyShowJobsITrack}
             mostRecentEarliestDateToApply={mostRecentEarliestDateToApply}
             mostRecentLatestDateToApply={mostRecentLatestDateToApply}
+            earliestApplicationDeadline={savedEarliestApplicationDeadline}
+            latestApplicationDeadline={savedLatestApplicationDeadline}
           />
         ))}
       <NewCompanyForm companies={companies} setCompanies={setCompanies} />
@@ -218,6 +254,8 @@ function Company({
   onlyShowJobsITrack,
   mostRecentEarliestDateToApply,
   mostRecentLatestDateToApply,
+  earliestApplicationDeadline,
+  latestApplicationDeadline,
 }) {
   const { user } = useAuthContext();
   const { register, handleSubmit, setValue } = useForm();
@@ -362,6 +400,11 @@ function Company({
         </Box>
         {jobs?.map((job, index) => {
           if (onlyShowJobsITrack && !(job.PositionID in trackedJobs)) {
+            return <></>;
+          } else if (
+            job.ApplicationDeadline < earliestApplicationDeadline ||
+            job.ApplicationDeadline > latestApplicationDeadline
+          ) {
             return <></>;
           } else {
             return (
