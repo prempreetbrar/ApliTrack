@@ -821,7 +821,7 @@ function Referral({ referral }) {
     useDelete();
 
   const [referralDate, setReferralDate] = React.useState(referral.Date);
-  const [referralJob, setReferralJob] = React.useState(referral.Job.PositionID);
+  const [referralJob, setReferralJob] = React.useState(referral.Job);
 
   React.useEffect(() => {
     setValue("Notes", referral.Notes);
@@ -834,7 +834,7 @@ function Referral({ referral }) {
         ReferralID: referral.ReferralID,
         ...data,
         Date: referralDate,
-        PositionID: referralJob,
+        PositionID: referralJob.PositionID,
       },
       "http://localhost:3000/api/applicants/referrals"
     );
@@ -881,12 +881,15 @@ function Referral({ referral }) {
       <NewEntryDropdown
         entityName="Job"
         entityAttributeName="PositionID"
+        entityAttributeName2="CompanyName"
+        entityAttributeName3="PositionName"
         doNotShowButton
         createIsLoading={updateIsLoading}
         register={register}
         fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
-        dropdownValue={referralJob}
+        dropdownValue={referralJob || {}}
         setDropdownValue={setReferralJob}
+        isDropdownObject
       />
       <Button type="submit" variant="outlined">
         Submit

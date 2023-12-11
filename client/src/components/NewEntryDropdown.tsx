@@ -6,6 +6,8 @@ import React from "react";
 export default function NewEntryDropdown({
   entityName,
   entityAttributeName,
+  entityAttributeName2,
+  entityAttributeName3,
   maxCreateLength,
   handleCreate,
   createIsLoading,
@@ -15,19 +17,38 @@ export default function NewEntryDropdown({
   doNotShowButton,
   dropdownValue,
   setDropdownValue,
+  isDropdownObject,
 }) {
   const { user } = useAuthContext();
   const { executeRequest, isLoading, error } = useGet();
   const [allOptions, setAllOptions] = React.useState([]);
+  const [allOptionsHashtable, setAllOptionsHashtable] = React.useState({});
 
   React.useEffect(() => {
     const fetchAllOptions = async () => {
       const response = await executeRequest(null, fetchAllOptionsURL);
+      const newAllOptionsHashtable = {};
+
       setAllOptions(
-        response[entityName.toLowerCase()].map(
-          (entity, index) => entity[entityAttributeName]
-        )
+        response[entityName.toLowerCase()].map((entity, index) => {
+          const string =
+            entity[entityAttributeName] +
+            (entity[entityAttributeName2]
+              ? " - " + entity[entityAttributeName2]
+              : "") +
+            (entity[entityAttributeName3]
+              ? " - " + entity[entityAttributeName3]
+              : "");
+
+          if (isDropdownObject) {
+            newAllOptionsHashtable[string] = entity;
+          }
+
+          return string;
+        })
       );
+
+      setAllOptionsHashtable(newAllOptionsHashtable);
     };
     fetchAllOptions();
   }, []);
@@ -47,9 +68,32 @@ export default function NewEntryDropdown({
             placeholder={`Enter New ${entityName}`}
             fullWidth
             options={allOptions}
-            renderInput={(params) => <TextField {...params} label="Company" />}
-            value={dropdownValue}
-            onChange={(event, value) => setDropdownValue(value)}
+            renderInput={(params) => (
+              <TextField {...params} label={entityName} />
+            )}
+            value={
+              isDropdownObject
+                ? dropdownValue[entityAttributeName] +
+                  (dropdownValue[entityAttributeName2]
+                    ? " - " + dropdownValue[entityAttributeName2]
+                    : "") +
+                  (dropdownValue[entityAttributeName3]
+                    ? " - " + dropdownValue[entityAttributeName3]
+                    : "")
+                : dropdownValue
+            }
+            onChange={(event, value) => {
+              if (isDropdownObject) {
+                console.log(
+                  allOptionsHashtable,
+                  value,
+                  allOptionsHashtable[value as any]
+                );
+                setDropdownValue(allOptionsHashtable[value as any]);
+              } else {
+                setDropdownValue(value);
+              }
+            }}
           />
           {!doNotShowButton && (
             <Button
