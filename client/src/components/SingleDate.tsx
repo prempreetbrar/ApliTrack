@@ -6,6 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import React from "react";
+import useAuthContext from "hooks/useAuthContext";
 
 export default function SingleDate({
   handleSubmit,
@@ -17,7 +18,10 @@ export default function SingleDate({
   additionalFieldStyles,
   date,
   setDate,
+  allowUnauthenticated,
 }) {
+  const { user } = useAuthContext();
+
   return (
     <Box sx={{ ...additionalStyles }}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -40,6 +44,7 @@ export default function SingleDate({
             setDate((newValue as any)?.format("YYYY-MM-DD"));
           }}
           value={dayjs(date || null)}
+          disabled={!user && !allowUnauthenticated}
         />
       </LocalizationProvider>
 

@@ -7,10 +7,14 @@ const router = express.Router();
 
 router
   .route("")
-  .get(companyController.getAllCompanies)
+  .get(companyController.addSearch, companyController.getAllCompanies)
   .post(authController.checkIfLoggedIn, companyController.createCompany)
   .patch(authController.checkIfLoggedIn, companyController.updateCompany)
-  .delete(companyController.deleteCompany);
+  .delete(
+    authController.checkIfLoggedIn,
+    authController.restrictTo(authController.DELETE_ONLY),
+    companyController.deleteCompany
+  );
 
 router
   .route("/company")

@@ -1,3 +1,5 @@
+import { Op } from "sequelize";
+
 const factory = require("./controllerFactory");
 const Applicant = require("../models/applicantModel");
 const errorHandling = require("../utils/errorHandling");
@@ -43,6 +45,7 @@ exports.updateApplicantKnowsContact = factory.updateOneWithKey(
   Applicant.ApplicantKnowsContact
 );
 
+exports.getApplicantTracksJob = factory.getAll(Applicant.ApplicantTracksJob);
 exports.createApplicantTracksJob = factory.createOne(
   Applicant.ApplicantTracksJob
 );
@@ -77,6 +80,40 @@ exports.addFilter = errorHandling.catchAsync(
     request.body.filter = {
       Username: request.body.Username,
     };
+    next();
+  }
+);
+
+exports.addTracksFilter = errorHandling.catchAsync(
+  async (request, response, next) => {
+    request.body.filter = {};
+    if (
+      request.query.EarliestDateToApply &&
+      request.query.LatestDateToApply &&
+      request.query.EarliestDateToApply !== "MM/DD/YYYY" &&
+      request.query.LatestDateToApply !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.DateToApply = {
+        [Op.between]: [
+          request.query.EarliestDateToApply,
+          request.query.LatestDateToApply,
+        ],
+      };
+    } else if (
+      request.query.EarliestDateToApply &&
+      request.query.EarliestDateToApply !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.DateToApply = {
+        [Op.gte]: request.query.EarliestDateToApply,
+      };
+    } else if (
+      request.query.LatestDateToApply &&
+      request.query.LatestDateToApply !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.DateToApply = {
+        [Op.lte]: request.query.LatestDateToApply,
+      };
+    }
     next();
   }
 );

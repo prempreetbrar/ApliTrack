@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
+import BadgeIcon from "@mui/icons-material/Badge";
 
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
@@ -79,7 +80,9 @@ export default function Contacts() {
       "http://localhost:3000/api/contacts",
       index,
       false,
-      null
+      null,
+      {},
+      false
     );
   }
 
@@ -91,7 +94,9 @@ export default function Contacts() {
       "http://localhost:3000/api/contacts",
       null,
       false,
-      null
+      null,
+      {},
+      false
     );
   }
 
@@ -164,7 +169,7 @@ export default function Contacts() {
             }
             label="Only Show Contacts I Know"
           />
-        )}{" "}
+        )}
         <form onSubmit={handleSubmit(handleGet)}>
           <Box
             display="flex"
@@ -300,11 +305,18 @@ function Contact({
   knownContactsInfo,
   handleOpenDeleteConfirmationDialog,
 }) {
+  const [referrals, setReferrals] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
   const { executeHandle } = useHandleOperation(
     undefined,
     setKnownContactsInfo,
     knownContactsInfo
+  );
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
+  const { executeHandle: executeHandleReferral } = useHandleOperation(
+    undefined,
+    setReferrals,
+    referrals
   );
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
@@ -313,6 +325,23 @@ function Contact({
   const { user } = useAuthContext();
   const [stillKnown, setStillKnown] = React.useState(isKnown);
   const [date, setDate] = React.useState(LastContactDate);
+
+  const [
+    deleteReferralConfirmationDialogOpen,
+    setDeleteReferralConfirmationDialogOpen,
+  ] = React.useState(false);
+  const [selectedReferralIndexToDelete, setSelectedReferralIndexToDelete] =
+    React.useState(null);
+
+  const handleOpenDeleteReferralConfirmationDialog = (index) => {
+    setSelectedReferralIndexToDelete(index);
+    setDeleteReferralConfirmationDialogOpen(true);
+  };
+
+  const handleCloseDeleteReferralConfirmationDialog = () => {
+    setSelectedReferralIndexToDelete(null);
+    setDeleteReferralConfirmationDialogOpen(false);
+  };
 
   React.useEffect(() => {
     /*
@@ -335,6 +364,20 @@ function Contact({
     setDate(LastContactDate);
   }, [LastContactDate]);
 
+  React.useEffect(() => {
+    executeHandleReferral(
+      "get",
+      get,
+      { ContactID: contact.ContactID },
+      "http://localhost:3000/api/applicants/referrals",
+      undefined,
+      false,
+      false,
+      {},
+      true
+    );
+  }, []);
+
   function updateNameOrLinkedInURL(data) {
     update(
       { ...data, ContactID: contact.ContactID },
@@ -353,7 +396,9 @@ function Contact({
         "http://localhost:3000/api/applicants/known-contacts",
         null,
         true,
-        "ContactID"
+        "ContactID",
+        {},
+        false
       );
     }
     if (!event.target.checked) {
@@ -364,7 +409,9 @@ function Contact({
         "http://localhost:3000/api/applicants/known-contacts",
         contact.ContactID,
         true,
-        null
+        null,
+        {},
+        false
       );
       setStillKnown(false);
     }
@@ -381,13 +428,29 @@ function Contact({
     );
   }
 
+  async function handleDelete(index) {
+    executeHandleReferral(
+      "delete",
+      deleteInstance,
+      {
+        ReferralID: referrals[index].ReferralID,
+      },
+      "http://localhost:3000/api/applicants/referrals",
+      index,
+      false,
+      undefined,
+      {},
+      false
+    );
+  }
+
   return (
     <MainPaper
       overrideStyles={{
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: { xs: "center", md: "flex-start" },
       }}
       paperKey={index}
     >
@@ -410,61 +473,84 @@ function Contact({
               label="I know this person!"
             />
             {stillKnown && (
-              <SingleForm
-                register={register}
-                handleSubmit={handleSubmit}
-                actionOnAttribute={updateKnows}
-                attributeName={"Relationship"}
-                maxLength={64}
-                isLoading={updateIsLoading}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-              />
-            )}
-            {stillKnown && (
-              <SingleDate
-                handleSubmit={handleSubmit}
-                actionOnAttribute={updateKnows}
-                attributeName={"LastContactDate"}
-                maxLength={64}
-                isLoading={updateIsLoading}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-                date={date || null}
-                setDate={setDate}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-              />
-            )}
-            {stillKnown && (
-              <SingleForm
-                register={register}
-                handleSubmit={handleSubmit}
-                actionOnAttribute={updateKnows}
-                attributeName={"Notes"}
-                maxLength={64}
-                isLoading={updateIsLoading}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "2rem", md: "0rem" },
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-                isTextArea
-              />
+              <Box>
+                <Box>
+                  <SingleForm
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    actionOnAttribute={updateKnows}
+                    attributeName={"Relationship"}
+                    maxLength={64}
+                    isLoading={updateIsLoading}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                    additionalFieldStyles={{
+                      marginRight: { xs: "1rem" },
+                    }}
+                  />
+                  <SingleDate
+                    handleSubmit={handleSubmit}
+                    actionOnAttribute={updateKnows}
+                    attributeName={"LastContactDate"}
+                    maxLength={64}
+                    isLoading={updateIsLoading}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                    date={date || null}
+                    setDate={setDate}
+                    additionalFieldStyles={{
+                      marginRight: { xs: "1rem" },
+                    }}
+                  />
+                  <SingleForm
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    actionOnAttribute={updateKnows}
+                    attributeName={"Notes"}
+                    maxLength={64}
+                    isLoading={updateIsLoading}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: { xs: "2rem", md: "0rem" },
+                    }}
+                    additionalFieldStyles={{
+                      marginRight: { xs: "1rem" },
+                    }}
+                    isTextArea
+                  />
+                </Box>
+
+                <Box marginTop="2rem">
+                  <Typography variant="h3" fontSize="1rem" marginBottom="1rem">
+                    Referral(s)
+                  </Typography>
+                  {referrals.map((referral, index) => (
+                    <Referral
+                      referral={referral}
+                      key={index}
+                      index={index}
+                      setReferrals={setReferrals}
+                      referrals={referrals}
+                      handleOpenDeleteReferralConfirmationDialog={
+                        handleOpenDeleteReferralConfirmationDialog
+                      }
+                    />
+                  ))}
+                  <NewReferralForm
+                    setReferrals={setReferrals}
+                    referrals={referrals}
+                    ContactID={contact.ContactID}
+                  />
+                </Box>
+              </Box>
             )}
           </>
         )}
@@ -473,6 +559,7 @@ function Contact({
         display="flex"
         sx={{
           alignItems: { xs: "center", md: "flex-start" },
+          alignSelf: { xs: "center", md: "flex-start" },
           order: { xs: 3, md: 2 },
         }}
         flexDirection="column"
@@ -570,6 +657,21 @@ function Contact({
             <Delete sx={{ width: "2rem", height: "2rem" }} />
           </IconButton>
         )}
+      {deleteReferralConfirmationDialogOpen && (
+        <DeleteConfirmationDialog
+          open={deleteReferralConfirmationDialogOpen}
+          handleClose={handleCloseDeleteReferralConfirmationDialog}
+          handleConfirm={() => handleDelete(selectedReferralIndexToDelete)}
+          itemName={
+            "a referral to " +
+            referrals[selectedReferralIndexToDelete]?.Job.CompanyName +
+            " - " +
+            referrals[selectedReferralIndexToDelete]?.Job.PositionName +
+            " - " +
+            `[${referrals[selectedReferralIndexToDelete]?.Job.PositionID}]`
+          }
+        />
+      )}
     </MainPaper>
   );
 }
@@ -616,7 +718,12 @@ function InfoSection({
         [entityIDName]: entityID,
         [entitySecondTargetAttribute]: getValues(entitySecondTargetAttribute),
       },
-      sectionURL
+      sectionURL,
+      undefined,
+      false,
+      undefined,
+      {},
+      false
     );
   }
 
@@ -630,7 +737,11 @@ function InfoSection({
         [entityIDName]: entityID,
       },
       sectionURL,
-      index
+      index,
+      false,
+      undefined,
+      {},
+      false
     );
   }
 
@@ -702,7 +813,12 @@ function AddNewContact({ setContactsInfo, contactsInfo }) {
       "create",
       create,
       data,
-      "http://localhost:3000/api/contacts"
+      "http://localhost:3000/api/contacts",
+      undefined,
+      false,
+      undefined,
+      {},
+      false
     );
 
     /*
@@ -759,5 +875,262 @@ function AddNewContact({ setContactsInfo, contactsInfo }) {
         </Button>
       </Box>
     </MainPaper>
+  );
+}
+
+function Referral({
+  referral,
+  index,
+  setReferrals,
+  referrals,
+  handleOpenDeleteReferralConfirmationDialog,
+}) {
+  const { user } = useAuthContext();
+  const { register, getValues, reset, control, handleSubmit, setValue } =
+    useForm();
+  const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
+  const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
+    useDelete();
+
+  const [referralDate, setReferralDate] = React.useState(referral.Date);
+  const [referralJob, setReferralJob] = React.useState(referral.Job);
+
+  React.useEffect(() => {
+    setValue("Notes", referral.Notes);
+    setValue("Job", referral.Job);
+  }, []);
+
+  function updateReferral(data) {
+    update(
+      {
+        ReferralID: referral.ReferralID,
+        ...data,
+        Date: referralDate,
+        PositionID: referralJob.PositionID,
+      },
+      "http://localhost:3000/api/applicants/referrals"
+    );
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit(updateReferral)}
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <Box
+        display="flex"
+        alignItems="center"
+        width="75%"
+        justifyContent="center"
+      >
+        <BadgeIcon
+          sx={{
+            width: "5rem",
+            height: "5rem",
+            marginBottom: "2rem",
+            marginLeft: "5rem",
+          }}
+        />
+        {user?.data?.user?.AdminFlag &&
+          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+            <IconButton
+              sx={{
+                alignSelf: { xs: "flex-start" },
+                marginLeft: "auto",
+              }}
+              aria-label="delete"
+              size="large"
+              onClick={() => handleOpenDeleteReferralConfirmationDialog(index)}
+            >
+              <Delete sx={{ width: "2rem", height: "2rem" }} />
+            </IconButton>
+          )}
+      </Box>
+      <SingleDate
+        handleSubmit={handleSubmit}
+        attributeName={"Date"}
+        maxLength={64}
+        isLoading={updateIsLoading}
+        additionalStyles={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+        date={referralDate || null}
+        setDate={setReferralDate}
+        additionalFieldStyles={{
+          marginRight: { xs: "1rem" },
+        }}
+      />
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        attributeName={"Notes"}
+        maxLength={64}
+        isLoading={updateIsLoading}
+        additionalStyles={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          marginTop: { xs: "1rem" },
+          marginBottom: { xs: "0rem" },
+        }}
+        additionalFieldStyles={{
+          marginRight: { xs: "1rem" },
+        }}
+        isTextArea
+      />
+      <NewEntryDropdown
+        entityName="Job"
+        entityAttributeName="CompanyName"
+        entityAttributeName2="PositionName"
+        entityAttributeName3="PositionID"
+        doNotShowButton
+        createIsLoading={updateIsLoading}
+        register={register}
+        fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
+        dropdownValue={referralJob}
+        setDropdownValue={setReferralJob}
+        isDropdownObject
+        additionalStyles={{
+          width: "100%",
+          marginTop: { xs: "1rem" },
+          marginBottom: { xs: "0rem" },
+        }}
+      />
+      <Button
+        type="submit"
+        variant="outlined"
+        sx={{
+          width: "min-content",
+          alignSelf: "center",
+          marginTop: "1rem",
+          marginBottom: { xs: "3.5rem" },
+        }}
+      >
+        Update
+      </Button>
+    </form>
+  );
+}
+
+function NewReferralForm({ setReferrals, referrals, ContactID }) {
+  const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { register, getValues, reset, handleSubmit, setValue } = useForm();
+  const { executeHandle } = useHandleOperation(reset, setReferrals, referrals);
+
+  const [referralDate, setReferralDate] = React.useState("");
+  const [referralJob, setReferralJob] = React.useState(null);
+
+  React.useEffect(() => {
+    setValue("Notes", "");
+    setValue("Job", null);
+  }, []);
+
+  async function createReferral(data) {
+    const result = await executeHandle(
+      "create",
+      create,
+      {
+        ...data,
+        ContactID,
+        Date: referralDate,
+        PositionID: referralJob.PositionID,
+      },
+      "http://localhost:3000/api/applicants/referrals",
+      undefined,
+      false,
+      undefined,
+      {},
+      false
+    );
+
+    /*
+      Done manually here because for some reason, when executeHandle is running reset(), it
+      isn't working.
+    */
+    if (result) {
+      setValue("Date", "");
+      setValue("Notes", "");
+      setValue("Job", null);
+    }
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit(createReferral)}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Typography>Add New Referral</Typography>
+      <SingleDate
+        handleSubmit={handleSubmit}
+        attributeName={"Date"}
+        maxLength={64}
+        isLoading={createIsLoading}
+        additionalStyles={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+        date={referralDate || null}
+        setDate={setReferralDate}
+        additionalFieldStyles={{
+          marginRight: { xs: "1rem" },
+          marginTop: "1rem",
+        }}
+      />
+      <SingleForm
+        register={register}
+        handleSubmit={handleSubmit}
+        attributeName={"Notes"}
+        maxLength={64}
+        isLoading={createIsLoading}
+        additionalStyles={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          marginTop: { xs: "1rem" },
+          marginBottom: { xs: "0rem" },
+        }}
+        additionalFieldStyles={{
+          marginRight: { xs: "1rem" },
+        }}
+        isTextArea
+      />
+      <NewEntryDropdown
+        entityName="Job"
+        entityAttributeName="PositionID"
+        entityAttributeName2="CompanyName"
+        entityAttributeName3="PositionName"
+        doNotShowButton
+        createIsLoading={createIsLoading}
+        register={register}
+        fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
+        dropdownValue={referralJob}
+        setDropdownValue={setReferralJob}
+        isDropdownObject
+        additionalStyles={{
+          width: "100%",
+          marginTop: { xs: "1rem" },
+          marginBottom: { xs: "0rem" },
+        }}
+      />
+      <Button
+        type="submit"
+        variant="outlined"
+        sx={{
+          width: "min-content",
+          alignSelf: "center",
+          marginTop: "1rem",
+          marginBottom: { xs: "2rem", md: "0rem" },
+        }}
+      >
+        Create
+      </Button>
+    </form>
   );
 }

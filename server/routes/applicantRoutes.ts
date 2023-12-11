@@ -5,6 +5,7 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 const interviewRouter = require("./interviewRoutes");
+const referralRouter = require("./referralRoutes");
 
 router.post("/get-started", applicantController.createApplicant);
 
@@ -45,8 +46,6 @@ router
   .post(applicantController.createCompetition)
   .delete(applicantController.deleteCompetition);
 
-router.use("/interviews", interviewRouter);
-
 router
   .route("/known-contacts")
   .get(
@@ -60,8 +59,16 @@ router
 
 router
   .route("/tracks-job")
+  .get(
+    applicantController.addFilter,
+    applicantController.addTracksFilter,
+    applicantController.getApplicantTracksJob
+  )
   .post(applicantController.createApplicantTracksJob)
   .delete(applicantController.deleteApplicantTracksJob)
   .patch(applicantController.updateApplicantTracksJob);
+
+router.use("/interviews", interviewRouter);
+router.use("/referrals", referralRouter);
 
 module.exports = router;
