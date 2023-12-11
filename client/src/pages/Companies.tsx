@@ -497,6 +497,7 @@ function Company({
               alignItems: "center",
             }}
             additionalFieldStyles={{
+              marginTop: { xs: "1.5rem", md: 0 },
               marginRight: { xs: "1rem" },
             }}
           />
@@ -509,6 +510,7 @@ function Company({
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
+              marginTop: { xs: "1.5rem", md: 0 },
             }}
             additionalFieldStyles={{
               marginRight: { xs: "1rem" },
@@ -1091,6 +1093,9 @@ function Job({
                   isLoading={updateIsLoading}
                   date={date || null}
                   setDate={setDate}
+                  additionalStyles={{
+                    marginTop: "1rem",
+                  }}
                 />
               )}
               {stillTracks && (
@@ -1104,6 +1109,7 @@ function Job({
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    marginTop: "1rem",
                   }}
                   isLoading={updateIsLoading}
                   isTextArea
