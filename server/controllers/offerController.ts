@@ -32,6 +32,9 @@ exports.filterApplicant = errorHandling.catchAsync(
   }
 );
 
+const util = require("util");
+const readdir = util.promisify(fs.readdir);
+
 exports.uploadFile = errorHandling.catchAsync(
   async (request, response, next) => {
     // Check if a file was uploaded
@@ -40,7 +43,6 @@ exports.uploadFile = errorHandling.catchAsync(
       return;
     }
 
-    // Write the file to the upload directory
     // Resolve the absolute path to the uploads directory
     const uploadsPath = path.resolve(__dirname, "../uploads/offers");
 
@@ -48,34 +50,50 @@ exports.uploadFile = errorHandling.catchAsync(
     if (!fs.existsSync(uploadsPath)) {
       fs.mkdirSync(uploadsPath, { recursive: true });
     }
+
     // Construct the file path
     let fileName = request.file.originalname;
-    fs.readdir("../uploads/offers", (err, files) => {
+    console.log("Original Name!", request.file.originalname);
+
+    try {
+      // Read files asynchronously using Promise
+      const files = await readdir(uploadsPath);
+
       if (files) {
+        // Update fileName with the special name
         fileName =
-          request.file.originalname.split(".")[0] +
-          " - " +
-          "[" +
-          files.length +
-          1 +
+          fileName.split(".")[0] +
+          " - [" +
+          (files.length + 1) +
           "]." +
-          request.file.originalname.split(".")[1];
+          fileName.split(".")[1];
       }
-    });
 
-    const filePath = path.join(uploadsPath, fileName);
+      const filePath = path.join(uploadsPath, fileName);
 
-    const readStream = fs.createReadStream(request.file.path);
-    const writeStream = fs.createWriteStream(filePath);
-    readStream.pipe(writeStream);
+      const readStream = fs.createReadStream(request.file.path);
+      const writeStream = fs.createWriteStream(filePath);
+      readStream.pipe(writeStream);
 
-    writeStream.on("finish", () => {
-      console.log("File written successfully");
-      fs.unlinkSync(request.file.path);
-    });
+      await new Promise((resolve, reject) => {
+        writeStream.on("finish", () => {
+          console.log("File written successfully");
+          fs.unlinkSync(request.file.path);
 
-    console.log("In controller", request.body, request.params);
-    request.body.OfferFileName = fileName;
+          // Set the special name to request.body.OfferFileName
+          request.body.OfferFileName = fileName;
+
+          resolve(false);
+        });
+
+        writeStream.on("error", (err) => {
+          reject(err);
+        });
+      });
+    } catch (error) {
+      console.error("Error reading directory:", error);
+    }
+
     next();
   }
 );

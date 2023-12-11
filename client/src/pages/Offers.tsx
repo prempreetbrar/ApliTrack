@@ -187,7 +187,7 @@ function Offer({
       }
     );
     if (success && OfferFileName && OfferFileName !== "/") {
-      setCurrentlyUploadedFileName(OfferFileName.name);
+      setCurrentlyUploadedFileName(success.offer.OfferFileName);
     }
   }
 
