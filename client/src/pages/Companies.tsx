@@ -1191,10 +1191,33 @@ function NewJobForm({ companyName, jobs, setJobs }) {
   return (
     <>
       {user && (
-        <>
+        <Box
+          display="grid"
+          sx={{
+            gridTemplateAreas: {
+              md: `'Title Name Description Deadline Create'
+              'Title Type Salary File Create'
+            `,
+              xs: `'. Title Title .'
+            'Name Name Type Type'
+            'Salary Salary Deadline Deadline'
+            'Description Description File File'
+            '. Create Create .'
+          `,
+            },
+            alignItems: "center",
+            justifyItems: "center",
+            gridGap: "1rem",
+          }}
+        >
           <Typography
+            flexWrap="wrap"
             variant="h2"
-            sx={{ fontSize: "1.5rem", fontWeight: "500" }}
+            sx={{
+              fontSize: "1.5rem",
+              fontWeight: "500",
+              gridArea: "Title",
+            }}
           >
             Add New Job
           </Typography>
@@ -1205,6 +1228,7 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             attributeName={"PositionName"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{ gridArea: "Name" }}
           />
           <SingleForm
             register={register}
@@ -1213,6 +1237,10 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             attributeName={"Description"}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalStyles={{
+              gridArea: "Description",
+              marginTop: { xs: 0 },
+            }}
             isTextArea
           />
           <SingleForm
@@ -1220,6 +1248,7 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             handleSubmit={handleSubmit}
             actionOnAttribute={null}
             attributeName={"PositionType"}
+            additionalStyles={{ gridArea: "Type" }}
             isLoading={createIsLoading}
             maxLength={64}
           />
@@ -1228,6 +1257,7 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             handleSubmit={handleSubmit}
             actionOnAttribute={null}
             attributeName={"Salary"}
+            additionalStyles={{ gridArea: "Salary" }}
             isLoading={createIsLoading}
             maxLength={64}
           />
@@ -1240,13 +1270,13 @@ function NewJobForm({ companyName, jobs, setJobs }) {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: { xs: "0rem" },
-              marginTop: { xs: "1rem" },
+              gridArea: "Deadline",
             }}
             date={applicationDeadline}
             setDate={setApplicationDeadline}
           />
           <Input
-            sx={{ marginTop: "1rem" }}
+            sx={{ marginTop: "1rem", gridArea: "File" }}
             {...register("JobPostFile")}
             type="file"
             name="JobPostFile"
@@ -1255,12 +1285,12 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             onClick={handleSubmit(handleCreate)}
             type="submit"
             variant="outlined"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3, mb: 2, gridArea: "Create" }}
             disabled={createIsLoading}
           >
             Create
           </Button>
-        </>
+        </Box>
       )}
     </>
   );
