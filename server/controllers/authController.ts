@@ -152,6 +152,7 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
         which would allow your createApplication function (which comes after checkIfLoggedIn in the middleware
         stack) to access the user (and the user's attributes).
     */
+
     request.body.user = user;
     request.body.Username = user.Username;
     request.body.ApplicantUsername = user.Username;

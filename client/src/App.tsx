@@ -16,6 +16,7 @@ import Navbar from "./components/Navbar";
 import Interview from "pages/Interviews";
 import Contacts from "pages/Contacts";
 import Companies from "pages/Companies";
+import Offers from "pages/Offers";
 
 function App() {
   const { user } = useAuthContext();
@@ -50,8 +51,9 @@ function App() {
           path="/applicants/profile"
           element={user ? <Profile /> : <Navigate to="/auth/login" />}
         />
+        <Route path="/applicants/applicant/offers" element={<Offers />} />
         <Route
-          path="/applicants/interviews"
+          path="/applicants/applicant/interviews"
           element={user ? <Interview /> : <Navigate to="/auth/login" />}
         />
         <Route path="/contacts" element={<Contacts />} />

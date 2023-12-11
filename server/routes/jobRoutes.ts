@@ -7,12 +7,13 @@ const router = express.Router();
 const multer = require("multer");
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads/jobPosts");
-  },
+  destination: "./uploads/jobPosts",
   filename: function (req, file, cb) {
     fs.readdir("./uploads/jobPosts", (err, files) => {
-      cb(null, files.length + 1 + "-" + file.originalname);
+      if (files) {
+        cb(null, file.originalname + " - " + "[" + files.length + 1 + "]");
+      }
+      cb(null, file.originalname);
     });
   },
 });

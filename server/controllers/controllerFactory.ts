@@ -60,7 +60,6 @@ exports.getAll = (Model) => {
       request.body.order = [];
     }
 
-    console.log(request.body.order);
     const documents = await Model.findAll({
       where: request.body.filter,
       order: request.body.order,
@@ -139,6 +138,8 @@ exports.updateOneWithKey = (Model) => {
     */
     const pkAttributes = Model.primaryKeyAttributes;
     const uniqueAttributes = getUniqueAttributes(Model);
+    console.log("Key Attribtues", pkAttributes, uniqueAttributes);
+    console.log("Body and Params", request.body, request.params);
 
     const keys = {};
     const newValues = {};
