@@ -66,7 +66,7 @@ export default function Offers() {
       "delete",
       deleteInstance,
       {
-        OfferFileName: offers[index].OfferFileName,
+        OfferID: offers[index].OfferID,
       },
       "http://localhost:3000/api/applicants/offers",
       index,
@@ -118,8 +118,30 @@ export default function Offers() {
   return (
     <MainBox>
       {offers?.map((offer, index) => (
-        <Offer key={index} offer={offer} index={index} />
+        <Offer
+          key={index}
+          offer={offer}
+          index={index}
+          handleOpenDeleteConfirmationDialog={
+            handleOpenDeleteConfirmationDialog
+          }
+        />
       ))}
+      {deleteConfirmationDialogOpen && (
+        <DeleteConfirmationDialog
+          open={deleteConfirmationDialogOpen}
+          handleClose={handleCloseDeleteConfirmationDialog}
+          handleConfirm={() => handleDelete(selectedIndexToDelete)}
+          itemName={
+            "your Offer from " +
+            offers[selectedIndexToDelete]?.Job.CompanyName +
+            " for the " +
+            offers[selectedIndexToDelete]?.Job.PositionName +
+            ` [${offers[selectedIndexToDelete]?.Job.PositionID}] ` +
+            " Position"
+          }
+        />
+      )}
     </MainBox>
   );
 }
@@ -148,8 +170,6 @@ function Offer({
   const [currentlyUploadedFileName, setCurrentlyUploadedFileName] =
     React.useState(offer?.OfferFileName?.split("/")?.pop());
 
-  console.log(offer);
-
   React.useEffect(() => {
     /*
         We have forms that the user can change. However, we want to prepopulate them
@@ -174,12 +194,13 @@ function Offer({
 
     const success = await update(
       {
+        OfferID: offer.OfferID,
         PositionID: offerJob.PositionID,
         ResponseDeadline: responseDeadline,
         StartDate: startDate,
         ...newData,
       },
-      `http://localhost:3000/api/applicants/offers//${offer.OfferFileName}`,
+      `http://localhost:3000/api/applicants/offers`,
       {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -201,17 +222,52 @@ function Offer({
       }}
       paperKey={index}
     >
-      <Box display="flex" flexDirection="row" alignItems="center">
-        <Typography variant="h2">Offer</Typography>
-        <EmojiEventsIcon
-          sx={{ width: "4rem", height: "4rem", marginLeft: "2rem" }}
-        />
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+        width="100%"
+      >
+        <Box display="flex">
+          <Typography variant="h2">Offer</Typography>
+          <EmojiEventsIcon
+            sx={{ width: "4rem", height: "4rem", marginLeft: "2rem" }}
+          />
+        </Box>
+        {user?.data?.user?.AdminFlag &&
+          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+            <IconButton
+              sx={{}}
+              aria-label="delete"
+              size="large"
+              onClick={() => handleOpenDeleteConfirmationDialog(index)}
+            >
+              <Delete sx={{ width: "2rem", height: "2rem" }} />
+            </IconButton>
+          )}
       </Box>
 
-      <form onSubmit={handleSubmit(updateOffer)}>
-        <Box display="flex" marginTop="2rem" width="100%">
+      <form
+        onSubmit={handleSubmit(updateOffer)}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Box
+          display="flex"
+          marginTop="2rem"
+          width="100%"
+          sx={{ flexDirection: { xs: "column", md: "row" } }}
+        >
           <Box display="flex" flexDirection="column">
-            <Box display="flex">
+            <Box
+              display="flex"
+              sx={{ flexDirection: { xs: "column", md: "row" } }}
+            >
               <SingleDate
                 handleSubmit={handleSubmit}
                 attributeName={"ResponseDeadline"}
@@ -221,12 +277,13 @@ function Offer({
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
-                  width: "50%",
+                  width: { xs: "100%", md: "50%" },
                 }}
                 date={responseDeadline || null}
                 setDate={setResponseDeadline}
                 additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
+                  marginRight: { xs: "0rem", md: "1rem" },
+                  width: "100%",
                 }}
               />
               <SingleDate
@@ -238,18 +295,22 @@ function Offer({
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
-                  width: "50%",
+                  width: { xs: "100%", md: "50%" },
                 }}
                 date={startDate || null}
                 setDate={setStartDate}
                 additionalFieldStyles={{
-                  marginRight: { xs: "0rem" },
+                  marginRight: { xs: "0rem", md: "0rem" },
+                  marginTop: { xs: "1rem", md: 0 },
                   width: "100%",
                 }}
               />
             </Box>
 
-            <Box display="flex" flexDirection="row">
+            <Box
+              display="flex"
+              sx={{ flexDirection: { xs: "column", md: "row" } }}
+            >
               <SingleForm
                 register={register}
                 handleSubmit={handleSubmit}
@@ -262,10 +323,10 @@ function Offer({
                   alignItems: "center",
                   marginTop: { xs: "1rem" },
                   marginBottom: { xs: "0rem" },
-                  width: "50%",
+                  width: { xs: "100%", md: "50%" },
                 }}
                 additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
+                  marginRight: { xs: "0rem", md: "1rem" },
                   width: "100%",
                 }}
               />
@@ -282,8 +343,7 @@ function Offer({
                 setDropdownValue={setOfferJob}
                 isDropdownObject
                 additionalStyles={{
-                  minWidth: "50%",
-                  maxWidth: "50%",
+                  width: { xs: "100%", md: "50%" },
                   marginTop: { xs: "1rem" },
                   marginBottom: { xs: "0rem" },
                 }}
@@ -303,7 +363,7 @@ function Offer({
                 alignItems: "center",
                 marginTop: { xs: "1rem" },
                 marginBottom: { xs: "0rem" },
-                width: "50%",
+                width: { xs: "100%" },
               }}
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
@@ -313,13 +373,20 @@ function Offer({
             />
           </Box>
 
-          <Box display="flex" justifyContent="center" marginTop="2rem">
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            sx={{ marginTop: { xs: "2rem", md: "-1.5rem" } }}
+            marginLeft="2rem"
+            flexGrow="1"
+          >
             <Typography>Job Posting</Typography>
             {currentlyUploadedFileName && (
               <iframe
                 src={`http://localhost:3000/uploads/offers/${currentlyUploadedFileName}`}
                 title={currentlyUploadedFileName}
-                width="fit-content"
+                width="100%"
                 style={{
                   height: "20rem",
                 }}
@@ -360,28 +427,11 @@ function Offer({
           </Box>
         </Box>
 
-        {user?.data?.user?.AdminFlag &&
-          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
-            <IconButton
-              sx={{
-                alignSelf: { xs: "flex-end", md: "flex-start" },
-                order: { xs: 1, md: 3 },
-              }}
-              aria-label="delete"
-              size="large"
-              onClick={() => handleOpenDeleteConfirmationDialog(index)}
-            >
-              <Delete sx={{ width: "2rem", height: "2rem" }} />
-            </IconButton>
-          )}
-
         {user && (
           <Button
             sx={{
               marginTop: "1rem",
-              gridArea: "Update",
               width: "min-content",
-              justifySelf: "center",
             }}
             type="submit"
             variant="outlined"

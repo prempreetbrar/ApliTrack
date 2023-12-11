@@ -7,7 +7,7 @@ const errorHandling = require("../utils/errorHandling");
 
 exports.createOffer = factory.createOne(Offer.Offer);
 exports.deleteOffer = factory.deleteInstance(Offer.Offer);
-exports.updateOffer = factory.updateOneWithKey(Offer.Offer);
+exports.updateOffer = factory.updateInstance(Offer.Offer);
 
 exports.getOffer = factory.getOne(Offer.Offer);
 exports.getAllOffers = factory.getAll(Offer.Offer);
@@ -43,57 +43,21 @@ exports.uploadFile = errorHandling.catchAsync(
       return;
     }
 
-    // Resolve the absolute path to the uploads directory
-    const uploadsPath = path.resolve(__dirname, "../uploads/offers");
-
-    // Ensure the directory exists, create it if not
-    if (!fs.existsSync(uploadsPath)) {
-      fs.mkdirSync(uploadsPath, { recursive: true });
-    }
-
-    // Construct the file path
     let fileName = request.file.originalname;
-    console.log("Original Name!", request.file.originalname);
+    // // Read files asynchronously using Promise
+    const files = await readdir("./uploads/offers");
 
-    try {
-      // Read files asynchronously using Promise
-      const files = await readdir(uploadsPath);
-
-      if (files) {
-        // Update fileName with the special name
-        fileName =
-          fileName.split(".")[0] +
-          " - [" +
-          (files.length + 1) +
-          "]." +
-          fileName.split(".")[1];
-      }
-
-      const filePath = path.join(uploadsPath, fileName);
-
-      const readStream = fs.createReadStream(request.file.path);
-      const writeStream = fs.createWriteStream(filePath);
-      readStream.pipe(writeStream);
-
-      await new Promise((resolve, reject) => {
-        writeStream.on("finish", () => {
-          console.log("File written successfully");
-          fs.unlinkSync(request.file.path);
-
-          // Set the special name to request.body.OfferFileName
-          request.body.OfferFileName = fileName;
-
-          resolve(false);
-        });
-
-        writeStream.on("error", (err) => {
-          reject(err);
-        });
-      });
-    } catch (error) {
-      console.error("Error reading directory:", error);
+    if (files) {
+      // Update fileName with the special name
+      fileName =
+        fileName.split(".")[0] +
+        " - [" +
+        files.length +
+        "]." +
+        fileName.split(".")[1];
     }
 
+    request.body.OfferFileName = fileName;
     next();
   }
 );

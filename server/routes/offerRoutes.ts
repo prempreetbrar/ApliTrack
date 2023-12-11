@@ -10,19 +10,13 @@ const storage = multer.diskStorage({
   destination: "./uploads/offers",
   filename: function (req, file, cb) {
     fs.readdir("./uploads/offers", (err, files) => {
-      if (files) {
-        cb(
-          null,
-          file.originalname.split(".")[0] +
-            " - " +
-            "[" +
-            files.length +
-            1 +
-            "]." +
-            file.originalname.split(".")[1]
-        );
-      }
-      cb(null, file.originalname);
+      const fileName =
+        file.originalname.split(".")[0] +
+        " - [" +
+        (files.length + 1) +
+        "]." +
+        file.originalname.split(".")[1];
+      cb(null, fileName);
     });
   },
 });
@@ -57,10 +51,7 @@ router
     authController.checkIfLoggedIn,
     offerController.filterApplicant,
     offerController.deleteOffer
-  );
-
-router
-  .route("/:OfferFileName(*)")
+  )
   .patch(
     upload.single("OfferFileName"),
     authController.checkIfLoggedIn,

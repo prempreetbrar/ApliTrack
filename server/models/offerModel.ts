@@ -6,6 +6,11 @@ const { Job } = require("./jobModel");
 const Offer = sequelize.define(
   "OFFER",
   {
+    OfferID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     ApplicantUsername: {
       type: DataTypes.STRING(32),
       allowNull: false,
@@ -17,7 +22,7 @@ const Offer = sequelize.define(
       unique: "actions_unique",
     },
     ResponseDeadline: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
     Compensation: {
