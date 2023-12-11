@@ -60,7 +60,11 @@ router
 
 router
   .route("/tracks-job")
-  .get(applicantController.addFilter, applicantController.getApplicantTracksJob)
+  .get(
+    applicantController.addFilter,
+    applicantController.addTracksFilter,
+    applicantController.getApplicantTracksJob
+  )
   .post(applicantController.createApplicantTracksJob)
   .delete(applicantController.deleteApplicantTracksJob)
   .patch(applicantController.updateApplicantTracksJob);

@@ -204,6 +204,8 @@ export default function Companies() {
             key={index}
             company={company}
             onlyShowJobsITrack={onlyShowJobsITrack}
+            mostRecentEarliestDateToApply={mostRecentEarliestDateToApply}
+            mostRecentLatestDateToApply={mostRecentLatestDateToApply}
           />
         ))}
       <NewCompanyForm companies={companies} setCompanies={setCompanies} />
@@ -229,8 +231,8 @@ function Company({
       if (user && company) {
         const trackedResponse = await get(
           {
-            // EarliestLastContactDate: mostRecentEarliestLastContactDate,
-            // LatestLastContactDate: mostRecentLatestLastContactDate,
+            EarliestDateToApply: mostRecentEarliestDateToApply,
+            LatestDateToApply: mostRecentLatestDateToApply,
           },
           "http://localhost:3000/api/applicants/tracks-job"
         );
@@ -245,12 +247,7 @@ function Company({
       }
     };
     fetchTrackedJobs();
-  }, [
-    user,
-    company,
-    mostRecentEarliestDateToApply,
-    mostRecentLatestDateToApply,
-  ]);
+  }, [user, company, onlyShowJobsITrack]);
 
   React.useEffect(() => {
     /*

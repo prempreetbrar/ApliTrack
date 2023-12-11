@@ -23,7 +23,6 @@ exports.addFilter = errorHandling.catchAsync(
 exports.addSearch = errorHandling.catchAsync(
   async (request, response, next) => {
     request.body.filter = {};
-    console.log(request.query);
 
     if (request.query.CompanyName) {
       request.body.filter.CompanyName = {
