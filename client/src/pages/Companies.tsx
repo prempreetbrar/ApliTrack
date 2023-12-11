@@ -137,147 +137,177 @@ export default function Companies() {
 
   return (
     <MainBox>
-      <Box
-        display="flex"
-        alignItems="center"
-        marginBottom="1rem"
-        justifyContent="space-between"
-      >
-        <form onSubmit={handleSubmit(handleGet)}>
-          {user && (
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={onlyShowJobsITrack}
-                  onChange={(event) => {
-                    setOnlyShowJobsITrack(event.target.checked);
-                    if (!event.target.checked) {
-                      setMostRecentEarliestDateToApply(null);
-                      setMostRecentLatestDateToApply(null);
-                    }
-                  }}
-                />
-              }
-              label="Only Show Jobs I Track"
-            />
-          )}
-
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="ASC"
-              name="radio-buttons-group"
-              sx={{ display: "flex" }}
-            >
-              <FormControlLabel
-                value="ASC"
-                control={<Radio {...register("Sort")} />}
-                label="Sort Ascending"
-                labelPlacement="start"
-              />
-              <FormControlLabel
-                value="DESC"
-                control={<Radio {...register("Sort")} />}
-                label="Sort Descending"
-                labelPlacement="start"
-              />
-            </RadioGroup>
-          </FormControl>
-
-          <Typography
-            variant="h3"
-            sx={{ fontSize: "1rem", marginRight: "1rem" }}
+      <form onSubmit={handleSubmit(handleGet)} style={{ width: "100%" }}>
+        <Box
+          display="flex"
+          sx={{
+            flexDirection: { xs: "row", xl: "column" },
+          }}
+          alignItems="center"
+          justifyContent="center"
+          marginBottom="1rem"
+        >
+          <Box
+            display="flex"
+            sx={{
+              flexDirection: { xs: "column", xl: "row" },
+            }}
+            alignItems="center"
+            marginRight="2.5rem"
           >
-            Search by:
-          </Typography>
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            additionalStyles={{
-              marginTop: { xs: "1rem", sm: "0rem" },
+            {user && (
+              <FormControlLabel
+                labelPlacement="start"
+                control={
+                  <Switch
+                    checked={onlyShowJobsITrack}
+                    onChange={(event) => {
+                      setOnlyShowJobsITrack(event.target.checked);
+                      if (!event.target.checked) {
+                        setMostRecentEarliestDateToApply(null);
+                        setMostRecentLatestDateToApply(null);
+                      }
+                    }}
+                  />
+                }
+                label="Only Show Jobs I Track"
+              />
+            )}
+
+            <FormControl>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="ASC"
+                name="radio-buttons-group"
+                sx={{ display: "flex" }}
+                row
+              >
+                <FormControlLabel
+                  value="ASC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort Ascending"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value="DESC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort Descending"
+                  labelPlacement="start"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Box>
+
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            marginTop="1rem"
+            sx={{
+              flexDirection: { xs: "column", xl: "row" },
             }}
-            attributeName={"CompanyName"}
-            allowUnauthenticated
-          />
-          <SingleDate
-            handleSubmit={handleSubmit}
-            attributeName={"EarliestApplicationDeadline"}
-            maxLength={64}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: { xs: "0rem" },
-              marginTop: { xs: "1rem", sm: "0rem" },
-            }}
-            additionalFieldStyles={{
-              marginRight: { xs: "1rem" },
-            }}
-            date={mostRecentEarliestApplicationDeadline}
-            setDate={setMostRecentEarliestApplicationDeadline}
-            allowUnauthenticated
-          />
-          <SingleDate
-            handleSubmit={handleSubmit}
-            attributeName={"LatestApplicationDeadline"}
-            maxLength={64}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: { xs: "0rem" },
-              marginTop: { xs: "1rem", sm: "0rem" },
-            }}
-            additionalFieldStyles={{
-              marginRight: { xs: "1rem" },
-            }}
-            date={mostRecentLatestApplicationDeadline}
-            setDate={setMostRecentLatestApplicationDeadline}
-            allowUnauthenticated
-          />
-          {user && onlyShowJobsITrack && (
+          >
+            <Typography
+              variant="h3"
+              sx={{ fontSize: "1rem", marginRight: "1rem", flexShrink: 0 }}
+            >
+              Search by:
+            </Typography>
+            <SingleForm
+              register={register}
+              handleSubmit={handleSubmit}
+              additionalStyles={{
+                marginTop: { xs: "1rem", xl: "0rem" },
+                flexShrink: 0,
+              }}
+              attributeName={"CompanyName"}
+              allowUnauthenticated
+            />
             <SingleDate
               handleSubmit={handleSubmit}
-              attributeName={"EarliestDateToApply"}
+              attributeName={"EarliestApplicationDeadline"}
               maxLength={64}
               additionalStyles={{
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
                 marginBottom: { xs: "0rem" },
-                marginTop: { xs: "1rem", sm: "0rem" },
+                marginTop: { xs: "1rem", xl: "0rem" },
+                flexShrink: 0,
               }}
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
               }}
-              date={mostRecentEarliestDateToApply}
-              setDate={setMostRecentEarliestDateToApply}
+              date={mostRecentEarliestApplicationDeadline}
+              setDate={setMostRecentEarliestApplicationDeadline}
+              allowUnauthenticated
             />
-          )}
-          {user && onlyShowJobsITrack && (
             <SingleDate
               handleSubmit={handleSubmit}
-              attributeName={"LatestDateToApply"}
+              attributeName={"LatestApplicationDeadline"}
               maxLength={64}
               additionalStyles={{
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
                 marginBottom: { xs: "0rem" },
-                marginTop: { xs: "1rem", sm: "0rem" },
+                marginTop: { xs: "1rem", xl: "0rem" },
+                flexShrink: 0,
               }}
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
               }}
-              date={mostRecentLatestDateToApply}
-              setDate={setMostRecentLatestDateToApply}
+              date={mostRecentLatestApplicationDeadline}
+              setDate={setMostRecentLatestApplicationDeadline}
+              allowUnauthenticated
             />
-          )}
-          <IconButton type="submit">
-            <SearchIcon color="primary" />
-          </IconButton>
-        </form>
-      </Box>
+
+            {user && onlyShowJobsITrack && (
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"EarliestDateToApply"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={mostRecentEarliestDateToApply}
+                setDate={setMostRecentEarliestDateToApply}
+              />
+            )}
+            {user && onlyShowJobsITrack && (
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"LatestDateToApply"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={mostRecentLatestDateToApply}
+                setDate={setMostRecentLatestDateToApply}
+              />
+            )}
+            <IconButton type="submit">
+              <SearchIcon color="primary" />
+            </IconButton>
+          </Box>
+        </Box>
+      </form>
 
       {companies &&
         companies.map((company, index) => (
@@ -413,7 +443,13 @@ function Company({
         width: "100%",
       }}
     >
-      <Box display="flex" flexDirection="row" alignItems="center" width="100%">
+      <Box
+        display="flex"
+        flexDirection="row"
+        flexWrap="wrap"
+        alignItems="center"
+        width="100%"
+      >
         <Typography
           variant="h2"
           sx={{ fontSize: "3rem", fontWeight: "bold", display: "inline-block" }}
@@ -424,13 +460,16 @@ function Company({
           sx={{ marginLeft: "1rem", width: "4rem", height: "4rem" }}
         />
 
-        <form
+        <FormControl
           onSubmit={handleSubmit(updateCompany)}
-          style={{
+          sx={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
-            marginLeft: "5rem",
+            width: { xs: "100%", md: "fit-content" },
+            marginTop: { xs: "2rem", md: 0 },
+            marginLeft: { xs: "0rem", lg: "5rem" },
+            order: { xs: 4, lg: 3 },
           }}
         >
           <SingleForm
@@ -485,13 +524,13 @@ function Company({
               Update
             </Button>
           )}
-        </form>
+        </FormControl>
         {user?.data?.user?.AdminFlag &&
           user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
             <IconButton
               sx={{
                 marginLeft: "auto",
-                order: { xs: 1, md: 3 },
+                order: { xs: 3, lg: 4 },
               }}
               aria-label="delete"
               size="large"
