@@ -962,7 +962,7 @@ function Job({
             }}
           >
             <Typography>Job Posting</Typography>
-            {job.JobPostFile && (
+            {currentlyUploadedJobPostFile && (
               <iframe
                 src={`http://localhost:3000/uploads/jobPosts/${currentlyUploadedJobPostFile}`}
                 title={currentlyUploadedJobPostFile}

@@ -6,9 +6,6 @@ const router = express.Router();
 
 router
   .route("/details")
-
-  .delete(referralController.deleteReferral)
-  .put()
   .get(referralController.filterID, referralController.getReferral);
 
 router
@@ -27,6 +24,12 @@ router
     authController.checkIfLoggedIn,
     referralController.addFilter,
     referralController.updateReferral
+  )
+  .delete(
+    authController.checkIfLoggedIn,
+    referralController.addFilter,
+    authController.restrictTo(authController.DELETE_ONLY),
+    referralController.deleteReferral
   );
 
 // router

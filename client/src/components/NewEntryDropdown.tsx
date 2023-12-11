@@ -72,13 +72,15 @@ export default function NewEntryDropdown({
               <TextField {...params} label={entityName} />
             )}
             value={
-              isDropdownObject
+              !dropdownValue
+                ? ""
+                : isDropdownObject && dropdownValue
                 ? dropdownValue[entityAttributeName] +
                   (dropdownValue[entityAttributeName2]
                     ? " - " + dropdownValue[entityAttributeName2]
                     : "") +
                   (dropdownValue[entityAttributeName3]
-                    ? " - " + dropdownValue[entityAttributeName3]
+                    ? " - " + `[${dropdownValue[entityAttributeName3]}]`
                     : "")
                 : dropdownValue
             }
