@@ -165,6 +165,7 @@ export default function Companies() {
             }}
             date={mostRecentEarliestApplicationDeadline}
             setDate={setMostRecentEarliestApplicationDeadline}
+            allowUnauthenticated
           />
           <SingleDate
             handleSubmit={handleSubmit}
@@ -182,6 +183,7 @@ export default function Companies() {
             }}
             date={mostRecentLatestApplicationDeadline}
             setDate={setMostRecentLatestApplicationDeadline}
+            allowUnauthenticated
           />
           {user && onlyShowJobsITrack && (
             <SingleDate
@@ -371,13 +373,15 @@ function Company({
             }}
             isTextArea
           />
-          <Button
-            sx={{ marginTop: "1rem", height: "min-content" }}
-            type="submit"
-            variant="outlined"
-          >
-            Update
-          </Button>
+          {user && (
+            <Button
+              sx={{ marginTop: "1rem", height: "min-content" }}
+              type="submit"
+              variant="outlined"
+            >
+              Update
+            </Button>
+          )}
         </form>
       </Box>
 
@@ -750,12 +754,14 @@ function Job({
               }}
             ></iframe>
           )}
-          <Input
-            sx={{ marginTop: "1rem" }}
-            {...register("JobPostFile")}
-            type="file"
-            name="JobPostFile"
-          />
+          {user && (
+            <Input
+              sx={{ marginTop: "1rem" }}
+              {...register("JobPostFile")}
+              type="file"
+              name="JobPostFile"
+            />
+          )}
           {currentlyUploadedJobPostFile && (
             <Tooltip title={currentlyUploadedJobPostFile} placement="top" arrow>
               <Typography
@@ -763,6 +769,20 @@ function Job({
                 sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
               >
                 Existing File: {currentlyUploadedJobPostFile}
+              </Typography>
+            </Tooltip>
+          )}
+          {!currentlyUploadedJobPostFile && (
+            <Tooltip
+              title={"No File Has Been Uploaded for the Job Posting"}
+              placement="top"
+              arrow
+            >
+              <Typography
+                noWrap
+                sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
+              >
+                No File Has Been Uploaded for the Job Posting
               </Typography>
             </Tooltip>
           )}
@@ -854,18 +874,20 @@ function Job({
           </Box>
         )}
 
-        <Button
-          sx={{
-            marginTop: "1rem",
-            gridArea: "Update",
-            width: "min-content",
-            justifySelf: "center",
-          }}
-          type="submit"
-          variant="outlined"
-        >
-          Update
-        </Button>
+        {user && (
+          <Button
+            sx={{
+              marginTop: "1rem",
+              gridArea: "Update",
+              width: "min-content",
+              justifySelf: "center",
+            }}
+            type="submit"
+            variant="outlined"
+          >
+            Update
+          </Button>
+        )}
       </form>
       <hr style={{ marginTop: "5rem", marginBottom: "5rem" }} />
     </>
@@ -877,6 +899,7 @@ function NewJobForm({ companyName, jobs, setJobs }) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeHandle } = useHandleOperation(reset, setJobs, jobs);
   const [applicationDeadline, setApplicationDeadline] = React.useState(null);
+  const { user } = useAuthContext();
 
   async function handleCreate(data) {
     const JobPostFile = data.JobPostFile[0];
@@ -921,72 +944,78 @@ function NewJobForm({ companyName, jobs, setJobs }) {
 
   return (
     <>
-      <Typography variant="h2" sx={{ fontSize: "1.5rem", fontWeight: "500" }}>
-        Add New Job
-      </Typography>
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        actionOnAttribute={null}
-        attributeName={"PositionName"}
-        isLoading={createIsLoading}
-        maxLength={64}
-      />
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        actionOnAttribute={null}
-        attributeName={"Description"}
-        isLoading={createIsLoading}
-        maxLength={64}
-        isTextArea
-      />
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        actionOnAttribute={null}
-        attributeName={"PositionType"}
-        isLoading={createIsLoading}
-        maxLength={64}
-      />
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        actionOnAttribute={null}
-        attributeName={"Salary"}
-        isLoading={createIsLoading}
-        maxLength={64}
-      />
-      <SingleDate
-        handleSubmit={handleSubmit}
-        attributeName={"ApplicationDeadline"}
-        maxLength={64}
-        additionalStyles={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: { xs: "0rem" },
-          marginTop: { xs: "1rem" },
-        }}
-        date={applicationDeadline}
-        setDate={setApplicationDeadline}
-      />
-      <Input
-        sx={{ marginTop: "1rem" }}
-        {...register("JobPostFile")}
-        type="file"
-        name="JobPostFile"
-      />
-
-      <Button
-        onClick={handleSubmit(handleCreate)}
-        type="submit"
-        variant="outlined"
-        sx={{ mt: 3, mb: 2 }}
-        disabled={createIsLoading}
-      >
-        Create
-      </Button>
+      {user && (
+        <>
+          <Typography
+            variant="h2"
+            sx={{ fontSize: "1.5rem", fontWeight: "500" }}
+          >
+            Add New Job
+          </Typography>
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"PositionName"}
+            isLoading={createIsLoading}
+            maxLength={64}
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"Description"}
+            isLoading={createIsLoading}
+            maxLength={64}
+            isTextArea
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"PositionType"}
+            isLoading={createIsLoading}
+            maxLength={64}
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"Salary"}
+            isLoading={createIsLoading}
+            maxLength={64}
+          />
+          <SingleDate
+            handleSubmit={handleSubmit}
+            attributeName={"ApplicationDeadline"}
+            maxLength={64}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: { xs: "0rem" },
+              marginTop: { xs: "1rem" },
+            }}
+            date={applicationDeadline}
+            setDate={setApplicationDeadline}
+          />
+          <Input
+            sx={{ marginTop: "1rem" }}
+            {...register("JobPostFile")}
+            type="file"
+            name="JobPostFile"
+          />
+          <Button
+            onClick={handleSubmit(handleCreate)}
+            type="submit"
+            variant="outlined"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={createIsLoading}
+          >
+            Create
+          </Button>
+        </>
+      )}
     </>
   );
 }
@@ -995,6 +1024,7 @@ function NewCompanyForm({ companies, setCompanies }) {
   const { register, handleSubmit, setValue, reset, getValues } = useForm();
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeHandle } = useHandleOperation(reset, setCompanies, companies);
+  const { user } = useAuthContext();
 
   async function handleCreate(data) {
     const result = await executeHandle(
@@ -1012,53 +1042,60 @@ function NewCompanyForm({ companies, setCompanies }) {
   }
 
   return (
-    <MainPaper>
-      <Typography variant="h2" sx={{ fontSize: "1.5rem", fontWeight: "500" }}>
-        Add New Company
-      </Typography>
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        actionOnAttribute={null}
-        attributeName={"CompanyName"}
-        isLoading={createIsLoading}
-        maxLength={64}
-      />
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        actionOnAttribute={null}
-        attributeName={"Industry"}
-        isLoading={createIsLoading}
-        maxLength={64}
-        isTextArea
-      />
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        actionOnAttribute={null}
-        attributeName={"HomePageURL"}
-        isLoading={createIsLoading}
-        maxLength={64}
-      />
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        actionOnAttribute={null}
-        attributeName={"Description"}
-        isLoading={createIsLoading}
-        maxLength={64}
-      />
+    <>
+      {user && (
+        <MainPaper>
+          <Typography
+            variant="h2"
+            sx={{ fontSize: "1.5rem", fontWeight: "500" }}
+          >
+            Add New Company
+          </Typography>
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"CompanyName"}
+            isLoading={createIsLoading}
+            maxLength={64}
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"Industry"}
+            isLoading={createIsLoading}
+            maxLength={64}
+            isTextArea
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"HomePageURL"}
+            isLoading={createIsLoading}
+            maxLength={64}
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"Description"}
+            isLoading={createIsLoading}
+            maxLength={64}
+          />
 
-      <Button
-        onClick={handleSubmit(handleCreate)}
-        type="submit"
-        variant="outlined"
-        sx={{ mt: 3, mb: 2 }}
-        disabled={createIsLoading}
-      >
-        Create
-      </Button>
-    </MainPaper>
+          <Button
+            onClick={handleSubmit(handleCreate)}
+            type="submit"
+            variant="outlined"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={createIsLoading}
+          >
+            Create
+          </Button>
+        </MainPaper>
+      )}
+    </>
   );
 }
