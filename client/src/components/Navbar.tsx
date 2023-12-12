@@ -162,6 +162,15 @@ export default function Navbar() {
         {user && (
           <MenuItem
             onClick={() =>
+              handleMenuItemClick("/applicants/applicant/documents")
+            }
+          >
+            Documents
+          </MenuItem>
+        )}
+        {user && (
+          <MenuItem
+            onClick={() =>
               handleMenuItemClick("/applicants/applicant/interviews")
             }
           >

@@ -17,10 +17,13 @@ import Interview from "pages/Interviews";
 import Contacts from "pages/Contacts";
 import Companies from "pages/Companies";
 import Offers from "pages/Offers";
+import Documents from "pages/Documents";
 
 function App() {
   const { user } = useAuthContext();
-
+  if (user?.token === undefined) {
+    return null;
+  }
   /*
     If the user isn't logged in, then navigate them to the login page on a protected route.
     Otherwise, if they are logged in, let them see the protected route.
@@ -55,6 +58,10 @@ function App() {
         <Route
           path="/applicants/applicant/interviews"
           element={user ? <Interview /> : <Navigate to="/auth/login" />}
+        />
+        <Route
+          path="/applicants/applicant/documents"
+          element={user ? <Documents /> : <Navigate to="/auth/login" />}
         />
         <Route path="/contacts" element={<Contacts />} />
         <Route path="/companies" element={<Companies />} />

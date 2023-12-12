@@ -10,20 +10,23 @@ exports.getDocument = factory.getOne(Document.Document);
 exports.getAllDocuments = factory.getAll(Document.Document);
 exports.getAllApplicantDocuments = factory.getAll(Document.Document);
 
-exports.filterID = errorHandling.catchAsync(
-    async (request, response, next) => {
-      request.body.filter = {
-        DocumentID: request.body.DocumentID,
-      };
-      next();
-    }
-  );
+exports.filterID = errorHandling.catchAsync(async (request, response, next) => {
+  request.body.filter = {
+    DocumentID: request.body.DocumentID,
+  };
+  next();
+});
 
-  exports.filterApplicant = errorHandling.catchAsync(
-    async (request, response, next) => {
-      request.body.filter = {
-        ApplicantUsername: request.body.ApplicantUsername,
-      };
-      next();
-    }
-  );
+exports.filterApplicant = errorHandling.catchAsync(
+  async (request, response, next) => {
+    request.body.filter = {
+      ApplicantUsername: request.body.ApplicantUsername,
+    };
+    next();
+  }
+);
+
+exports.uploadDocFile = factory.uploadFile(
+  "./uploads/documents",
+  "DocFileName"
+);
