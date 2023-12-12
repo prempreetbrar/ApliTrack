@@ -356,7 +356,7 @@ function Application({
           entityTargetAttribute="DocumentID"
           entityTargetAttribute2="DocFileName"
           sectionURL="http://localhost:3000/api/applications/submitWith"
-          fetchAllOptionsURL="http://localhost:3000/api/documents/my-documents"
+          fetchAllOptionsURL="http://localhost:3000/api/documents"
           maxCreateLength={64}
           isDocument
         />
