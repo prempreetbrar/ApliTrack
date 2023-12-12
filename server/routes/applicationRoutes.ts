@@ -10,12 +10,13 @@ router.route("/details")
 .get(authController.checkIfLoggedIn, applicationController.addFilterID, applicationController.getApplication)
 .post(authController.checkIfLoggedIn, applicationController.createApplication)
 .delete(authController.checkIfLoggedIn, applicationController.deleteApplication)
-.put(authController.checkIfLoggedIn, applicationController.updateApplication);
+.patch(authController.checkIfLoggedIn, applicationController.updateApplication);
 
 router.route("/my-applications")
 .get(applicationController.addFilterApplicant, applicationController.getAllApplicantApplications);
 
 router.route("/URL")
+.get(authController.checkIfLoggedIn, applicationController.addFilterID, applicationController.getAllApplicationURL)
 .post(authController.checkIfLoggedIn, applicationController.createApplicationURL)
 .delete(authController.checkIfLoggedIn, applicationController.deleteApplicationURL);
 
@@ -29,6 +30,7 @@ router.route("/submitWith")
 
 router
 .route("/corresponding-jobs")
+.get(applicationController.getApplicationCorrespondsToJob)
 .post(applicationController.createApplicationCorrespondsToJob)
 .delete(applicationController.deleteApplicationCorrespondsToJob)
 .patch(applicationController.updateApplicationCorrespondsToJob);

@@ -26,7 +26,9 @@ export default function NewEntryDropdown({
 
   React.useEffect(() => {
     const fetchAllOptions = async () => {
+      console.log(fetchAllOptionsURL);
       const response = await executeRequest(null, fetchAllOptionsURL);
+      console.log(response);
       const newAllOptionsHashtable = {};
 
       setAllOptions(

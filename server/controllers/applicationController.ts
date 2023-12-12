@@ -16,6 +16,8 @@ exports.getApplication = factory.getOne(Application.Application);
 exports.getAllApplications = factory.getAll(Application.Application);
 exports.getAllApplicantApplications = factory.getAll(Application.Application);
 
+exports.getAllApplicationURL = factory.getAll(Application.Appl_Relevant_URL);
+
 exports.addFilterID = errorHandling.catchAsync(
     async (request, response, next) => {
       request.body.filter = {
@@ -38,6 +40,7 @@ exports.addFilterID = errorHandling.catchAsync(
 exports.createApplicationCorrespondsToJob = factory.createOne(Application.ApplicationCorrespondsToJob);
 exports.deleteApplicationCorrespondsToJob = factory.deleteInstance(Application.ApplicationCorrespondsToJob);
 exports.updateApplicationCorrespondsToJob = factory.updateInstance(Application.ApplicationCorrespondsToJob);
+exports.getApplicationCorrespondsToJob = factory.getAll(Application.ApplicationCorrespondsToJob);
 
 exports.createApplicationSubmitWithDoc = factory.createOne(Application.ApplicationSubmitWithDoc);
 exports.deleteApplicationSubmitWithDoc = factory.deleteInstance(Application.ApplicationSubmitWithDoc);

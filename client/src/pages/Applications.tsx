@@ -77,7 +77,8 @@ export default function Applications() {
       index,
       false,
       null,
-      null
+      {},
+      false
     );
   }
 
@@ -86,12 +87,15 @@ export default function Applications() {
     executeHandle(
       "get",
       get,
-      data,
+      {
+        ...data
+      },
       "http://localhost:3000/api/applications",
       null,
-      false,
-      null,
-      null
+        false,
+        null,
+        {},
+        false
     );
   }
 
@@ -105,12 +109,14 @@ export default function Applications() {
         const fetchApplicationsInfo = async () => {
           const response = await get({}, "http://localhost:3000/api/applications");
     
-          setApplicationsInfo(response.contact);
+          setApplicationsInfo(response.application);
         };
     
         fetchApplicationsInfo();
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [user]);
+
+      console.log(user);
 
   return (
     <MainBox>
@@ -165,6 +171,7 @@ export default function Applications() {
         <AddNewApplication
           setApplicationsInfo={setApplicationsInfo}
           applicationsInfo={applicationsInfo}
+          ApplicantUsername={user?.Username}
         />
       )}
       {deleteConfirmationDialogOpen && (
@@ -189,21 +196,23 @@ function Application({
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } = useDelete();
   const { user } = useAuthContext();
+  const [dateSubmitted, setDateSubmitted] = React.useState(application?.DateSubmitted);
 
   React.useEffect(() => {
     /*
           We have forms that the user can change. However, we want to prepopulate them
           with their current values from the database.
         */
-    setValue("Aname", application?.AName);
+    setValue("AName", application?.AName);
     setValue("Notes", application?.Notes);
-    setValue("Status", application?.LinkedInURL);
+    setValue("Status", application?.Status);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [application]);
 
   function updateApplication(data) {
     update(
-      {ApplicationID: application.ApplicationID, ...data },
+      {...data, 
+        ApplicationID: application.ApplicationID, DateSubmitted: dateSubmitted},
       "http://localhost:3000/api/applications/details"
     );
   }
@@ -229,9 +238,7 @@ function Application({
         >
           {application.ApplicationID}
         </Typography>
-
         <FormControl
-          onSubmit={handleSubmit(updateApplication)}
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
@@ -242,8 +249,10 @@ function Application({
             order: { xs: 4, lg: 3 },
           }}
         >
+          <form onSubmit={handleSubmit(updateApplication)}>
           <SingleForm
             register={register}
+            handleSubmit={handleSubmit}
             attributeName={"AName"}
             maxLength={64}
             isLoading={updateIsLoading}
@@ -255,9 +264,11 @@ function Application({
             additionalFieldStyles={{
               marginRight: { xs: "1rem" },
             }}
+            attributeLabel={"Application Name"}
           />
           <SingleForm
             register={register}
+            handleSubmit={handleSubmit}
             attributeName={"Notes"}
             maxLength={64}
             isLoading={updateIsLoading}
@@ -273,6 +284,7 @@ function Application({
           />
           <SingleForm
             register={register}
+            handleSubmit={handleSubmit}
             attributeName={"Status"}
             maxLength={64}
             isLoading={updateIsLoading}
@@ -285,8 +297,85 @@ function Application({
             additionalFieldStyles={{
               marginRight: { xs: "1rem" },
             }}
-            isTextArea
           />
+          <SingleDate
+            handleSubmit={handleSubmit}
+            attributeName={"DateSubmitted"}
+            maxLength={64}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: { xs: "0rem" },
+              gridArea: "Deadline",
+            }}
+            date={dateSubmitted}
+            setDate={setDateSubmitted}
+          />
+          <InfoSection
+            entityIDName="ApplicationID"
+            entityID={application.ApplicationID}
+            sectionTitle="Category"
+            sectionArray={application.Category}
+            entityName="Application"
+            entityTargetAttribute="Category"
+            isMarginRight
+            sectionURL="http://localhost:3000/api/applications/category"
+            maxCreateLength={16}
+            additionalStyles={{
+              minWidth: { xs: "100%", sm: "50%" },
+              marginRight: { xs: "0" },
+            }}
+          />
+          <InfoSection
+            entityIDName="ApplicationID"
+            entityID={application.ApplicationID}
+            sectionTitle="Relevant URLs"
+            sectionArray={application.RelevantURL}
+            entityName="Application"
+            entityTargetAttribute="RelevantURL"
+            isMarginRight
+            sectionURL="http://localhost:3000/api/applications/URL"
+            maxCreateLength={16}
+            additionalStyles={{
+              minWidth: { xs: "100%", sm: "50%" },
+              marginRight: { xs: "0" },
+            }}
+          />
+          <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
+          Submit With
+        </Typography>
+        <InfoSection
+          entityIDName="ApplicationID"
+          entityID={application.ApplicationID}
+          sectionTitle="Documents"
+          sectionArray={application?.Documents?.map(
+            (document, index) => document.SUBMIT_WITH
+          )}
+          entityName="Document"
+          entityTargetAttribute="DocumentID"
+          entityTargetAttribute2="DocFileName"
+          sectionURL="http://localhost:3000/api/applications/submitWith"
+          fetchAllOptionsURL="http://localhost:3000/api/documents/my-documents"
+          maxCreateLength={64}
+          isCompany
+        />
+        <InfoSection
+          entityIDName="ApplicationID"
+          entityID={application.ApplicationID}
+          sectionTitle="Jobs"
+          sectionArray={application?.Jobs?.map(
+            (job, index) => job.CORRESPONDS_TO
+          )}
+          entityName="Job"
+          entityTargetAttribute="JOBPositionID"
+          entityTargetAttribute2="PositionName"
+          entitySecondTargetAttribute="JobPostURL"
+          sectionURL="http://localhost:3000/api/applications/corresponding-jobs"
+          fetchAllOptionsURL="http://localhost:3000/api/jobs"
+          maxCreateLength={64}
+          isJob
+        />
           {user && (
             <Button
               sx={{ marginTop: "1rem", height: "min-content" }}
@@ -296,10 +385,9 @@ function Application({
               Update
             </Button>
           )}
+          </form>
         </FormControl>
-        {user?.data?.user?.AdminFlag &&
-          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
-            <IconButton
+        <IconButton
               sx={{
                 marginLeft: "auto",
                 order: { xs: 3, lg: 4 },
@@ -310,7 +398,6 @@ function Application({
             >
               <Delete sx={{ width: "2rem", height: "2rem" }} />
             </IconButton>
-          )}
       </Box>
 
       <Box
@@ -334,9 +421,155 @@ function Application({
   );
 }
 
-function AddNewApplication({ setApplicationsInfo, applicationsInfo }) {
+function InfoSection({
+  maxCreateLength,
+  entityIDName,
+  entityID,
+  sectionTitle,
+  sectionArray,
+  entityName,
+  entityTargetAttribute,
+  entityTargetAttribute2,
+  entitySecondTargetAttribute,
+  isMarginRight,
+  sectionURL,
+  fetchAllOptionsURL,
+  additionalStyles,
+  isCompany,
+  isJob,
+}) {
+  const [onUpdateSectionArray, setOnUpdateSectionArray] = React.useState([]);
+  const [dropdownValue, setDropdownValue] = React.useState("");
+  const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { executeRequest: deleteInstance } = useDelete();
+  const { register, getValues, reset, control } = useForm();
+  const { executeHandle } = useHandleOperation(
+    reset,
+    setOnUpdateSectionArray,
+    onUpdateSectionArray
+  );
+
+  React.useEffect(() => {
+    if (sectionArray) {
+      setOnUpdateSectionArray([...sectionArray]);
+    }
+  }, [sectionArray]);
+
+  async function handleCreate() {
+    executeHandle(
+      "create",
+      create,
+      {
+        [entityTargetAttribute]:
+          getValues(entityTargetAttribute) || dropdownValue[entityTargetAttribute],
+        [entityIDName]: entityID,
+      },
+      sectionURL,
+      undefined,
+      false,
+      undefined,
+      {},
+      false
+    );
+  }
+
+  async function handleDelete(index) {
+    executeHandle(
+      "delete",
+      deleteInstance,
+      {
+        [entityTargetAttribute]:
+          onUpdateSectionArray[index][entityTargetAttribute],
+        [entityIDName]: entityID,
+      },
+      sectionURL,
+      index,
+      false,
+      undefined,
+      {},
+      false
+    );
+  }
+
+  console.log("TESTING");
+  console.log(entityName, entityTargetAttribute, maxCreateLength, handleCreate, dropdownValue);
+  return (
+    <Box
+      minWidth="100%"
+      padding="0.5rem"
+      marginRight={`${isMarginRight ? "2rem" : "0"}`}
+      sx={{ ...additionalStyles }}
+    >
+      <Typography sx={{ textDecoration: "underline" }}>
+        {sectionTitle}
+      </Typography>
+      <ChipDisplayer
+        onUpdateSectionArray={onUpdateSectionArray}
+        attributeName={entityTargetAttribute}
+        secondAttributeName={entitySecondTargetAttribute}
+        handleDelete={handleDelete}
+      />
+
+{!isCompany && !isJob && (
+        <NewEntry
+          attributeName={entityTargetAttribute}
+          maxCreateLength={maxCreateLength}
+          handleCreate={handleCreate}
+          createIsLoading={createIsLoading}
+          register={register}
+        />
+      )}
+      {isCompany && (
+        <Box display="flex" flexDirection="row" justifyContent="space-between">
+          <NewEntryDropdown
+            isDropdownObject
+            entityName={entityName}
+            entityAttributeName={entityTargetAttribute}
+            entityAttributeName2={entityTargetAttribute2}
+            maxCreateLength={maxCreateLength}
+            handleCreate={handleCreate}
+            createIsLoading={createIsLoading}
+            register={register}
+            fetchAllOptionsURL={fetchAllOptionsURL}
+            additionalStyles={{ width: "50%" }}
+            dropdownValue={dropdownValue}
+            setDropdownValue={setDropdownValue}
+          />
+        </Box>
+      )}
+      {isJob && (
+        <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <NewEntryDropdown
+          entityName={entityName}
+          entityAttributeName={entityTargetAttribute}
+          entityAttributeName2={entityTargetAttribute2}
+          maxCreateLength={maxCreateLength}
+          handleCreate={handleCreate}
+          createIsLoading={createIsLoading}
+          register={register}
+          fetchAllOptionsURL={fetchAllOptionsURL}
+          additionalStyles={{ width: "50%" }}
+          doNotShowButton
+          dropdownValue={dropdownValue}
+          setDropdownValue={setDropdownValue}
+        />
+        <NewEntry
+          attributeName={entitySecondTargetAttribute}
+          maxCreateLength={maxCreateLength}
+          handleCreate={handleCreate}
+          createIsLoading={createIsLoading}
+          register={register}
+        />
+      </Box>
+      )}
+    </Box>
+  );
+}
+
+function AddNewApplication({ setApplicationsInfo, applicationsInfo, ApplicantUsername }) {
     const { executeRequest: create, isLoading: createIsLoading } = useCreate();
     const { register, getValues, reset, handleSubmit, setValue } = useForm();
+    const [dateSubmitted, setDateSubmitted] = React.useState(null);
     const { executeHandle } = useHandleOperation(
       reset,
       setApplicationsInfo,
@@ -349,13 +582,15 @@ function AddNewApplication({ setApplicationsInfo, applicationsInfo }) {
         "create",
         create,
         {
-            ...data
+            ...data,
+            DateSubmitted: dateSubmitted
         },
         "http://localhost:3000/api/applications/details",
         null,
         false,
         null,
-        null
+        {},
+        false
       );
     }
   
@@ -381,10 +616,11 @@ function AddNewApplication({ setApplicationsInfo, applicationsInfo }) {
               register={register}
               handleSubmit={handleSubmit}
               actionOnAttribute={null}
-              attributeName={"Application Name"}
+              attributeName={"AName"}
               isLoading={createIsLoading}
               maxLength={64}
               additionalStyles={{ marginTop: { xs: "1.5rem" } }}
+              attributeLabel={"Application Name"}
             />
             <SingleForm
               register={register}
@@ -405,15 +641,20 @@ function AddNewApplication({ setApplicationsInfo, applicationsInfo }) {
               maxLength={64}
               additionalStyles={{ marginTop: { xs: "1.5rem" } }}
             />
-            <SingleForm
-              register={register}
-              handleSubmit={handleSubmit}
-              actionOnAttribute={null}
-              attributeName={"Description"}
-              isLoading={createIsLoading}
-              maxLength={64}
-              additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-            />
+            <SingleDate
+            handleSubmit={handleSubmit}
+            attributeName={"DateSubmitted"}
+            maxLength={64}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: { xs: "0rem" },
+              gridArea: "Deadline",
+            }}
+            date={dateSubmitted}
+            setDate={setDateSubmitted}
+          />
   
             <Button
               onClick={handleSubmit(handleCreate)}

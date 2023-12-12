@@ -77,11 +77,13 @@ const Appl_Relevant_URL = sequelize.define(
 
 //appl_relevant_URL is a multi-value attribute of application
 Application.hasMany(Appl_Relevant_URL, {
+    as: "RelevantURL",
     foreignKey: 'ApplicationID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Appl_Relevant_URL.belongsTo(Application, {
+    as: "Application",
     foreignKey: "ApplicationID",
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -111,11 +113,13 @@ const Appl_Category = sequelize.define(
 
 //appl_category is a multivalue attribute of application
 Application.hasMany(Appl_Category, {
+    as: "Category",
     foreignKey: 'ApplicationID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Appl_Category.belongsTo(Application, {
+    as: "Application",
     foreignKey: "ApplicationID",
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -164,10 +168,12 @@ const ApplicationSubmitWithDoc = sequelize.define(
 );
 
 Document.belongsToMany(Application, {
+  as: "Applications",
   through: ApplicationSubmitWithDoc,
   foreignKey: "DocumentID",
 });
 Application.belongsToMany(Document, {
+  as: "Documents",
   through: ApplicationSubmitWithDoc,
   foreignKey: "ApplicationID",
 });

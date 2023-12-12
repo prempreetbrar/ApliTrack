@@ -13,9 +13,13 @@ export default function useHandleOperation(
     indexOrKey = 0,
     isObject,
     attributeNameForMappingObject,
-    config,
+    config = {},
     disableSnackbar
   ) => {
+    console.log(body, url, config);
+    if(config == null) {
+      return false;
+    }
     const data = await action(body, url, config);
     if (operation === "create" && data) {
       const tableName = Object.keys(data)[0];

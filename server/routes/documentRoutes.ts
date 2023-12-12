@@ -13,6 +13,6 @@ router.route("/details")
 .put(authController.checkIfLoggedIn, documentController.updateDocument);
 
 router.route("/my-documents")
-  .get(documentController.filterApplicant, documentController.getAllApplicantDocuments);
+  .get(authController.checkIfLoggedIn, documentController.filterApplicant, documentController.getAllApplicantDocuments);
 
 module.exports = router;
