@@ -15,7 +15,6 @@ export default function NewEntryDropdown({
   doNotShowButton,
   dropdownValue,
   setDropdownValue,
-  label
 }) {
   const { user } = useAuthContext();
   const { executeRequest, isLoading, error } = useGet();

@@ -28,6 +28,7 @@ import SingleDate from "components/SingleDate";
 import NewEntry from "components/NewEntry";
 import ChipDisplayer from "components/ChipDisplayer";
 import NewEntryDropdownLabel from "components/NewEntryDropdownLabel";
+import NewEntryDropdown from "components/NewEntryDropdown";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 
 export default function Interviews() {
@@ -237,6 +238,7 @@ function Interview({
     useDelete();
   const { user } = useAuthContext();
   const [date, setDate] = React.useState(interview.Date);
+  const [dropdownValue, setDropdownValue] = React.useState(interview.APPLICATION);
 
   React.useEffect(() => {
     /*
@@ -249,21 +251,23 @@ function Interview({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interview, AName]);
 
-  console.log(interview?.Stage, interview?.Date, interview?.ApplicationID);
+  console.log(interview);
 
   React.useEffect(() => {
     setDate(interview.Date);
+    setDropdownValue(interview.ApplicationID);
   }, [interview]);
 
   function updateStageorDateorAID(data) {
     update(
       { ...data, 
       InterviewID: interview.InterviewID,
-      Date: date},
+      Date: date,
+      ApplicationID: dropdownValue},
       "http://localhost:3000/api/interviews/details"
     );
   }
-
+console.log(dropdownValue);
   return(
     <MainPaper
       overrideStyles={{
@@ -309,23 +313,30 @@ function Interview({
           date={date}
           setDate={setDate}
         />
-        <SingleForm
-          register={register}
+        <NewEntryDropdown
+          entityName="Application"
+          entityAttributeName="ApplicationID"
+          entityAttributeName2="AName"
+          maxCreateLength={64}
           handleSubmit={handleSubmit}
           actionOnAttribute={updateStageorDateorAID}
-          attributeName={"ApplicationID"}
-          maxLength={64}
-          isLoading={updateIsLoading}
-          additionalStyles={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: "1rem",
-          }}
-          additionalFieldStyles={{
-            marginRight: { xs: "1rem" },
-          }}
+          register={register}
+          fetchAllOptionsURL="http://localhost:3000/api/applications/my-applications"
+          additionalStyles={{ width: "50%" }}
+          doNotShowButton
+          dropdownValue={dropdownValue}
+          setDropdownValue={setDropdownValue}
+          isDropdownObject
         />
+        <Button
+          onClick={handleSubmit(updateStageorDateorAID)}
+          type="submit"
+          variant="outlined"
+          sx={{ mt: 3, mb: 2 }}
+          disabled={updateIsLoading}
+        >
+          Update
+        </Button>
 
         <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
           Contacts Attending
@@ -339,6 +350,8 @@ function Interview({
           )}
           entityName="Contact"
           entityTargetAttribute="ContactID"
+          entityAttribute2="Fname"
+          entityAttribute3="Lname"
           sectionURL="http://localhost:3000/api/contacts/attends"
           fetchAllOptionsURL="http://localhost:3000/api/contacts"
           maxCreateLength={64}
@@ -357,6 +370,8 @@ function Interview({
           )}
           entityName="Job"
           entityTargetAttribute="PositionID"
+          entityAttribute2="CompanyName"
+          entityAttribute3="PositionName"
           sectionURL="http://localhost:3000/api/jobs/mentions"
           fetchAllOptionsURL="http://localhost:3000/api/jobs"
           maxCreateLength={64}
@@ -386,6 +401,8 @@ function InfoSection({
   sectionArray,
   entityName,
   entityTargetAttribute,
+  entityAttribute2,
+  entityAttribute3,
   isMarginRight,
   sectionURL,
   fetchAllOptionsURL,
@@ -463,9 +480,11 @@ function InfoSection({
       )}
       {isContact && (
         <Box display="flex" flexDirection="row" justifyContent="space-between">
-          <NewEntryDropdownLabel
+          <NewEntryDropdown
             entityName={entityName}
             entityAttributeName={entityTargetAttribute}
+            entityAttributeName2={entityAttribute2}
+            entityAttributeName3={entityAttribute3}
             maxCreateLength={maxCreateLength}
             handleCreate={handleCreate}
             createIsLoading={createIsLoading}
@@ -475,6 +494,7 @@ function InfoSection({
             doNotShowButton
             dropdownValue={dropdownValue}
             setDropdownValue={setDropdownValue}
+            isDropdownObject
           />
           <Button
             onClick={handleCreate}
@@ -495,6 +515,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { register, getValues, reset, handleSubmit, setValue } = useForm();
   const [Date, setDate] = React.useState(null);
+  const [dropdownValue, setDropdownValue] = React.useState("");
   const { executeHandle } = useHandleOperation(
     reset,
     setInterviewInfo,
@@ -508,7 +529,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
     const result = await executeHandle(
       "create",
       create,
-      {...data, Date},
+      {...data, Date, ApplicationID: dropdownValue},
       "http://localhost:3000/api/interviews/details"
     );
 
@@ -564,14 +585,23 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
           date={Date}
           setDate={setDate}
         />
-        <SingleForm
-          register={register}
-          handleSubmit={handleSubmit}
-          actionOnAttribute={null}
-          attributeName={"ApplicationID"}
-          isLoading={createIsLoading}
-          maxLength={64}
-        />
+        
+        <NewEntryDropdown
+            entityName="Application"
+            entityAttributeName="ApplicationID"
+            entityAttributeName2="AName"
+            maxCreateLength={64}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            register={register}
+            fetchAllOptionsURL="http://localhost:3000/api/applications/my-applications"
+            additionalStyles={{ width: "50%" }}
+            doNotShowButton
+            dropdownValue={dropdownValue}
+            setDropdownValue={setDropdownValue}
+            isDropdownObject
+          />
+        
         <Button
           onClick={handleSubmit(handleCreate)}
           type="submit"
