@@ -350,7 +350,7 @@ function Application({
           entityID={application.ApplicationID}
           sectionTitle="Documents"
           sectionArray={application?.Documents?.map(
-            (document, index) => document.SUBMIT_WITH
+            (document, index) => document
           )}
           entityName="Document"
           entityTargetAttribute="DocumentID"
@@ -358,7 +358,7 @@ function Application({
           sectionURL="http://localhost:3000/api/applications/submitWith"
           fetchAllOptionsURL="http://localhost:3000/api/documents/my-documents"
           maxCreateLength={64}
-          isCompany
+          isDocument
         />
         <InfoSection
           entityIDName="ApplicationID"
@@ -368,7 +368,7 @@ function Application({
             (job, index) => job.CORRESPONDS_TO
           )}
           entityName="Job"
-          entityTargetAttribute="JOBPositionID"
+          entityTargetAttribute="PositionID"
           entityTargetAttribute2="PositionName"
           entitySecondTargetAttribute="JobPostURL"
           sectionURL="http://localhost:3000/api/applications/corresponding-jobs"
@@ -435,7 +435,7 @@ function InfoSection({
   sectionURL,
   fetchAllOptionsURL,
   additionalStyles,
-  isCompany,
+  isDocument,
   isJob,
 }) {
   const [onUpdateSectionArray, setOnUpdateSectionArray] = React.useState([]);
@@ -463,6 +463,26 @@ function InfoSection({
         [entityTargetAttribute]:
           getValues(entityTargetAttribute) || dropdownValue[entityTargetAttribute],
         [entityIDName]: entityID,
+      },
+      sectionURL,
+      null,
+      false,
+      null,
+      {},
+      false,
+      {...dropdownValue}
+    );
+  }
+
+  async function handleCreateJob() {
+    executeHandle(
+      "create",
+      create,
+      {
+        [entityTargetAttribute]:
+          getValues(entityTargetAttribute) || dropdownValue[entityTargetAttribute],
+        [entityIDName]: entityID,
+        [entitySecondTargetAttribute]: getValues(entitySecondTargetAttribute),
       },
       sectionURL,
       undefined,
@@ -503,14 +523,24 @@ function InfoSection({
       <Typography sx={{ textDecoration: "underline" }}>
         {sectionTitle}
       </Typography>
-      <ChipDisplayer
+      {!isJob && (
+        <ChipDisplayer
+        onUpdateSectionArray={onUpdateSectionArray}
+        attributeName={entityTargetAttribute}
+        secondAttributeName={entityTargetAttribute2}
+        handleDelete={handleDelete}
+      />
+      )}
+      {isJob && (
+        <ChipDisplayer
         onUpdateSectionArray={onUpdateSectionArray}
         attributeName={entityTargetAttribute}
         secondAttributeName={entitySecondTargetAttribute}
         handleDelete={handleDelete}
-      />
-
-{!isCompany && !isJob && (
+        />
+      )}
+      
+{!isDocument && !isJob && (
         <NewEntry
           attributeName={entityTargetAttribute}
           maxCreateLength={maxCreateLength}
@@ -519,7 +549,7 @@ function InfoSection({
           register={register}
         />
       )}
-      {isCompany && (
+      {isDocument && (
         <Box display="flex" flexDirection="row" justifyContent="space-between">
           <NewEntryDropdown
             isDropdownObject
@@ -540,11 +570,12 @@ function InfoSection({
       {isJob && (
         <Box display="flex" flexDirection="row" justifyContent="space-between">
         <NewEntryDropdown
+          isDropdownObject
           entityName={entityName}
           entityAttributeName={entityTargetAttribute}
           entityAttributeName2={entityTargetAttribute2}
           maxCreateLength={maxCreateLength}
-          handleCreate={handleCreate}
+          handleCreate={handleCreateJob}
           createIsLoading={createIsLoading}
           register={register}
           fetchAllOptionsURL={fetchAllOptionsURL}
@@ -556,7 +587,7 @@ function InfoSection({
         <NewEntry
           attributeName={entitySecondTargetAttribute}
           maxCreateLength={maxCreateLength}
-          handleCreate={handleCreate}
+          handleCreate={handleCreateJob}
           createIsLoading={createIsLoading}
           register={register}
         />
