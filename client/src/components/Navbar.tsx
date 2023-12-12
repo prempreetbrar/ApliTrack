@@ -154,13 +154,7 @@ export default function Navbar() {
             Profile
           </MenuItem>
         )}
-        {user && (
-          <MenuItem
-            onClick={() => handleMenuItemClick("/applicants/applicant/offers")}
-          >
-            Offers
-          </MenuItem>
-        )}
+
         {user && (
           <MenuItem
             onClick={() =>
@@ -168,6 +162,22 @@ export default function Navbar() {
             }
           >
             Documents
+          </MenuItem>
+        )}
+        {user && (
+          <MenuItem
+            onClick={() =>
+              handleMenuItemClick("/applicants/applicant/applications")
+            }
+          >
+            Applications
+          </MenuItem>
+        )}
+        {user && (
+          <MenuItem
+            onClick={() => handleMenuItemClick("/applicants/applicant/offers")}
+          >
+            Offers
           </MenuItem>
         )}
         {user && (
@@ -184,13 +194,6 @@ export default function Navbar() {
         </MenuItem>
         <MenuItem onClick={() => handleMenuItemClick("/companies")}>
           Companies
-        </MenuItem>
-        <MenuItem
-          onClick={() =>
-            handleMenuItemClick("/applicants/applicant/applications")
-          }
-        >
-          Applications
         </MenuItem>
       </Menu>
     </Box>
