@@ -4,7 +4,7 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.route("").get(applicationController.getAllApplications);
+router.route("").get(applicationController.addFilter, applicationController.getAllApplications);
 
 router.route("/details")
 .get(authController.checkIfLoggedIn, applicationController.addFilterID, applicationController.getApplication)
@@ -23,6 +23,7 @@ router.route("/URL")
 .delete(authController.checkIfLoggedIn, applicationController.deleteApplicationURL);
 
 router.route("/category")
+.get(authController.checkIfLoggedIn, applicationController.addFilter, applicationController.getAllApplicationCategories)
 .post(authController.checkIfLoggedIn, applicationController.createApplicationCategory)
 .delete(authController.checkIfLoggedIn, applicationController.deleteApplicationCategory);
 
