@@ -34,7 +34,8 @@ router.patch("/experiences/:Experience", applicantController.updateExperience);
 
 router
   .route("/projects")
-  .post(applicantController.createProject, applicantController.deleteProject);
+  .post(applicantController.createProject)
+  .delete(applicantController.deleteProject);
 router.patch("/projects/:Project", applicantController.updateProject);
 
 router
