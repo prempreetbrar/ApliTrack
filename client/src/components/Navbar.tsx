@@ -127,6 +127,7 @@ export default function Navbar() {
                 onClick={handleLoginClick}
                 variant="contained"
                 disableElevation
+                sx={{ display: { xs: "none", sm: "block" } }}
               >
                 Login
               </Button>
@@ -135,6 +136,7 @@ export default function Navbar() {
                 onClick={handleSignupClick}
                 variant="contained"
                 disableElevation
+                sx={{ visibility: { xs: "hidden", sm: "visible" } }}
               >
                 Sign Up
               </Button>
