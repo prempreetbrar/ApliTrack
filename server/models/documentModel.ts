@@ -1,6 +1,6 @@
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../server");
-const { Applicant } = require("./applicantModel"); 
+const { Applicant } = require("./applicantModel");
 
 const Document = sequelize.define(
   "DOCUMENT",
@@ -14,12 +14,12 @@ const Document = sequelize.define(
     ApplicantUsername: {
       type: DataTypes.STRING(32),
       allowNull: false,
-      //unique: 'uniqueTag',
+      unique: "uniqueTag",
     },
     DocFileName: {
       type: DataTypes.STRING(32),
       allowNull: false,
-      unique: 'uniqueTag',
+      unique: "uniqueTag",
     },
     DocType: {
       type: DataTypes.STRING(32),
@@ -33,17 +33,24 @@ const Document = sequelize.define(
   {
     initialAutoIncrement: 1,
     timestamps: false,
+    uniqueKeys: {
+      uniqueTag: {
+        fields: ["ApplicantUsername", "DocFileName"],
+      },
+    },
   }
 );
 
 //Applicant has a one-to-many relationship with Document
 Applicant.hasMany(Document, {
-    foreignKey: 'ApplicantUsername',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+  as: "Documents",
+  foreignKey: "ApplicantUsername",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Document.belongsTo(Applicant, {
-  foreignKey: 'ApplicantUsername',
+  as: "Applicant",
+  foreignKey: "ApplicantUsername",
 });
 
 sequelize.sync();

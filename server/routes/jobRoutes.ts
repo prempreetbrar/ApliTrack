@@ -1,22 +1,14 @@
 const express = require("express");
-const jobController = require("../controllers/jobController");
-const authController = require("../controllers/authController");
-const fs = require("fs");
-
-const router = express.Router();
 const multer = require("multer");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads/jobPosts");
-  },
-  filename: function (req, file, cb) {
-    fs.readdir("./uploads/jobPosts", (err, files) => {
-      cb(null, files.length + 1 + "-" + file.originalname);
-    });
-  },
+const jobController = require("../controllers/jobController");
+const authController = require("../controllers/authController");
+const controllerFactory = require("../controllers/controllerFactory");
+
+const router = express.Router();
+const upload = multer({
+  storage: controllerFactory.uploadStorage("./uploads/jobPosts"),
 });
-const upload = multer({ storage: storage });
 
 router
   .route("")
@@ -61,5 +53,10 @@ router
 router
   .route("/company-jobs")
   .get(jobController.addFilterCompany, jobController.getAllCompanyJobs);
+
+//for many-to-many relationships
+router.route("/mentions")
+.post(jobController.createJobMentionsInterview)
+.delete(jobController.deleteJobMentionsInterview);
 
 module.exports = router;

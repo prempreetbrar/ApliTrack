@@ -20,6 +20,6 @@ router
 
   router
   .route("/my-interviews")
-  .get(interviewController.filterApplicant, interviewController.getAllApplicantInterviews);
+  .get(interviewController.addFilter, interviewController.getAllApplicantInterviews);
 
 module.exports = router;

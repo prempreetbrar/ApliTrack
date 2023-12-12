@@ -4,10 +4,16 @@ const contactController = require("../controllers/contactController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
+const offerRouter = require("./offerRoutes");
 const interviewRouter = require("./interviewRoutes");
 const referralRouter = require("./referralRoutes");
+const documentRouter = require("./documentRoutes");
 
 router.post("/get-started", applicantController.createApplicant);
+router.use("/offers", offerRouter);
+router.use("/interviews", interviewRouter);
+router.use("/referrals", referralRouter);
+router.use("/documents", documentRouter);
 
 router.use(authController.checkIfLoggedIn);
 
@@ -67,8 +73,5 @@ router
   .post(applicantController.createApplicantTracksJob)
   .delete(applicantController.deleteApplicantTracksJob)
   .patch(applicantController.updateApplicantTracksJob);
-
-router.use("/interviews", interviewRouter);
-router.use("/referrals", referralRouter);
 
 module.exports = router;

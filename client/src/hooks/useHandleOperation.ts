@@ -13,13 +13,10 @@ export default function useHandleOperation(
     indexOrKey = 0,
     isObject,
     attributeNameForMappingObject,
-    config = {},
-    disableSnackbar
+    config,
+    disableSnackbar,
+    additionalAttributes
   ) => {
-    console.log(body, url, config);
-    if(config == null) {
-      return false;
-    }
     const data = await action(body, url, config);
     if (operation === "create" && data) {
       const tableName = Object.keys(data)[0];
@@ -31,7 +28,11 @@ export default function useHandleOperation(
 
         setStateObjectOrArray(newStateObject);
       } else {
-        setStateObjectOrArray([...stateObjectOrArray, data[tableName]]);
+        let newItem = data[tableName];
+        if (additionalAttributes) {
+          newItem = { ...newItem, ...additionalAttributes };
+        }
+        setStateObjectOrArray([...stateObjectOrArray, newItem]);
       }
 
       if (reset) {

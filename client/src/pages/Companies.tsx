@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -113,7 +114,8 @@ export default function Companies() {
       false,
       null,
       {},
-      false
+      false,
+      null
     );
 
     setSavedEarliestApplicationDeadline(mostRecentEarliestApplicationDeadline);
@@ -132,7 +134,8 @@ export default function Companies() {
       false,
       null,
       {},
-      false
+      false,
+      null
     );
   }
 
@@ -439,7 +442,8 @@ function Company({
       false,
       null,
       {},
-      false
+      false,
+      null
     );
   }
 
@@ -682,7 +686,7 @@ function Job({
       }
     );
     if (success && JobPostFile && JobPostFile !== "/") {
-      setCurrentlyUploadedJobPostFile(JobPostFile.name);
+      setCurrentlyUploadedJobPostFile(success.job.JobPostFile);
     }
   }
 
@@ -699,7 +703,8 @@ function Job({
       false,
       undefined,
       {},
-      false
+      false,
+      null
     );
   }
 
@@ -716,7 +721,8 @@ function Job({
       false,
       undefined,
       {},
-      false
+      false,
+      null
     );
   }
 
@@ -772,7 +778,8 @@ function Job({
       false,
       null,
       {},
-      false
+      false,
+      null
     );
     if (success) {
       setValue("Qualification", "");
@@ -792,7 +799,8 @@ function Job({
       false,
       null,
       {},
-      false
+      false,
+      null
     );
     if (success) {
       setValue("Responsibility", "");
@@ -812,7 +820,8 @@ function Job({
         true,
         "PositionID",
         {},
-        false
+        false,
+        null
       );
     }
     if (!event.target.checked) {
@@ -825,7 +834,8 @@ function Job({
         true,
         null,
         {},
-        false
+        false,
+        null
       );
       setStillTracks(false);
     }
@@ -1185,7 +1195,8 @@ function NewJobForm({ companyName, jobs, setJobs }) {
           "Content-Type": "multipart/form-data",
         },
       },
-      false
+      false,
+      null
     );
 
     /*
@@ -1328,7 +1339,8 @@ function NewCompanyForm({ companies, setCompanies }) {
       false,
       null,
       {},
-      false
+      false,
+      null
     );
     if (result) {
       setValue("CompanyName", "");

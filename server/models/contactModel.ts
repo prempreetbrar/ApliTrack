@@ -152,11 +152,7 @@ const ContactWorksAtCompany = sequelize.define(
 // definition of many-to-many relationship b/t Contact and Company
 
 
-/*
-  If any changes occurred to the model, sequelize.sync just ensures that they are
-  applied to the database.
-*/
-sequelize.sync();
+
 const {Company} = require("./companyModel");
 const { Interview } = require("./interviewModel");
 
@@ -202,10 +198,12 @@ const ContactAttendsInterview = sequelize.define(
 );
 
 Contact.belongsToMany(Interview, {
+  as: "Interviews",
   through: ContactAttendsInterview,
   foreignKey: "ContactID",
 });
 Interview.belongsToMany(Contact, {
+  as: "Contacts",
   through: ContactAttendsInterview,
   foreignKey: "InterviewID",
 });
@@ -214,3 +212,9 @@ exports.ContactEmail = ContactEmail;
 exports.ContactPhone = ContactPhone;
 exports.ContactWorksAtCompany = ContactWorksAtCompany;
 exports.ContactAttendsInterview = ContactAttendsInterview;
+
+/*
+  If any changes occurred to the model, sequelize.sync just ensures that they are
+  applied to the database.
+*/
+sequelize.sync();

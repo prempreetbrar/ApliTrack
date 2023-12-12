@@ -1,3 +1,9 @@
+const path = require("path");
+const multer = require("multer");
+const fs = require("fs");
+const util = require("util");
+const readdir = util.promisify(fs.readdir);
+
 const errorHandling = require("../utils/errorHandling");
 const APIFeatures = require("../utils/apiFeatures");
 
@@ -60,7 +66,6 @@ exports.getAll = (Model) => {
       request.body.order = [];
     }
 
-    console.log(request.body.order);
     const documents = await Model.findAll({
       where: request.body.filter,
       order: request.body.order,
@@ -139,6 +144,8 @@ exports.updateOneWithKey = (Model) => {
     */
     const pkAttributes = Model.primaryKeyAttributes;
     const uniqueAttributes = getUniqueAttributes(Model);
+    console.log("Key Attribtues", pkAttributes, uniqueAttributes);
+    console.log("Body and Params", request.body, request.params);
 
     const keys = {};
     const newValues = {};
@@ -238,3 +245,50 @@ function getUniqueAttributes(Model) {
 
   return uniqueAttributes;
 }
+
+exports.uploadStorage = (destination) => {
+  return multer.diskStorage({
+    destination,
+    filename: function (req, file, cb) {
+      fs.readdir(destination, (err, files) => {
+        const fileName =
+          file.originalname.split(".")[0] +
+          " - [" +
+          (files.length + 1) +
+          "]." +
+          file.originalname.split(".")[1];
+        cb(null, fileName);
+      });
+    },
+  });
+};
+
+exports.uploadFile = (directoryWhereFilesStored, nameOfFileColumn) => {
+  const controllerFunction = errorHandling.catchAsync(
+    async (request, response, next) => {
+      // Check if a file was uploaded
+      if (!request.file) {
+        next();
+        return;
+      }
+
+      let fileName = request.file.originalname;
+      // // Read files asynchronously using Promise
+      const files = await readdir(directoryWhereFilesStored);
+
+      if (files) {
+        // Update fileName with the special name
+        fileName =
+          fileName.split(".")[0] +
+          " - [" +
+          files.length +
+          "]." +
+          fileName.split(".")[1];
+      }
+
+      request.body[nameOfFileColumn] = fileName;
+      next();
+    }
+  );
+  return controllerFunction;
+};

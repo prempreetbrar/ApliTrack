@@ -21,7 +21,7 @@ export default function SingleDate({
   allowUnauthenticated,
 }) {
   const { user } = useAuthContext();
-
+console.log(date)
   return (
     <Box sx={{ ...additionalStyles }}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>

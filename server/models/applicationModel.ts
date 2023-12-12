@@ -46,12 +46,14 @@ const Application = sequelize.define(
 
 //Applicant has a one-to-many relationship with Application
 Applicant.hasMany(Application, {
-    foreignKey: "ApplicantUsername",
+  as: "Applications",  
+  foreignKey: "ApplicantUsername",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
 Application.belongsTo(Applicant, {
-    foreignKey: "ApplicantUsername",
+  as: "Applicant",  
+  foreignKey: "ApplicantUsername",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
