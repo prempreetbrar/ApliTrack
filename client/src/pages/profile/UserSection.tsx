@@ -35,12 +35,15 @@ export default function UserSection({ applicantInfo }) {
     applicantInfo?.User?.Lname,
   ]);
 
-  function updateEducation(data) {
-    update(data, "http://localhost:3000/api/applicants/education");
-  }
-
-  function updateName(data) {
-    update(data, "http://localhost:3000/api/users/");
+  function updateUser(data) {
+    if ((data.Fname || data.Lname) && data.Education) {
+      update(data, "http://localhost:3000/api/users/");
+      update(data, "http://localhost:3000/api/applicants/education", {}, false);
+    } else if (data.Education) {
+      update(data, "http://localhost:3000/api/applicants/education", {});
+    } else if (data.Fname || data.Lname) {
+      update(data, "http://localhost:3000/api/users/");
+    }
   }
 
   async function updatePassword(data) {
@@ -81,7 +84,6 @@ export default function UserSection({ applicantInfo }) {
           <NameUpdater
             register={register}
             handleSubmit={handleSubmit}
-            updateName={updateName}
             updateIsLoading={updateIsLoading}
             additionalLnameStyles={{ marginRight: { xs: "0", sm: "1rem" } }}
           />
@@ -96,7 +98,7 @@ export default function UserSection({ applicantInfo }) {
             InputLabelProps={{ shrink: true }}
           />
           <Button
-            onClick={handleSubmit(updateEducation)}
+            onClick={handleSubmit(updateUser)}
             type="submit"
             variant="outlined"
             sx={{ mt: 3, mb: 2 }}
