@@ -14,7 +14,8 @@ export default function useHandleOperation(
     isObject,
     attributeNameForMappingObject,
     config,
-    disableSnackbar
+    disableSnackbar,
+    additionalAttributes
   ) => {
     const data = await action(body, url, config);
     if (operation === "create" && data) {
@@ -27,7 +28,11 @@ export default function useHandleOperation(
 
         setStateObjectOrArray(newStateObject);
       } else {
-        setStateObjectOrArray([...stateObjectOrArray, data[tableName]]);
+        let newItem = data[tableName];
+        if (additionalAttributes) {
+          newItem = { ...newItem, ...additionalAttributes };
+        }
+        setStateObjectOrArray([...stateObjectOrArray, newItem]);
       }
 
       if (reset) {

@@ -1,5 +1,4 @@
-const path = require("path");
-const fs = require("fs");
+import { Op } from "sequelize";
 
 const factory = require("./controllerFactory");
 const Offer = require("../models/offerModel");
@@ -7,7 +6,7 @@ const errorHandling = require("../utils/errorHandling");
 
 exports.createOffer = factory.createOne(Offer.Offer);
 exports.deleteOffer = factory.deleteInstance(Offer.Offer);
-exports.updateOffer = factory.updateOneWithKey(Offer.Offer);
+exports.updateOffer = factory.updateInstance(Offer.Offer);
 
 exports.getOffer = factory.getOne(Offer.Offer);
 exports.getAllOffers = factory.getAll(Offer.Offer);
@@ -32,50 +31,104 @@ exports.filterApplicant = errorHandling.catchAsync(
   }
 );
 
-exports.uploadFile = errorHandling.catchAsync(
+exports.addSearch = errorHandling.catchAsync(
   async (request, response, next) => {
-    // Check if a file was uploaded
-    if (!request.file) {
-      next();
-      return;
+    request.body.filter = {};
+    request.body.order = [];
+
+    if (
+      request.query.LowestCompensation &&
+      request.query.HighestCompensation &&
+      request.query.LowestCompensation !== "" &&
+      request.query.HighestCompensation !== ""
+    ) {
+      request.body.filter.Compensation = {
+        [Op.between]: [
+          request.query.LowestCompensation,
+          request.query.HighestCompensation,
+        ],
+      };
+    } else if (
+      request.query.LowestCompensation &&
+      request.query.LowestCompensation !== ""
+    ) {
+      request.body.filter.Compensation = {
+        [Op.gte]: request.query.LowestCompensation,
+      };
+    } else if (
+      request.query.HighestCompensation &&
+      request.query.HighestCompensation !== ""
+    ) {
+      request.body.filter.Compensation = {
+        [Op.lte]: request.query.HighestCompensation,
+      };
     }
 
-    // Write the file to the upload directory
-    // Resolve the absolute path to the uploads directory
-    const uploadsPath = path.resolve(__dirname, "../uploads/offers");
-
-    // Ensure the directory exists, create it if not
-    if (!fs.existsSync(uploadsPath)) {
-      fs.mkdirSync(uploadsPath, { recursive: true });
+    if (
+      request.query.EarliestResponseDeadline &&
+      request.query.LatestResponseDeadline &&
+      request.query.EarliestResponseDeadline !== "MM/DD/YYYY" &&
+      request.query.LatestResponseDeadline !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.ResponseDeadline = {
+        [Op.between]: [
+          request.query.EarliestResponseDeadline,
+          request.query.LatestResponseDeadline,
+        ],
+      };
+    } else if (
+      request.query.EarliestResponseDeadline &&
+      request.query.EarliestResponseDeadline !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.ResponseDeadline = {
+        [Op.gte]: request.query.EarliestResponseDeadline,
+      };
+    } else if (
+      request.query.LatestResponseDeadline &&
+      request.query.LatestResponseDeadline !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.ResponseDeadline = {
+        [Op.lte]: request.query.LatestResponseDeadline,
+      };
     }
-    // Construct the file path
-    let fileName = request.file.originalname;
-    fs.readdir("../uploads/offers", (err, files) => {
-      if (files) {
-        fileName =
-          request.file.originalname.split(".")[0] +
-          " - " +
-          "[" +
-          files.length +
-          1 +
-          "]." +
-          request.file.originalname.split(".")[1];
-      }
-    });
 
-    const filePath = path.join(uploadsPath, fileName);
+    if (
+      request.query.EarliestStartDate &&
+      request.query.LatestStartDate &&
+      request.query.EarliestStartDate !== "MM/DD/YYYY" &&
+      request.query.LatestStartDate !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.StartDate = {
+        [Op.between]: [
+          request.query.EarliestStartDate,
+          request.query.LatestStartDate,
+        ],
+      };
+    } else if (
+      request.query.EarliestStartDate &&
+      request.query.EarliestStartDate !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.StartDate = {
+        [Op.gte]: request.query.EarliestStartDate,
+      };
+    } else if (
+      request.query.LatestStartDate &&
+      request.query.LatestStartDate !== "MM/DD/YYYY"
+    ) {
+      request.body.filter.StartDate = {
+        [Op.lte]: request.query.LatestStartDate,
+      };
+    }
 
-    const readStream = fs.createReadStream(request.file.path);
-    const writeStream = fs.createWriteStream(filePath);
-    readStream.pipe(writeStream);
+    if (request.query.Sort) {
+      request.body.order.push(request.query.Sort.split("-"));
+    }
 
-    writeStream.on("finish", () => {
-      console.log("File written successfully");
-      fs.unlinkSync(request.file.path);
-    });
-
-    console.log("In controller", request.body, request.params);
-    request.body.OfferFileName = fileName;
     next();
   }
+);
+
+exports.uploadOfferFile = factory.uploadFile(
+  "./uploads/offers",
+  "OfferFileName"
 );

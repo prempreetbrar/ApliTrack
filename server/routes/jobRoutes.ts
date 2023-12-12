@@ -1,23 +1,14 @@
 const express = require("express");
-const jobController = require("../controllers/jobController");
-const authController = require("../controllers/authController");
-const fs = require("fs");
-
-const router = express.Router();
 const multer = require("multer");
 
-const storage = multer.diskStorage({
-  destination: "./uploads/jobPosts",
-  filename: function (req, file, cb) {
-    fs.readdir("./uploads/jobPosts", (err, files) => {
-      if (files) {
-        cb(null, file.originalname + " - " + "[" + files.length + 1 + "]");
-      }
-      cb(null, file.originalname);
-    });
-  },
+const jobController = require("../controllers/jobController");
+const authController = require("../controllers/authController");
+const controllerFactory = require("../controllers/controllerFactory");
+
+const router = express.Router();
+const upload = multer({
+  storage: controllerFactory.uploadStorage("./uploads/jobPosts"),
 });
-const upload = multer({ storage: storage });
 
 router
   .route("")

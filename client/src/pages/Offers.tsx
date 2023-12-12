@@ -19,8 +19,12 @@ import {
   Input,
   Tooltip,
   Button,
+  FormControl,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import SearchIcon from "@mui/icons-material/Search";
 
 import { DELETE_ONLY } from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
@@ -42,14 +46,12 @@ export default function Offers() {
     React.useState(false);
   const [selectedIndexToDelete, setSelectedIndexToDelete] =
     React.useState(null);
-  const [onlyShowContactsIKnow, setOnlyShowContactsIKnow] =
-    React.useState(false);
-  const [
-    mostRecentEarliestLastContactDate,
-    setMostRecentEarliestLastContactDate,
-  ] = React.useState(null);
-  const [mostRecentLatestLastContactDate, setMostRecentLatestLastContactDate] =
+  const [EarliestResponseDeadline, setEarliestResponseDeadline] =
     React.useState(null);
+  const [LatestResponseDeadline, setLatestResponseDeadline] =
+    React.useState(null);
+  const [EarliestStartDate, setEarliestStartDate] = React.useState(null);
+  const [LatestStartDate, setLatestStartDate] = React.useState(null);
 
   const handleOpenDeleteConfirmationDialog = (index) => {
     setSelectedIndexToDelete(index);
@@ -68,14 +70,15 @@ export default function Offers() {
       "delete",
       deleteInstance,
       {
-        OfferFileName: offers[index].OfferFileName,
+        OfferID: offers[index].OfferID,
       },
       "http://localhost:3000/api/applicants/offers",
       index,
       false,
       null,
       {},
-      false
+      false,
+      null
     );
   }
 
@@ -83,46 +86,255 @@ export default function Offers() {
     executeHandle(
       "get",
       get,
-      data,
-      "http://localhost:3000/api/contacts",
+      {
+        ...data,
+        EarliestResponseDeadline,
+        LatestResponseDeadline,
+        EarliestStartDate,
+        LatestStartDate,
+      },
+      "http://localhost:3000/api/applicants/offers",
       null,
       false,
       null,
       {},
-      false
+      false,
+      null
     );
   }
 
-  /*
-    Get the applicant's info upon loading the page (and anytime
-    the user themselves changes, for example if someone goes into
-    the backend and changes a column themselves).  
-    )
-  */
   React.useEffect(() => {
-    const fetchOffers = async () => {
-      if (user) {
-        const response = await get(
-          {},
-          "http://localhost:3000/api/applicants/offers"
-        );
+    if (user) {
+      executeHandle(
+        "get",
+        get,
+        {
+          Sort: "ResponseDeadline-ASC",
+        },
+        "http://localhost:3000/api/applicants/offers",
+        null,
+        false,
+        null,
+        {},
+        true,
+        null
+      );
+    }
 
-        setOffers(response?.offer);
-      }
-    };
-
-    fetchOffers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   console.log(offers);
 
   return (
-    <MainBox>
-      {offers?.map((offer, index) => (
-        <Offer key={index} offer={offer} index={index} />
-      ))}
-    </MainBox>
+    <>
+      {user && (
+        <MainBox>
+          <form
+            onSubmit={handleSubmit(handleGet)}
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <Box
+              display="flex"
+              sx={{
+                flexDirection: { xs: "column", xl: "row" },
+              }}
+              alignItems="center"
+              marginRight="2.5rem"
+            >
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="Compensation-ASC"
+                  name="radio-buttons-group"
+                  sx={{ display: "flex" }}
+                  row
+                >
+                  <FormControlLabel
+                    value="Compensation-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Compensation Ascending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="Compensation-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Compensation Descending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="ResponseDeadline-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Response Deadline Ascending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="ResponseDeadline-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Response Deadline Descending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="StartDate-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Start Date Ascending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="StartDate-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Start Date Descending"
+                    labelPlacement="start"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              marginTop="1rem"
+              marginBottom="1rem"
+              sx={{
+                flexDirection: { xs: "column", xl: "row" },
+              }}
+            >
+              <Typography
+                variant="h3"
+                sx={{ fontSize: "1rem", marginRight: "1rem", flexShrink: 0 }}
+              >
+                Search by:
+              </Typography>
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                additionalStyles={{
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                attributeName={"LowestCompensation"}
+                allowUnauthenticated
+              />
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                additionalStyles={{
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                attributeName={"HighestCompensation"}
+                allowUnauthenticated
+              />
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"EarliestResponseDeadline"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={EarliestResponseDeadline}
+                setDate={setEarliestResponseDeadline}
+                allowUnauthenticated
+              />
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"LatestResponseDeadline"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={LatestResponseDeadline}
+                setDate={setLatestResponseDeadline}
+                allowUnauthenticated
+              />
+
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"EarliestStartDate"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={EarliestStartDate}
+                setDate={setEarliestStartDate}
+              />
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"LatestStartDate"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={LatestStartDate}
+                setDate={setLatestStartDate}
+              />
+              <IconButton type="submit">
+                <SearchIcon color="primary" />
+              </IconButton>
+            </Box>
+          </form>
+          {offers?.map((offer, index) => (
+            <Offer
+              key={index}
+              offer={offer}
+              index={index}
+              handleOpenDeleteConfirmationDialog={
+                handleOpenDeleteConfirmationDialog
+              }
+            />
+          ))}
+          <NewOfferForm offers={offers} setOffers={setOffers} />
+          {deleteConfirmationDialogOpen && (
+            <DeleteConfirmationDialog
+              open={deleteConfirmationDialogOpen}
+              handleClose={handleCloseDeleteConfirmationDialog}
+              handleConfirm={() => handleDelete(selectedIndexToDelete)}
+              itemName={
+                "your Offer from " +
+                offers[selectedIndexToDelete]?.Job.CompanyName +
+                " for the " +
+                offers[selectedIndexToDelete]?.Job.PositionName +
+                ` [${offers[selectedIndexToDelete]?.Job.PositionID}] ` +
+                " Position"
+              }
+            />
+          )}
+        </MainBox>
+      )}
+    </>
   );
 }
 
@@ -150,8 +362,6 @@ function Offer({
   const [currentlyUploadedFileName, setCurrentlyUploadedFileName] =
     React.useState(offer?.OfferFileName?.split("/")?.pop());
 
-  console.log(offer);
-
   React.useEffect(() => {
     /*
         We have forms that the user can change. However, we want to prepopulate them
@@ -176,12 +386,13 @@ function Offer({
 
     const success = await update(
       {
+        ...newData,
+        OfferID: offer.OfferID,
         PositionID: offerJob.PositionID,
         ResponseDeadline: responseDeadline,
         StartDate: startDate,
-        ...newData,
       },
-      `http://localhost:3000/api/applicants/offers//${offer.OfferFileName}`,
+      `http://localhost:3000/api/applicants/offers`,
       {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -189,7 +400,7 @@ function Offer({
       }
     );
     if (success && OfferFileName && OfferFileName !== "/") {
-      setCurrentlyUploadedFileName(OfferFileName.name);
+      setCurrentlyUploadedFileName(success.offer.OfferFileName);
     }
   }
 
@@ -203,17 +414,52 @@ function Offer({
       }}
       paperKey={index}
     >
-      <Box display="flex" flexDirection="row" alignItems="center">
-        <Typography variant="h2">Offer</Typography>
-        <EmojiEventsIcon
-          sx={{ width: "4rem", height: "4rem", marginLeft: "2rem" }}
-        />
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+        width="100%"
+      >
+        <Box display="flex">
+          <Typography variant="h2">Offer</Typography>
+          <EmojiEventsIcon
+            sx={{ width: "4rem", height: "4rem", marginLeft: "2rem" }}
+          />
+        </Box>
+        {user?.data?.user?.AdminFlag &&
+          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+            <IconButton
+              sx={{}}
+              aria-label="delete"
+              size="large"
+              onClick={() => handleOpenDeleteConfirmationDialog(index)}
+            >
+              <Delete sx={{ width: "2rem", height: "2rem" }} />
+            </IconButton>
+          )}
       </Box>
 
-      <form onSubmit={handleSubmit(updateOffer)}>
-        <Box display="flex" marginTop="2rem" width="100%">
+      <form
+        onSubmit={handleSubmit(updateOffer)}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Box
+          display="flex"
+          marginTop="2rem"
+          width="100%"
+          sx={{ flexDirection: { xs: "column", md: "row" } }}
+        >
           <Box display="flex" flexDirection="column">
-            <Box display="flex">
+            <Box
+              display="flex"
+              sx={{ flexDirection: { xs: "column", md: "row" } }}
+            >
               <SingleDate
                 handleSubmit={handleSubmit}
                 attributeName={"ResponseDeadline"}
@@ -223,12 +469,13 @@ function Offer({
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
-                  width: "50%",
+                  width: { xs: "100%", md: "50%" },
                 }}
                 date={responseDeadline || null}
                 setDate={setResponseDeadline}
                 additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
+                  marginRight: { xs: "0rem", md: "1rem" },
+                  width: "100%",
                 }}
               />
               <SingleDate
@@ -240,18 +487,22 @@ function Offer({
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
-                  width: "50%",
+                  width: { xs: "100%", md: "50%" },
                 }}
                 date={startDate || null}
                 setDate={setStartDate}
                 additionalFieldStyles={{
-                  marginRight: { xs: "0rem" },
+                  marginRight: { xs: "0rem", md: "0rem" },
+                  marginTop: { xs: "1rem", md: 0 },
                   width: "100%",
                 }}
               />
             </Box>
 
-            <Box display="flex" flexDirection="row">
+            <Box
+              display="flex"
+              sx={{ flexDirection: { xs: "column", md: "row" } }}
+            >
               <SingleForm
                 register={register}
                 handleSubmit={handleSubmit}
@@ -264,10 +515,10 @@ function Offer({
                   alignItems: "center",
                   marginTop: { xs: "1rem" },
                   marginBottom: { xs: "0rem" },
-                  width: "50%",
+                  width: { xs: "100%", md: "50%" },
                 }}
                 additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
+                  marginRight: { xs: "0rem", md: "1rem" },
                   width: "100%",
                 }}
               />
@@ -284,8 +535,7 @@ function Offer({
                 setDropdownValue={setOfferJob}
                 isDropdownObject
                 additionalStyles={{
-                  minWidth: "50%",
-                  maxWidth: "50%",
+                  width: { xs: "100%", md: "50%" },
                   marginTop: { xs: "1rem" },
                   marginBottom: { xs: "0rem" },
                 }}
@@ -305,7 +555,7 @@ function Offer({
                 alignItems: "center",
                 marginTop: { xs: "1rem" },
                 marginBottom: { xs: "0rem" },
-                width: "50%",
+                width: { xs: "100%" },
               }}
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
@@ -315,13 +565,20 @@ function Offer({
             />
           </Box>
 
-          <Box display="flex" justifyContent="center" marginTop="2rem">
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            sx={{ marginTop: { xs: "2rem", md: "-1.5rem" } }}
+            marginLeft="2rem"
+            flexGrow="1"
+          >
             <Typography>Job Posting</Typography>
             {currentlyUploadedFileName && (
               <iframe
                 src={`http://localhost:3000/uploads/offers/${currentlyUploadedFileName}`}
                 title={currentlyUploadedFileName}
-                width="fit-content"
+                width="100%"
                 style={{
                   height: "20rem",
                 }}
@@ -362,28 +619,11 @@ function Offer({
           </Box>
         </Box>
 
-        {user?.data?.user?.AdminFlag &&
-          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
-            <IconButton
-              sx={{
-                alignSelf: { xs: "flex-end", md: "flex-start" },
-                order: { xs: 1, md: 3 },
-              }}
-              aria-label="delete"
-              size="large"
-              onClick={() => handleOpenDeleteConfirmationDialog(index)}
-            >
-              <Delete sx={{ width: "2rem", height: "2rem" }} />
-            </IconButton>
-          )}
-
         {user && (
           <Button
             sx={{
               marginTop: "1rem",
-              gridArea: "Update",
               width: "min-content",
-              justifySelf: "center",
             }}
             type="submit"
             variant="outlined"
@@ -393,5 +633,254 @@ function Offer({
         )}
       </form>
     </MainPaper>
+  );
+}
+
+function NewOfferForm({ offers, setOffers }) {
+  const { register, handleSubmit, setValue, reset, getValues } = useForm();
+  const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { executeHandle } = useHandleOperation(reset, setOffers, offers);
+  const { user } = useAuthContext();
+
+  const [responseDeadline, setResponseDeadline] = React.useState(null);
+  const [offerJob, setOfferJob] = React.useState(null);
+  const [startDate, setStartDate] = React.useState(null);
+
+  React.useEffect(() => {
+    /*
+        We have forms that the user can change. However, we want to prepopulate them
+        with their current values from the database.
+      */
+    setValue("Compensation", "");
+    setValue("Notes", "");
+    setResponseDeadline(null);
+    setStartDate(null);
+    setOfferJob(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function createOffer(data) {
+    const OfferFileName = data?.OfferFileName?.[0];
+    const newData = { ...data };
+    delete newData.OfferFileName;
+    if (OfferFileName !== "/") {
+      newData.OfferFileName = OfferFileName;
+    }
+
+    const success = await executeHandle(
+      "create",
+      create,
+      {
+        ...newData,
+        PositionID: offerJob.PositionID,
+        ResponseDeadline: responseDeadline,
+        StartDate: startDate,
+      },
+      `http://localhost:3000/api/applicants/offers`,
+      null,
+      false,
+      null,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+      false,
+      {
+        Job: {
+          PositionID: offerJob.PositionID,
+          CompanyName: offerJob.CompanyName,
+          PositionName: offerJob.PositionName,
+        },
+      }
+    );
+    if (success) {
+      setValue("Compensation", "");
+      setValue("Notes", "");
+      setResponseDeadline(null);
+      setStartDate(null);
+      setOfferJob(null);
+    }
+  }
+
+  return (
+    <>
+      {user && (
+        <MainPaper
+          overrideStyles={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "column" },
+            justifyContent: "center",
+            alignItems: { xs: "center", md: "flex-start" },
+          }}
+        >
+          <Box
+            display="flex"
+            flexDirection={{ xs: "column", md: "row" }}
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <Typography variant="h3">Create Offer</Typography>
+
+            <form
+              onSubmit={handleSubmit(createOffer)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Box
+                display="flex"
+                marginTop="2rem"
+                width="100%"
+                sx={{ flexDirection: { xs: "column", md: "row" } }}
+              >
+                <Box display="flex" flexDirection="column">
+                  <Box
+                    display="flex"
+                    sx={{ flexDirection: { xs: "column", md: "row" } }}
+                  >
+                    <SingleDate
+                      handleSubmit={handleSubmit}
+                      attributeName={"ResponseDeadline"}
+                      maxLength={64}
+                      isLoading={createIsLoading}
+                      additionalStyles={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        width: { xs: "100%", md: "50%" },
+                      }}
+                      date={responseDeadline || null}
+                      setDate={setResponseDeadline}
+                      additionalFieldStyles={{
+                        marginRight: { xs: "0rem", md: "1rem" },
+                        width: "100%",
+                      }}
+                    />
+                    <SingleDate
+                      handleSubmit={handleSubmit}
+                      attributeName={"StartDate"}
+                      maxLength={64}
+                      isLoading={createIsLoading}
+                      additionalStyles={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        width: { xs: "100%", md: "50%" },
+                      }}
+                      date={startDate || null}
+                      setDate={setStartDate}
+                      additionalFieldStyles={{
+                        marginRight: { xs: "0rem", md: "0rem" },
+                        marginTop: { xs: "1rem", md: 0 },
+                        width: "100%",
+                      }}
+                    />
+                  </Box>
+
+                  <Box
+                    display="flex"
+                    sx={{ flexDirection: { xs: "column", md: "row" } }}
+                  >
+                    <SingleForm
+                      register={register}
+                      handleSubmit={handleSubmit}
+                      attributeName={"Compensation"}
+                      maxLength={64}
+                      isLoading={createIsLoading}
+                      additionalStyles={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginTop: { xs: "1rem" },
+                        marginBottom: { xs: "0rem" },
+                        width: { xs: "100%", md: "50%" },
+                      }}
+                      additionalFieldStyles={{
+                        marginRight: { xs: "0rem", md: "1rem" },
+                        width: "100%",
+                      }}
+                    />
+                    <NewEntryDropdown
+                      entityName="Job"
+                      entityAttributeName="CompanyName"
+                      entityAttributeName2="PositionName"
+                      entityAttributeName3="PositionID"
+                      doNotShowButton
+                      createIsLoading={createIsLoading}
+                      register={register}
+                      fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
+                      dropdownValue={offerJob}
+                      setDropdownValue={setOfferJob}
+                      isDropdownObject
+                      additionalStyles={{
+                        width: { xs: "100%", md: "50%" },
+                        marginTop: { xs: "1rem" },
+                        marginBottom: { xs: "0rem" },
+                      }}
+                    />
+                  </Box>
+
+                  <SingleForm
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    attributeName={"Notes"}
+                    maxLength={64}
+                    isLoading={createIsLoading}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignSelf: "center",
+                      alignItems: "center",
+                      marginTop: { xs: "1rem" },
+                      marginBottom: { xs: "0rem" },
+                      width: { xs: "100%" },
+                    }}
+                    additionalFieldStyles={{
+                      marginRight: { xs: "1rem" },
+                      width: "100%",
+                    }}
+                    isTextArea
+                  />
+                </Box>
+
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  sx={{ marginTop: { xs: "2rem", md: "-1.5rem" } }}
+                  marginLeft="2rem"
+                  flexGrow="1"
+                >
+                  <Typography>Job Posting</Typography>
+
+                  <Input
+                    sx={{ marginTop: "1rem" }}
+                    {...register("OfferFileName")}
+                    type="file"
+                    name="OfferFileName"
+                  />
+                </Box>
+              </Box>
+
+              <Button
+                sx={{
+                  marginTop: "1rem",
+                  width: "min-content",
+                }}
+                type="submit"
+                variant="outlined"
+              >
+                Create
+              </Button>
+            </form>
+          </Box>
+        </MainPaper>
+      )}
+    </>
   );
 }
