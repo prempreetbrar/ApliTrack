@@ -247,11 +247,11 @@ function Application({
       >
         <Typography
           variant="h2"
-          sx={{ fontSize: "3rem", fontWeight: "bold", display: "inline-block" }}
+          sx={{ fontSize: "2rem", fontWeight: "bold", display: "inline-block" }}
         >
-          {application.ApplicationID}
+          Application
         </Typography>
-        <EmailIcon sx={{ width: "3rem", height: "3rem", marginLeft: "2rem" }} />
+        <EmailIcon sx={{ width: "2rem", height: "2rem", marginLeft: "1rem" }} />
         <IconButton
           sx={{
             marginLeft: "auto",

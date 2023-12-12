@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
+import PeopleIcon from "@mui/icons-material/People";
 
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
@@ -35,11 +36,10 @@ import NewEntryDropdown from "components/NewEntryDropdown";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 
 export default function Interviews() {
-
   const { user } = useAuthContext();
   const [interviewInfo, setInterviewInfo] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
-  
+
   const { executeRequest: get } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
@@ -50,15 +50,15 @@ export default function Interviews() {
   const [fromDate, setFromDate] = React.useState(null);
   const [toDate, setToDate] = React.useState(null);
 
-    const handleOpenDeleteConfirmationDialog = (index) => {
-      setSelectedIndexToDelete(index);
-      setDeleteConfirmationDialogOpen(true);
-    };
-  
-    const handleCloseDeleteConfirmationDialog = () => {
-      setSelectedIndexToDelete(null);
-      setDeleteConfirmationDialogOpen(false);
-    };
+  const handleOpenDeleteConfirmationDialog = (index) => {
+    setSelectedIndexToDelete(index);
+    setDeleteConfirmationDialogOpen(true);
+  };
+
+  const handleCloseDeleteConfirmationDialog = () => {
+    setSelectedIndexToDelete(null);
+    setDeleteConfirmationDialogOpen(false);
+  };
 
   const { executeHandle } = useHandleOperation(
     undefined,
@@ -84,7 +84,7 @@ export default function Interviews() {
     executeHandle(
       "get",
       get,
-      {...data, fromDate, toDate},
+      { ...data, fromDate, toDate },
       "http://localhost:3000/api/interviews/my-interviews",
       null,
       false,
@@ -119,82 +119,86 @@ export default function Interviews() {
     the backend and changes a column themselves).  
     )
   */
-    React.useEffect(() => {
-      const fetchInterviewInfo = async () => {
-        const response = await get({}, "http://localhost:3000/api/interviews/my-interviews");
-  
-        setInterviewInfo(response.interview);
-      };
-  
-      fetchInterviewInfo();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user]);
+  React.useEffect(() => {
+    const fetchInterviewInfo = async () => {
+      const response = await get(
+        {},
+        "http://localhost:3000/api/interviews/my-interviews"
+      );
+
+      setInterviewInfo(response.interview);
+    };
+
+    fetchInterviewInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <MainBox>
-      <FormGroup
-        sx={{
-          display: "flex",
-          width: "100%",
-          flexDirection: "row",
-          marginBottom: "1rem",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {" "}
-        <form onSubmit={handleSubmit(handleGet)}>
-
-        <Box
-              display="flex"
-              sx={{
-                flexDirection: { xs: "column", xl: "row" },
-              }}
-              alignItems="center"
-              marginRight="2.5rem"
-            >
-              <FormControl>
-                <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="Stage-ASC"
-                  name="radio-buttons-group"
-                  sx={{ display: "flex" }}
-                  row
-                >
-                  <FormControlLabel
-                    value="Stage-ASC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Stage Ascending"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="Stage-DESC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Stage Descending"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="Date-ASC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Earliest Date"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="Date-DESC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Latest Date"
-                    labelPlacement="start"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </Box>
+      <form onSubmit={handleSubmit(handleGet)}>
+        <FormGroup
+          sx={{
+            display: "flex",
+            width: "100%",
+            flexDirection: "row",
+            marginBottom: "2rem",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Box
+            display="flex"
+            sx={{
+              flexDirection: { xs: "column", xl: "row" },
+            }}
+            alignItems="center"
+            justifyContent="center"
+            marginRight="2.5rem"
+          >
+            <FormControl>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="Stage-ASC"
+                name="radio-buttons-group"
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", lg: "row" },
+                }}
+              >
+                <FormControlLabel
+                  value="Stage-ASC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort by Stage Ascending"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value="Stage-DESC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort by Stage Descending"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value="Date-ASC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort by Earliest Date"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value="Date-DESC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort by Latest Date"
+                  labelPlacement="start"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Box>
 
           <Box
             display="flex"
             sx={{
-              marginTop: { xs: "2rem", md: "0rem" },
+              marginTop: { xs: "2rem", md: "2rem" },
               flexDirection: { xs: "column", sm: "row" },
-              alignItems: { xs: "flex-start", sm: "center" },
+              alignItems: { xs: "center", sm: "center" },
             }}
           >
             <Typography
@@ -251,22 +255,23 @@ export default function Interviews() {
               setDate={setToDate}
             />
             <IconButton type="submit">
-                <SearchIcon color="primary" />
-              </IconButton>
+              <SearchIcon color="primary" />
+            </IconButton>
           </Box>
-        </form>
-      </FormGroup>
+        </FormGroup>
+      </form>
+
       {interviewInfo &&
         interviewInfo.map((interview, index) => {
-          return(
+          return (
             <Interview
-                key={index}
-                interview={interview}
-                index={index}
-                handleOpenDeleteConfirmationDialog={
-                  handleOpenDeleteConfirmationDialog
-                }
-              />
+              key={index}
+              interview={interview}
+              index={index}
+              handleOpenDeleteConfirmationDialog={
+                handleOpenDeleteConfirmationDialog
+              }
+            />
           );
         })}
       {user && (
@@ -307,7 +312,9 @@ function Interview({
     useDelete();
   const { user } = useAuthContext();
   const [date, setDate] = React.useState(interview.Date);
-  const [dropdownValue, setDropdownValue] = React.useState(interview.Application);
+  const [dropdownValue, setDropdownValue] = React.useState(
+    interview.Application
+  );
 
   React.useEffect(() => {
     /*
@@ -329,19 +336,21 @@ function Interview({
 
   function updateStageorDateorAID(data) {
     update(
-      { ...data, 
-      InterviewID: interview.InterviewID,
-      Date: date,
-      ApplicationID: dropdownValue.ApplicationID},
+      {
+        ...data,
+        InterviewID: interview.InterviewID,
+        Date: date,
+        ApplicationID: dropdownValue.ApplicationID,
+      },
       "http://localhost:3000/api/interviews/details"
     );
   }
-console.log(dropdownValue);
-  return(
+  console.log(dropdownValue);
+  return (
     <MainPaper
       overrideStyles={{
         display: "flex",
-        flexDirection: { xs: "column", md: "row" },
+        flexDirection: { xs: "column" },
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -349,63 +358,103 @@ console.log(dropdownValue);
     >
       <Box
         display="flex"
+        justifyContent="space-between"
+        width="100%"
+        alignItems="center"
+      >
+        <Box display="flex" alignItems="center">
+          <Typography
+            variant="h2"
+            sx={{ fontSize: { xs: "2rem", sm: "3rem" } }}
+          >
+            Interview
+          </Typography>
+          <PeopleIcon
+            sx={{ marginLeft: "1rem", width: "2rem", height: "2rem" }}
+          />
+        </Box>
+
+        <IconButton
+          aria-label="delete"
+          size="large"
+          onClick={() => handleOpenDeleteConfirmationDialog(index)}
+        >
+          <Delete sx={{ width: "2rem", height: "2rem" }} />
+        </IconButton>
+      </Box>
+
+      <Box
+        display="flex"
         sx={{
           alignItems: { xs: "center", md: "flex-start" },
           order: { xs: 3, md: 2 },
         }}
         flexDirection="column"
+        width="100%"
       >
-        <InterviewForm
-          register={register}
-          handleSubmit={handleSubmit}
-          actionOnAttribute={updateStageorDateorAID}
-          isLoading={updateIsLoading}
-          additionalLnameStyles={{ marginRight: { xs: "1rem" } }}
-          buttonName={"Update"}
-        />
-        <SingleDate
-          register={register}
-          handleSubmit={handleSubmit}
-          actionOnAttribute={updateStageorDateorAID}
-          attributeName={"Date"}
-          maxLength={64}
-          additionalStyles={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: { xs: "0rem" },
-            marginTop: { xs: "1rem", sm: "0rem" },
-          }}
-          additionalFieldStyles={{
-            marginRight: { xs: "1rem" },
-          }}
-          date={date}
-          setDate={setDate}
-        />
-        <NewEntryDropdown
-          entityName="Application"
-          entityAttributeName="ApplicationID"
-          entityAttributeName2="AName"
-          maxCreateLength={64}
-          handleSubmit={handleSubmit}
-          actionOnAttribute={updateStageorDateorAID}
-          register={register}
-          fetchAllOptionsURL="http://localhost:3000/api/applications/my-applications"
-          additionalStyles={{ width: "50%" }}
-          doNotShowButton
-          dropdownValue={dropdownValue}
-          setDropdownValue={setDropdownValue}
-          isDropdownObject
-        />
-        <Button
-          onClick={handleSubmit(updateStageorDateorAID)}
-          type="submit"
-          variant="outlined"
-          sx={{ mt: 3, mb: 2 }}
-          disabled={updateIsLoading}
+        <Box
+          display="flex"
+          flexDirection={{ xs: "column", md: "row" }}
+          width="100%"
+          justifyContent="center"
+          alignItems="center"
         >
-          Update
-        </Button>
+          <InterviewForm
+            register={register}
+            handleSubmit={handleSubmit}
+            isLoading={updateIsLoading}
+            additionalStyles={{ marginTop: { xs: "1rem", md: "0rem" } }}
+            additionalLnameStyles={{
+              marginRight: { xs: "1rem" },
+            }}
+            buttonName={"Update"}
+          />
+          <SingleDate
+            register={register}
+            handleSubmit={handleSubmit}
+            attributeName={"Date"}
+            maxLength={64}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: { xs: "0rem" },
+              marginTop: { xs: "1rem", md: "0rem" },
+            }}
+            additionalFieldStyles={{
+              marginRight: { xs: "1rem" },
+            }}
+            date={date}
+            setDate={setDate}
+          />
+          <NewEntryDropdown
+            entityName="Application"
+            entityAttributeName="ApplicationID"
+            entityAttributeName2="AName"
+            maxCreateLength={64}
+            handleSubmit={handleSubmit}
+            register={register}
+            fetchAllOptionsURL="http://localhost:3000/api/applications/my-applications"
+            dropdownValue={dropdownValue}
+            setDropdownValue={setDropdownValue}
+            additionalStyles={{
+              marginTop: { xs: "1rem", md: "0rem" },
+              flexGrow: 0.5,
+              width: { xs: "50%", md: "auto" },
+            }}
+            isDropdownObject
+            doNotShowButton
+          />
+          <Button
+            onClick={handleSubmit(updateStageorDateorAID)}
+            type="submit"
+            variant="outlined"
+            sx={{ mt: 3, mb: 2, ml: { xs: 0, md: 2 } }}
+            disabled={updateIsLoading}
+          >
+            Update
+          </Button>
+        </Box>
 
         <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
           Contacts Attending
@@ -414,9 +463,7 @@ console.log(dropdownValue);
           entityIDName="InterviewID"
           entityID={interview.InterviewID}
           sectionTitle="Contact(s)"
-          sectionArray={interview?.Contacts?.map(
-            (contact, index) => contact
-          )}
+          sectionArray={interview?.Contacts?.map((contact, index) => contact)}
           entityName="Contact"
           entityTargetAttribute="ContactID"
           entityAttribute2="Fname"
@@ -434,9 +481,7 @@ console.log(dropdownValue);
           entityIDName="InterviewID"
           entityID={interview.InterviewID}
           sectionTitle="Job(s)"
-          sectionArray={interview?.Jobs?.map(
-            (job, index) => job
-          )}
+          sectionArray={interview?.Jobs?.map((job, index) => job)}
           entityName="Job"
           entityTargetAttribute="PositionID"
           entityAttribute2="CompanyName"
@@ -447,17 +492,6 @@ console.log(dropdownValue);
           isContact
         />
       </Box>
-      <IconButton
-        sx={{
-          alignSelf: { xs: "flex-end", md: "flex-start" },
-          order: { xs: 1, md: 3 },
-        }}
-        aria-label="delete"
-        size="large"
-        onClick={() => handleOpenDeleteConfirmationDialog(index)}
-      >
-        <Delete sx={{ width: "2rem", height: "2rem" }} />
-      </IconButton>
     </MainPaper>
   );
 }
@@ -501,19 +535,20 @@ function InfoSection({
       create,
       {
         [entityTargetAttribute]:
-          getValues(entityTargetAttribute) || dropdownValue[entityTargetAttribute],
+          getValues(entityTargetAttribute) ||
+          dropdownValue[entityTargetAttribute],
         [entityIDName]: entityID,
       },
-      sectionURL, 
+      sectionURL,
       null,
       false,
       null,
       {},
       false,
-      {...dropdownValue} 
+      { ...dropdownValue }
     );
     console.log(onUpdateSectionArray);
-    console.log({...dropdownValue});
+    console.log({ ...dropdownValue });
   }
 
   async function handleDelete(index) {
@@ -530,9 +565,8 @@ function InfoSection({
     );
   }
 
-  return(
+  return (
     <Box
-      minWidth="100%"
       padding="0.5rem"
       marginRight={`${isMarginRight ? "2rem" : "0"}`}
       sx={{ ...additionalStyles }}
@@ -585,30 +619,30 @@ function InfoSection({
         </Box>
       )}
     </Box>
-
   );
 }
-
 
 function AddNewInterview({ setInterviewInfo, interviewInfo }) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { register, getValues, reset, handleSubmit, setValue } = useForm();
   const [Date, setDate] = React.useState(null);
-  const [dropdownValue, setDropdownValue] = React.useState(interviewInfo.Application);
+  const [dropdownValue, setDropdownValue] = React.useState(
+    interviewInfo.Application
+  );
   const { executeHandle } = useHandleOperation(
     reset,
     setInterviewInfo,
     interviewInfo
   );
 
-    //console.log(setInterviewInfo, interviewInfo);
+  //console.log(setInterviewInfo, interviewInfo);
 
   async function handleCreate(data) {
     console.log(data);
     const result = await executeHandle(
       "create",
       create,
-      {...data, Date, ApplicationID: dropdownValue.ApplicationID},
+      { ...data, Date, ApplicationID: dropdownValue.ApplicationID },
       "http://localhost:3000/api/interviews/details"
     );
 
@@ -664,23 +698,23 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
           date={Date}
           setDate={setDate}
         />
-        
+
         <NewEntryDropdown
-            entityName="Application"
-            entityAttributeName="ApplicationID"
-            entityAttributeName2="AName"
-            maxCreateLength={64}
-            handleSubmit={handleSubmit}
-            actionOnAttribute={null}
-            register={register}
-            fetchAllOptionsURL="http://localhost:3000/api/applications/my-applications"
-            additionalStyles={{ width: "50%" }}
-            doNotShowButton
-            dropdownValue={dropdownValue}
-            setDropdownValue={setDropdownValue}
-            isDropdownObject
-          />
-        
+          entityName="Application"
+          entityAttributeName="ApplicationID"
+          entityAttributeName2="AName"
+          maxCreateLength={64}
+          handleSubmit={handleSubmit}
+          actionOnAttribute={null}
+          register={register}
+          fetchAllOptionsURL="http://localhost:3000/api/applications/my-applications"
+          additionalStyles={{ width: "50%" }}
+          doNotShowButton
+          dropdownValue={dropdownValue}
+          setDropdownValue={setDropdownValue}
+          isDropdownObject
+        />
+
         <Button
           onClick={handleSubmit(handleCreate)}
           type="submit"
