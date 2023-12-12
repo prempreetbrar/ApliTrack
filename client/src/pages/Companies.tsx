@@ -96,8 +96,7 @@ export default function Companies() {
       false,
       null,
       {},
-      true,
-      null
+      true
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

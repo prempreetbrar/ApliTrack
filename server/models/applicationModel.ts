@@ -79,11 +79,13 @@ const Appl_Relevant_URL = sequelize.define(
 
 //appl_relevant_URL is a multi-value attribute of application
 Application.hasMany(Appl_Relevant_URL, {
+    as: "RelevantURL",
     foreignKey: 'ApplicationID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Appl_Relevant_URL.belongsTo(Application, {
+    as: "Application",
     foreignKey: "ApplicationID",
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -113,11 +115,13 @@ const Appl_Category = sequelize.define(
 
 //appl_category is a multivalue attribute of application
 Application.hasMany(Appl_Category, {
+    as: "Category",
     foreignKey: 'ApplicationID',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Appl_Category.belongsTo(Application, {
+    as: "Application",
     foreignKey: "ApplicationID",
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
@@ -128,14 +132,46 @@ Appl_Category.belongsTo(Application, {
 const ApplicationCorrespondsToJob = sequelize.define(
   'CORRESPONDS_TO', 
 {
+  ApplicationID: {
+    type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      references: {
+        model: Application,
+        key: "ApplicationID",
+      },
+  },
+  PositionID: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+    references: {
+      model: Job,
+      key: "PositionID",
+    },
+  },
   JobPostURL: {
     type: DataTypes.STRING(128),
   },
 }, {
   timestamps: false
 });
-Application.belongsToMany(Job, {through: ApplicationCorrespondsToJob});
-Job.belongsToMany(Application, {through: ApplicationCorrespondsToJob});
+Application.belongsToMany(Job, {
+  as: "Jobs",
+  through: ApplicationCorrespondsToJob,
+  foreignKey: "ApplicationID",
+  otherKey: "PositionID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Job.belongsToMany(Application, {
+  as: "Applications",
+  through: ApplicationCorrespondsToJob,
+  foreignKey: "PositionID",
+  otherKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 //Application has a many-to-many relationship with Document
 const ApplicationSubmitWithDoc = sequelize.define(
@@ -166,10 +202,12 @@ const ApplicationSubmitWithDoc = sequelize.define(
 );
 
 Document.belongsToMany(Application, {
+  as: "Applications",
   through: ApplicationSubmitWithDoc,
   foreignKey: "DocumentID",
 });
 Application.belongsToMany(Document, {
+  as: "Documents",
   through: ApplicationSubmitWithDoc,
   foreignKey: "ApplicationID",
 });

@@ -148,7 +148,9 @@ export default function Navbar() {
         onClose={handleMenuClose}
       >
         {user && (
-          <MenuItem onClick={() => handleMenuItemClick("/applicants/profile")}>
+          <MenuItem
+            onClick={() => handleMenuItemClick("/applicants/applicant/profile")}
+          >
             Profile
           </MenuItem>
         )}
@@ -182,6 +184,13 @@ export default function Navbar() {
         </MenuItem>
         <MenuItem onClick={() => handleMenuItemClick("/companies")}>
           Companies
+        </MenuItem>
+        <MenuItem
+          onClick={() =>
+            handleMenuItemClick("/applicants/applicant/applications")
+          }
+        >
+          Applications
         </MenuItem>
       </Menu>
     </Box>
