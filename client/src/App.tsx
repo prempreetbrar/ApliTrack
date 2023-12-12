@@ -16,6 +16,7 @@ import Navbar from "./components/Navbar";
 import Interview from "pages/Interviews";
 import Contacts from "pages/Contacts";
 import Companies from "pages/Companies";
+import Applications from "pages/Applications";
 import Offers from "pages/Offers";
 import Documents from "pages/Documents";
 import { Box, CircularProgress } from "@mui/joy";
@@ -71,6 +72,7 @@ function App() {
         />
         <Route path="/contacts" element={<Contacts />} />
         <Route path="/companies" element={<Companies />} />
+        <Route path="/applications" element={<Applications />} />
       </Routes>
     </Router>
   );

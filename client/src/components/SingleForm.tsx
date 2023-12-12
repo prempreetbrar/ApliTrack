@@ -14,16 +14,18 @@ export default function SingleForm({
   additionalFieldStyles,
   isTextArea,
   allowUnauthenticated,
+  attributeLabel
 }) {
   const { user } = useAuthContext();
+  console.log(attributeLabel, attributeName);
   return (
     <Box sx={{ ...additionalStyles }}>
       {isTextArea && (
         <FormControl>
-          <FormLabel>{attributeName}</FormLabel>
+          <FormLabel>{attributeLabel || attributeName}</FormLabel>
           <Textarea
             {...register(attributeName)}
-            label={attributeName}
+            label={attributeLabel || attributeName}
             sx={{
               marginRight: { xs: "0", md: "1rem" },
               ...additionalFieldStyles,
@@ -36,7 +38,7 @@ export default function SingleForm({
       {!isTextArea && (
         <TextField
           {...register(attributeName)}
-          label={attributeName}
+          label={attributeLabel || attributeName}
           sx={{
             marginRight: { xs: "0", md: "1rem" },
             ...additionalFieldStyles,
