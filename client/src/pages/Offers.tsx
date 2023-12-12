@@ -508,109 +508,177 @@ function NewOfferForm({ offers, setOffers }) {
       {user && (
         <MainPaper
           overrideStyles={{
-            flexDirection: { xs: "column", md: "row" },
-            justifyContent: "space-between",
+            display: "flex",
+            flexDirection: { xs: "column", md: "column" },
+            justifyContent: "center",
+            alignItems: { xs: "center", md: "flex-start" },
           }}
         >
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: "1.5rem",
-              fontWeight: "500",
-            }}
+          <Box
+            display="flex"
+            flexDirection={{ xs: "column", md: "row" }}
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
           >
-            Add New Offer
-          </Typography>
-          <SingleDate
-            handleSubmit={handleSubmit}
-            attributeName={"ResponseDeadline"}
-            maxLength={64}
-            isLoading={createIsLoading}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              width: { xs: "100%", md: "50%" },
-            }}
-            date={responseDeadline || null}
-            setDate={setResponseDeadline}
-            additionalFieldStyles={{
-              marginRight: { xs: "0rem", md: "1rem" },
-              width: "100%",
-            }}
-          />
-          <SingleDate
-            handleSubmit={handleSubmit}
-            attributeName={"StartDate"}
-            maxLength={64}
-            isLoading={createIsLoading}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              width: { xs: "100%", md: "50%" },
-            }}
-            date={startDate || null}
-            setDate={setStartDate}
-            additionalFieldStyles={{
-              marginRight: { xs: "0rem", md: "1rem" },
-              width: "100%",
-            }}
-          />
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            actionOnAttribute={null}
-            attributeName={"Compensation"}
-            isLoading={createIsLoading}
-            maxLength={64}
-            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-          />
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            actionOnAttribute={null}
-            attributeName={"Notes"}
-            isLoading={createIsLoading}
-            maxLength={64}
-            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-            isTextArea
-          />
+            <Typography variant="h3">Create Offer</Typography>
 
-          <NewEntryDropdown
-            entityName="Job"
-            entityAttributeName="CompanyName"
-            entityAttributeName2="PositionName"
-            entityAttributeName3="PositionID"
-            doNotShowButton
-            createIsLoading={createIsLoading}
-            register={register}
-            fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
-            dropdownValue={offerJob}
-            setDropdownValue={setOfferJob}
-            isDropdownObject
-            additionalStyles={{
-              width: "100%",
-              marginTop: { xs: "1rem" },
-              marginBottom: { xs: "0rem" },
-            }}
-          />
-          <Input
-            sx={{ marginTop: "1rem" }}
-            {...register("OfferFileName")}
-            type="file"
-            name="OfferFileName"
-          />
+            <form
+              onSubmit={handleSubmit(createOffer)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Box
+                display="flex"
+                marginTop="2rem"
+                width="100%"
+                sx={{ flexDirection: { xs: "column", md: "row" } }}
+              >
+                <Box display="flex" flexDirection="column">
+                  <Box
+                    display="flex"
+                    sx={{ flexDirection: { xs: "column", md: "row" } }}
+                  >
+                    <SingleDate
+                      handleSubmit={handleSubmit}
+                      attributeName={"ResponseDeadline"}
+                      maxLength={64}
+                      isLoading={createIsLoading}
+                      additionalStyles={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        width: { xs: "100%", md: "50%" },
+                      }}
+                      date={responseDeadline || null}
+                      setDate={setResponseDeadline}
+                      additionalFieldStyles={{
+                        marginRight: { xs: "0rem", md: "1rem" },
+                        width: "100%",
+                      }}
+                    />
+                    <SingleDate
+                      handleSubmit={handleSubmit}
+                      attributeName={"StartDate"}
+                      maxLength={64}
+                      isLoading={createIsLoading}
+                      additionalStyles={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        width: { xs: "100%", md: "50%" },
+                      }}
+                      date={startDate || null}
+                      setDate={setStartDate}
+                      additionalFieldStyles={{
+                        marginRight: { xs: "0rem", md: "0rem" },
+                        marginTop: { xs: "1rem", md: 0 },
+                        width: "100%",
+                      }}
+                    />
+                  </Box>
 
-          <Button
-            onClick={handleSubmit(createOffer)}
-            type="submit"
-            variant="outlined"
-            sx={{ mt: 3, mb: 2 }}
-            disabled={createIsLoading}
-          >
-            Create
-          </Button>
+                  <Box
+                    display="flex"
+                    sx={{ flexDirection: { xs: "column", md: "row" } }}
+                  >
+                    <SingleForm
+                      register={register}
+                      handleSubmit={handleSubmit}
+                      attributeName={"Compensation"}
+                      maxLength={64}
+                      isLoading={createIsLoading}
+                      additionalStyles={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginTop: { xs: "1rem" },
+                        marginBottom: { xs: "0rem" },
+                        width: { xs: "100%", md: "50%" },
+                      }}
+                      additionalFieldStyles={{
+                        marginRight: { xs: "0rem", md: "1rem" },
+                        width: "100%",
+                      }}
+                    />
+                    <NewEntryDropdown
+                      entityName="Job"
+                      entityAttributeName="CompanyName"
+                      entityAttributeName2="PositionName"
+                      entityAttributeName3="PositionID"
+                      doNotShowButton
+                      createIsLoading={createIsLoading}
+                      register={register}
+                      fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
+                      dropdownValue={offerJob}
+                      setDropdownValue={setOfferJob}
+                      isDropdownObject
+                      additionalStyles={{
+                        width: { xs: "100%", md: "50%" },
+                        marginTop: { xs: "1rem" },
+                        marginBottom: { xs: "0rem" },
+                      }}
+                    />
+                  </Box>
+
+                  <SingleForm
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    attributeName={"Notes"}
+                    maxLength={64}
+                    isLoading={createIsLoading}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignSelf: "center",
+                      alignItems: "center",
+                      marginTop: { xs: "1rem" },
+                      marginBottom: { xs: "0rem" },
+                      width: { xs: "100%" },
+                    }}
+                    additionalFieldStyles={{
+                      marginRight: { xs: "1rem" },
+                      width: "100%",
+                    }}
+                    isTextArea
+                  />
+                </Box>
+
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  sx={{ marginTop: { xs: "2rem", md: "-1.5rem" } }}
+                  marginLeft="2rem"
+                  flexGrow="1"
+                >
+                  <Typography>Job Posting</Typography>
+
+                  <Input
+                    sx={{ marginTop: "1rem" }}
+                    {...register("OfferFileName")}
+                    type="file"
+                    name="OfferFileName"
+                  />
+                </Box>
+              </Box>
+
+              <Button
+                sx={{
+                  marginTop: "1rem",
+                  width: "min-content",
+                }}
+                type="submit"
+                variant="outlined"
+              >
+                Create
+              </Button>
+            </form>
+          </Box>
         </MainPaper>
       )}
     </>
