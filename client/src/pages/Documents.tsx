@@ -607,7 +607,7 @@ function NewDocumentForm({ documents, setDocuments }) {
                   flexDirection="column"
                   alignItems="center"
                   sx={{ marginTop: { xs: "2rem", md: "0.75rem" } }}
-                  marginLeft={{ xs: "0rem", sm: "2rem" }}
+                  marginLeft={{ xs: "0rem", md: "2rem" }}
                   flexGrow="1"
                 >
                   <Typography>File</Typography>

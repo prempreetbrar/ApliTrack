@@ -639,7 +639,7 @@ function Offer({
             alignItems="center"
             sx={{
               marginTop: { xs: "2rem", md: "-1.5rem" },
-              marginLeft: { xs: "0rem", sm: "2rem" },
+              marginLeft: { xs: "0rem", md: "2rem" },
             }}
             flexGrow="1"
           >
@@ -924,7 +924,7 @@ function NewOfferForm({ offers, setOffers }) {
                   alignItems="center"
                   sx={{
                     marginTop: { xs: "2rem", md: "-1.5rem" },
-                    marginLeft: { xs: "0rem", sm: "2rem" },
+                    marginLeft: { xs: "0rem", md: "2rem" },
                   }}
                   flexGrow="1"
                 >
