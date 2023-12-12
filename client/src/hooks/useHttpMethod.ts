@@ -11,7 +11,12 @@ const useHttpMethod = (method) => {
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
 
-  const executeRequest = async (data, url, config = {} as any) => {
+  const executeRequest = async (
+    data,
+    url,
+    config = {} as any,
+    showSnackbar = true
+  ) => {
     setIsLoading(true);
     setError(null);
 
@@ -40,7 +45,7 @@ const useHttpMethod = (method) => {
       } else {
         response = await axios[method](url, data, config);
       }
-      if (method !== "get") {
+      if (method !== "get" && showSnackbar) {
         enqueueSnackbar(`Success!`, {
           variant: "success",
           autoHideDuration: 1000,
