@@ -28,7 +28,7 @@ export default function NewEntryDropdown({
     const fetchAllOptions = async () => {
       const response = await executeRequest(null, fetchAllOptionsURL);
       const newAllOptionsHashtable = {};
-
+console.log(response[entityName.toLowerCase()]);
       setAllOptions(
         response[entityName.toLowerCase()].map((entity, index) => {
           const string =
@@ -47,12 +47,13 @@ export default function NewEntryDropdown({
           return string;
         })
       );
-
+console.log(newAllOptionsHashtable);
+console.log(isDropdownObject);
       setAllOptionsHashtable(newAllOptionsHashtable);
     };
     fetchAllOptions();
   }, []);
-
+console.log(allOptions, allOptionsHashtable);
   return (
     <>
       {user && (

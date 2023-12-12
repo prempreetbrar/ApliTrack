@@ -54,4 +54,9 @@ router
   .route("/company-jobs")
   .get(jobController.addFilterCompany, jobController.getAllCompanyJobs);
 
+//for many-to-many relationships
+router.route("/mentions")
+.post(jobController.createJobMentionsInterview)
+.delete(jobController.deleteJobMentionsInterview);
+
 module.exports = router;

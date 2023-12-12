@@ -13,7 +13,9 @@ router.route("/details")
 .put(authController.checkIfLoggedIn, applicationController.updateApplication);
 
 router.route("/my-applications")
-.get(applicationController.addFilterApplicant, applicationController.getAllApplicantApplications);
+.get(authController.checkIfLoggedIn, 
+    applicationController.addFilterApplicant, 
+    applicationController.getAllApplicantApplications);
 
 router.route("/URL")
 .post(authController.checkIfLoggedIn, applicationController.createApplicationURL)
