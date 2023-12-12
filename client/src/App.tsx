@@ -19,13 +19,18 @@ import Companies from "pages/Companies";
 import Applications from "pages/Applications";
 import Offers from "pages/Offers";
 import Documents from "pages/Documents";
+import { Box, CircularProgress } from "@mui/joy";
 
 function App() {
-  const { user } = useAuthContext();
-
-  if (user?.token === undefined) {
-    return null;
+  const { user, isLoading } = useAuthContext();
+  if (isLoading) {
+    return (
+      <Box display="flex" alignItems="center" justifyContent="center">
+        <CircularProgress />;
+      </Box>
+    );
   }
+
   /*
     If the user isn't logged in, then navigate them to the login page on a protected route.
     Otherwise, if they are logged in, let them see the protected route.
