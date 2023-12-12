@@ -34,6 +34,8 @@ exports.filterID = errorHandling.catchAsync(
   exports.addFilter = errorHandling.catchAsync(
     async (request, response, next) => {
       request.body.filter = {ApplicantUsername: request.body.ApplicantUsername};
+      request.body.order = [];
+      
       if (request.body.InterviewID || request.query.InterviewID) {
         request.body.filter.InterviewID =
           request.body.InterviewID || request.query.InterviewID;
@@ -70,6 +72,11 @@ exports.filterID = errorHandling.catchAsync(
           [Op.lte]: request.query.toDate,
         };
       }
+
+      if (request.query.Sort) {
+        request.body.order.push(request.query.Sort.split("-"));
+      }
+
       next();
     }
   );

@@ -9,6 +9,9 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  FormControl,
+  Radio,
+  RadioGroup,
   IconButton,
   FormGroup,
   Switch,
@@ -89,6 +92,27 @@ export default function Interviews() {
     );
   }
 
+  React.useEffect(() => {
+    if (user) {
+      executeHandle(
+        "get",
+        get,
+        {
+          Sort: "Stage-ASC",
+        },
+        "http://localhost:3000/api/interviews/my-interviews",
+        null,
+        false,
+        null,
+        {},
+        true,
+        null
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   /*
     Get the applicant's info upon loading the page (and anytime
     the user themselves changes, for example if someone goes into
@@ -120,6 +144,51 @@ export default function Interviews() {
       >
         {" "}
         <form onSubmit={handleSubmit(handleGet)}>
+
+        <Box
+              display="flex"
+              sx={{
+                flexDirection: { xs: "column", xl: "row" },
+              }}
+              alignItems="center"
+              marginRight="2.5rem"
+            >
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="Stage-ASC"
+                  name="radio-buttons-group"
+                  sx={{ display: "flex" }}
+                  row
+                >
+                  <FormControlLabel
+                    value="Stage-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Stage Ascending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="Stage-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Stage Descending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="Date-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Earliest Date"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="Date-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Latest Date"
+                    labelPlacement="start"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+
           <Box
             display="flex"
             sx={{
@@ -238,7 +307,7 @@ function Interview({
     useDelete();
   const { user } = useAuthContext();
   const [date, setDate] = React.useState(interview.Date);
-  const [dropdownValue, setDropdownValue] = React.useState(interview.APPLICATION);
+  const [dropdownValue, setDropdownValue] = React.useState(interview.Application);
 
   React.useEffect(() => {
     /*
@@ -247,15 +316,15 @@ function Interview({
       */
     setValue("Stage", interview?.Stage);
     setValue("Date", interview?.Date);
-    setValue("ApplicationID", interview?.ApplicationID);
+    setValue("ApplicationID", interview?.Application);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interview, AName]);
 
-  console.log(interview);
+  //console.log(interview);
 
   React.useEffect(() => {
     setDate(interview.Date);
-    setDropdownValue(interview.ApplicationID);
+    setDropdownValue(interview.Application);
   }, [interview]);
 
   function updateStageorDateorAID(data) {
@@ -263,7 +332,7 @@ function Interview({
       { ...data, 
       InterviewID: interview.InterviewID,
       Date: date,
-      ApplicationID: dropdownValue},
+      ApplicationID: dropdownValue.ApplicationID},
       "http://localhost:3000/api/interviews/details"
     );
   }
@@ -365,7 +434,7 @@ console.log(dropdownValue);
           entityIDName="InterviewID"
           entityID={interview.InterviewID}
           sectionTitle="Job(s)"
-          sectionArray={interview?.Job?.map(
+          sectionArray={interview?.Jobs?.map(
             (job, index) => job.MENTIONS
           )}
           entityName="Job"
@@ -432,7 +501,7 @@ function InfoSection({
       create,
       {
         [entityTargetAttribute]:
-          getValues(entityTargetAttribute) || dropdownValue,
+          getValues(entityTargetAttribute) || dropdownValue[entityTargetAttribute],
         [entityIDName]: entityID,
       },
       sectionURL
@@ -515,7 +584,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { register, getValues, reset, handleSubmit, setValue } = useForm();
   const [Date, setDate] = React.useState(null);
-  const [dropdownValue, setDropdownValue] = React.useState("");
+  const [dropdownValue, setDropdownValue] = React.useState(interviewInfo.Application);
   const { executeHandle } = useHandleOperation(
     reset,
     setInterviewInfo,
@@ -529,7 +598,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
     const result = await executeHandle(
       "create",
       create,
-      {...data, Date, ApplicationID: dropdownValue},
+      {...data, Date, ApplicationID: dropdownValue.ApplicationID},
       "http://localhost:3000/api/interviews/details"
     );
 
