@@ -228,14 +228,7 @@ export default function Documents() {
               open={deleteConfirmationDialogOpen}
               handleClose={handleCloseDeleteConfirmationDialog}
               handleConfirm={() => handleDelete(selectedIndexToDelete)}
-              itemName={
-                "your Document from " +
-                documents[selectedIndexToDelete]?.Job.CompanyName +
-                " for the " +
-                documents[selectedIndexToDelete]?.Job.PositionName +
-                ` [${documents[selectedIndexToDelete]?.Job.PositionID}] ` +
-                " Position"
-              }
+              itemName={documents[selectedIndexToDelete].DocFileName}
             />
           )}
         </MainBox>
