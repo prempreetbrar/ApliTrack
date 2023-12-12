@@ -243,18 +243,21 @@ export default function Offers() {
               >
                 Search by:
               </Typography>
-              <Box display="flex">
+              <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
                 <SingleForm
                   register={register}
                   handleSubmit={handleSubmit}
                   additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
                     marginTop: { xs: "1rem", xl: "0rem" },
                     flexShrink: 0,
-                    marginLeft: 0,
-                    marginRight: "2rem",
                   }}
                   additionalFieldStyles={{
                     width: "100%",
+                    marginRight: { xs: "1rem" },
                   }}
                   attributeName={"LowestCompensation"}
                   allowUnauthenticated
@@ -263,15 +266,23 @@ export default function Offers() {
                   register={register}
                   handleSubmit={handleSubmit}
                   additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
                     marginTop: { xs: "1rem", xl: "0rem" },
                     flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    width: "100%",
+                    marginRight: { xs: "1rem" },
                   }}
                   attributeName={"HighestCompensation"}
                   allowUnauthenticated
                 />
               </Box>
 
-              <Box display="flex">
+              <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
                 <SingleDate
                   handleSubmit={handleSubmit}
                   attributeName={"EarliestResponseDeadline"}
@@ -312,7 +323,7 @@ export default function Offers() {
                 />
               </Box>
 
-              <Box display="flex">
+              <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
                 <SingleDate
                   handleSubmit={handleSubmit}
                   attributeName={"EarliestStartDate"}
