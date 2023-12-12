@@ -20,7 +20,10 @@ import Offers from "pages/Offers";
 
 function App() {
   const { user } = useAuthContext();
-
+  if (user?.token === undefined) {
+    return null;
+  }
+  
   /*
     If the user isn't logged in, then navigate them to the login page on a protected route.
     Otherwise, if they are logged in, let them see the protected route.

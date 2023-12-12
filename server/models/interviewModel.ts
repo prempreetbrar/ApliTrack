@@ -57,21 +57,25 @@ const { Application } = require("./applicationModel");
 
 //Applicant has a one-to-many relationship with Interview
 Applicant.hasMany(Interview, {
+  as: "Interviews",
   foreignKey: "ApplicantUsername",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 Interview.belongsTo(Applicant, {
+  as: "Applicant",
   foreignKey: "ApplicantUsername",
 });
 
 //Application has a one-to-many relationship with Interview
 Application.hasMany(Interview, {
+  as: "Interviews",
   foreignKey: "ApplicationID",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 Interview.belongsTo(Application, {
+  as: "Application",
   foreignKey: "ApplicationID",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",

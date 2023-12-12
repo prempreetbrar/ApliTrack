@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Button, Box } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -19,7 +21,7 @@ export default function SingleDate({
   allowUnauthenticated,
 }) {
   const { user } = useAuthContext();
-
+console.log(date)
   return (
     <Box sx={{ ...additionalStyles }}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
