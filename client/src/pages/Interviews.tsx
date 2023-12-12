@@ -415,7 +415,7 @@ console.log(dropdownValue);
           entityID={interview.InterviewID}
           sectionTitle="Contact(s)"
           sectionArray={interview?.Contacts?.map(
-            (contact, index) => contact.ATTENDS
+            (contact, index) => contact
           )}
           entityName="Contact"
           entityTargetAttribute="ContactID"
@@ -435,7 +435,7 @@ console.log(dropdownValue);
           entityID={interview.InterviewID}
           sectionTitle="Job(s)"
           sectionArray={interview?.Jobs?.map(
-            (job, index) => job.MENTIONS
+            (job, index) => job
           )}
           entityName="Job"
           entityTargetAttribute="PositionID"
@@ -504,8 +504,16 @@ function InfoSection({
           getValues(entityTargetAttribute) || dropdownValue[entityTargetAttribute],
         [entityIDName]: entityID,
       },
-      sectionURL
+      sectionURL, 
+      null,
+      false,
+      null,
+      {},
+      false,
+      {...dropdownValue} 
     );
+    console.log(onUpdateSectionArray);
+    console.log({...dropdownValue});
   }
 
   async function handleDelete(index) {
@@ -535,6 +543,8 @@ function InfoSection({
       <ChipDisplayer
         onUpdateSectionArray={onUpdateSectionArray}
         attributeName={entityTargetAttribute}
+        secondAttributeName={entityAttribute2}
+        thirdAttributeName={entityAttribute3}
         handleDelete={handleDelete}
       />
 

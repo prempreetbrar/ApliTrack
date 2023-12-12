@@ -6,6 +6,7 @@ export default function ChipDisplayer({
   onUpdateSectionArray,
   attributeName,
   secondAttributeName,
+  thirdAttributeName,
   handleDelete,
 }) {
   const { user } = useAuthContext();
@@ -26,6 +27,7 @@ export default function ChipDisplayer({
               <EllipsisText>
                 {entity[attributeName]}
                 {secondAttributeName && ` - ${entity[secondAttributeName]}`}
+                {thirdAttributeName && ` ${entity[thirdAttributeName]}`}
               </EllipsisText>
             }
             onDelete={user && (() => handleDelete(index))}
