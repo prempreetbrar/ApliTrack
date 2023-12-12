@@ -66,6 +66,7 @@ export default function SimpleSection({
         sx={{
           padding: "1rem",
           marginBottom: "2rem",
+          width: "100%",
         }}
       >
         <Typography fontWeight="bold" sx={{ paddingBottom: "25px" }}>

@@ -48,72 +48,105 @@ export default function UserSection({ applicantInfo }) {
   }
 
   return (
-    <MainPaper>
-      <Avatar src="/broken-image.jpg" sx={{ width: 100, height: 100 }} />
-      <Typography fontWeight="bold">YOU</Typography>
-      <NameUpdater
-        register={register}
-        handleSubmit={handleSubmit}
-        updateName={updateName}
-        updateIsLoading={updateIsLoading}
-      />
-      <Box
-        display="flex"
-        width="100%"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <TextField
-          {...register("Education")}
-          label="Education"
-          sx={{
-            marginRight: "1rem",
-          }}
-          InputLabelProps={{ shrink: true }}
-        />
-        <Button
-          onClick={handleSubmit(updateEducation)}
-          type="submit"
-          variant="outlined"
-          sx={{ mt: 3, mb: 2 }}
-          disabled={updateIsLoading}
-        >
-          Update
-        </Button>
-      </Box>
-
+    <MainPaper
+      overrideStyles={{
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
+        alignItems: { xs: "center", sm: "flex-start" },
+        justifyContent: "center",
+      }}
+    >
       <Box
         display="flex"
         flexDirection="column"
+        justifyContent="center"
         alignItems="center"
-        justifyContent="space-evenly"
-        height="25rem"
+        marginRight={{ xs: "0rem", sm: "2rem" }}
+        marginBottom={{ xs: "2rem", sm: "0rem" }}
       >
-        <Typography fontWeight="bold">Update Password</Typography>
-        <TextField
-          {...register("Password")}
-          label="Current Password"
-          type="password"
-        />
-        <TextField
-          {...register("NewPassword")}
-          label="New Password"
-          type="password"
-        />
-        <TextField
-          {...register("ConfirmNewPassword")}
-          label="Confirm New Password"
-          type="password"
-        />
-        <Button
-          onClick={handleSubmit(updatePassword)}
-          type="submit"
-          variant="outlined"
-          sx={{ mt: 3, mb: 2 }}
-          disabled={updateIsLoading}
+        <Avatar src="/broken-image.jpg" sx={{ width: 100, height: 100 }} />
+        <Typography sx={{ marginTop: "1rem" }} fontWeight="bold">
+          YOU
+        </Typography>
+      </Box>
+
+      <Box display="flex" flexDirection="column">
+        <Box
+          display="flex"
+          width="100%"
+          justifyContent="center"
+          alignItems="center"
+          flexDirection={{ xs: "column", md: "row" }}
         >
-          Update Password
-        </Button>
+          <NameUpdater
+            register={register}
+            handleSubmit={handleSubmit}
+            updateName={updateName}
+            updateIsLoading={updateIsLoading}
+            additionalLnameStyles={{ marginRight: { xs: "0", sm: "1rem" } }}
+          />
+
+          <TextField
+            {...register("Education")}
+            label="Education"
+            sx={{
+              marginRight: { xs: "0rem", md: "1rem" },
+              marginTop: { xs: "1rem", md: "0rem" },
+            }}
+            InputLabelProps={{ shrink: true }}
+          />
+          <Button
+            onClick={handleSubmit(updateEducation)}
+            type="submit"
+            variant="outlined"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={updateIsLoading}
+          >
+            Update
+          </Button>
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection={{ xs: "column", md: "row" }}
+          alignItems="center"
+        >
+          <TextField
+            {...register("Password")}
+            label="Current Password"
+            type="password"
+            sx={{
+              marginRight: { xs: "0rem", md: "1rem" },
+            }}
+          />
+          <TextField
+            {...register("NewPassword")}
+            label="New Password"
+            type="password"
+            sx={{
+              marginRight: { xs: "0rem", md: "1rem" },
+              marginTop: { xs: "1rem", md: "0rem" },
+            }}
+          />
+          <TextField
+            {...register("ConfirmNewPassword")}
+            label="Confirm New Password"
+            type="password"
+            sx={{
+              marginRight: { xs: "0rem", md: "1rem" },
+              marginTop: { xs: "1rem", md: "0rem" },
+            }}
+          />
+          <Button
+            onClick={handleSubmit(updatePassword)}
+            type="submit"
+            variant="outlined"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={updateIsLoading}
+          >
+            Update
+          </Button>
+        </Box>
       </Box>
     </MainPaper>
   );

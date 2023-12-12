@@ -17,6 +17,7 @@ import {
 import { Delete } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import WorkIcon from "@mui/icons-material/Work";
+import EmailIcon from "@mui/icons-material/Email";
 
 import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
@@ -89,14 +90,14 @@ export default function Applications() {
       "get",
       get,
       {
-        ...data
+        ...data,
       },
       "http://localhost:3000/api/applications",
       null,
-        false,
-        null,
-        {},
-        false
+      false,
+      null,
+      {},
+      false
     );
   }
 
@@ -106,29 +107,36 @@ export default function Applications() {
     the backend and changes a column themselves).  
     )
   */
-    React.useEffect(() => {
-        const fetchApplicationsInfo = async () => {
-          const response = await get({}, "http://localhost:3000/api/applications");
-    
-          setApplicationsInfo(response.application);
-        };
-    
-        fetchApplicationsInfo();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [user]);
+  React.useEffect(() => {
+    const fetchApplicationsInfo = async () => {
+      const response = await get({}, "http://localhost:3000/api/applications");
 
-      console.log(user);
+      setApplicationsInfo(response.application);
+    };
+
+    fetchApplicationsInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  console.log(user);
 
   return (
     <MainBox>
-        <form onSubmit={handleSubmit(handleGet)}>
+      <form onSubmit={handleSubmit(handleGet)}>
+        <Box
+          display="flex"
+          sx={{
+            marginTop: { xs: "2rem", md: "0rem" },
+
+            alignItems: { xs: "center", sm: "center" },
+            justifyContent: "center",
+            marginBottom: "2rem",
+          }}
+        >
           <Box
             display="flex"
-            sx={{
-              marginTop: { xs: "2rem", md: "0rem" },
-              flexDirection: { xs: "column", sm: "row" },
-              alignItems: { xs: "flex-start", sm: "center" },
-            }}
+            alignItems="center"
+            sx={{ flexDirection: { xs: "column", sm: "row" } }}
           >
             <Typography
               variant="h3"
@@ -141,32 +149,32 @@ export default function Applications() {
               handleSubmit={handleSubmit}
               additionalStyles={{
                 marginTop: { xs: "1rem", sm: "0rem" },
+                flexDirection: { xs: "column", sm: "row" },
               }}
               additionalLnameStyles={{
                 marginRight: { xs: "1rem" },
+                marginTop: { xs: "1rem", sm: "0" },
               }}
               allowUnauthenticated
             />
-            <Box display="flex" alignItems="center">
-              <IconButton type="submit">
-                <SearchIcon color="primary" />
-              </IconButton>
-            </Box>
           </Box>
-        </form>
+          <IconButton type="submit">
+            <SearchIcon color="primary" />
+          </IconButton>
+        </Box>
+      </form>
       {applicationsInfo &&
         applicationsInfo.map((application, index) => {
-            return (
-              <Application
-                key={index}
-                application={application}
-                index={index}
-                handleOpenDeleteConfirmationDialog={
-                  handleOpenDeleteConfirmationDialog
-                }
-              />
-            );
-          
+          return (
+            <Application
+              key={index}
+              application={application}
+              index={index}
+              handleOpenDeleteConfirmationDialog={
+                handleOpenDeleteConfirmationDialog
+              }
+            />
+          );
         })}
       {user && (
         <AddNewApplication
@@ -195,9 +203,12 @@ function Application({
   const { register, handleSubmit, setValue } = useForm();
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
-  const { executeRequest: deleteInstance, isLoading: deleteIsLoading } = useDelete();
+  const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
+    useDelete();
   const { user } = useAuthContext();
-  const [dateSubmitted, setDateSubmitted] = React.useState(application?.DateSubmitted);
+  const [dateSubmitted, setDateSubmitted] = React.useState(
+    application?.DateSubmitted
+  );
 
   React.useEffect(() => {
     /*
@@ -212,8 +223,11 @@ function Application({
 
   function updateApplication(data) {
     update(
-      {...data, 
-        ApplicationID: application.ApplicationID, DateSubmitted: dateSubmitted},
+      {
+        ...data,
+        ApplicationID: application.ApplicationID,
+        DateSubmitted: dateSubmitted,
+      },
       "http://localhost:3000/api/applications/details"
     );
   }
@@ -222,202 +236,220 @@ function Application({
     <MainPaper
       overrideStyles={{
         flexDirection: "column",
-        alignItems: "flex-start",
+        alignItems: { xs: "center", md: "flex-start" },
         width: "100%",
       }}
     >
       <Box
         display="flex"
-        flexDirection="row"
-        flexWrap="wrap"
         alignItems="center"
+        justifyContent="space-between"
         width="100%"
       >
         <Typography
           variant="h2"
-          sx={{ fontSize: "3rem", fontWeight: "bold", display: "inline-block" }}
+          sx={{ fontSize: "2rem", fontWeight: "bold", display: "inline-block" }}
         >
-          {application.ApplicationID}
+          Application
         </Typography>
+        <EmailIcon sx={{ width: "2rem", height: "2rem", marginLeft: "1rem" }} />
+        <IconButton
+          sx={{
+            marginLeft: "auto",
+            order: { xs: 3, lg: 4 },
+          }}
+          aria-label="delete"
+          size="large"
+          onClick={() => handleOpenDeleteConfirmationDialog(index)}
+        >
+          <Delete sx={{ width: "2rem", height: "2rem" }} />
+        </IconButton>
+      </Box>
+
+      <form onSubmit={handleSubmit(updateApplication)}>
         <FormControl
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: "center",
+            flexDirection: { xs: "column", sm: "row", md: "column" },
+            alignItems: { xs: "center", sm: "flex-start", md: "center" },
+            justifyContent: "center",
             width: { xs: "100%", md: "fit-content" },
-            marginTop: { xs: "2rem", md: 0 },
-            marginLeft: { xs: "0rem", lg: "5rem" },
-            order: { xs: 4, lg: 3 },
+            marginTop: { xs: "2rem" },
           }}
         >
-          <form onSubmit={handleSubmit(updateApplication)}>
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            attributeName={"AName"}
-            maxLength={64}
-            isLoading={updateIsLoading}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-            additionalFieldStyles={{
-              marginRight: { xs: "1rem" },
-            }}
-            attributeLabel={"Application Name"}
-          />
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            attributeName={"Notes"}
-            maxLength={64}
-            isLoading={updateIsLoading}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-            additionalFieldStyles={{
-              marginTop: { xs: "1.5rem", md: 0 },
-              marginRight: { xs: "1rem" },
-            }}
-          />
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            attributeName={"Status"}
-            maxLength={64}
-            isLoading={updateIsLoading}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: { xs: "1.5rem", md: 0 },
-            }}
-            additionalFieldStyles={{
-              marginRight: { xs: "1rem" },
-            }}
-          />
-          <SingleDate
-            handleSubmit={handleSubmit}
-            attributeName={"DateSubmitted"}
-            maxLength={64}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: { xs: "0rem" },
-              gridArea: "Deadline",
-            }}
-            date={dateSubmitted}
-            setDate={setDateSubmitted}
-          />
-          <InfoSection
-            entityIDName="ApplicationID"
-            entityID={application.ApplicationID}
-            sectionTitle="Category"
-            sectionArray={application.Category}
-            entityName="Application"
-            entityTargetAttribute="Category"
-            isMarginRight
-            sectionURL="http://localhost:3000/api/applications/category"
-            maxCreateLength={16}
-            additionalStyles={{
-              minWidth: { xs: "100%", sm: "50%" },
-              marginRight: { xs: "0" },
-            }}
-          />
-          <InfoSection
-            entityIDName="ApplicationID"
-            entityID={application.ApplicationID}
-            sectionTitle="Relevant URLs"
-            sectionArray={application.RelevantURL}
-            entityName="Application"
-            entityTargetAttribute="RelevantURL"
-            isMarginRight
-            sectionURL="http://localhost:3000/api/applications/URL"
-            maxCreateLength={16}
-            additionalStyles={{
-              minWidth: { xs: "100%", sm: "50%" },
-              marginRight: { xs: "0" },
-            }}
-          />
-          <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
-          Submit With
-        </Typography>
-        <InfoSection
-          entityIDName="ApplicationID"
-          entityID={application.ApplicationID}
-          sectionTitle="Documents"
-          sectionArray={application?.Documents?.map(
-            (document, index) => document
-          )}
-          entityName="Document"
-          entityTargetAttribute="DocumentID"
-          entityTargetAttribute2="DocFileName"
-          sectionURL="http://localhost:3000/api/applications/submitWith"
-          fetchAllOptionsURL="http://localhost:3000/api/documents"
-          maxCreateLength={64}
-          isDocument
-        />
-        <InfoSection
-          entityIDName="ApplicationID"
-          entityID={application.ApplicationID}
-          sectionTitle="Jobs"
-          sectionArray={application?.Jobs?.map(
-            (job, index) => job.CORRESPONDS_TO
-          )}
-          entityName="Job"
-          entityTargetAttribute="PositionID"
-          entityTargetAttribute2="PositionName"
-          entitySecondTargetAttribute="JobPostURL"
-          sectionURL="http://localhost:3000/api/applications/corresponding-jobs"
-          fetchAllOptionsURL="http://localhost:3000/api/jobs"
-          maxCreateLength={64}
-          isJob
-        />
-          {user && (
-            <Button
-              sx={{ marginTop: "1rem", height: "min-content" }}
-              type="submit"
-              variant="outlined"
-            >
-              Update
-            </Button>
-          )}
-          </form>
-        </FormControl>
-        <IconButton
-              sx={{
-                marginLeft: "auto",
-                order: { xs: 3, lg: 4 },
-              }}
-              aria-label="delete"
-              size="large"
-              onClick={() => handleOpenDeleteConfirmationDialog(index)}
-            >
-              <Delete sx={{ width: "2rem", height: "2rem" }} />
-            </IconButton>
-      </Box>
-
-      <Box
-        sx={{ marginLeft: { xs: 0, md: "1rem" } }}
-        marginTop="2.5rem"
-        width="100%"
-      >
-        <Box display="flex" alignItems="center">
-          <Typography
-            variant="h3"
-            sx={{ fontWeight: "bold", fontSize: "2rem" }}
+          <Box
+            display="flex"
+            flexDirection={{ xs: "column", md: "row" }}
+            marginTop={{ xs: "2rem", md: "0" }}
+            alignItems="center"
           >
-            Jobs
-          </Typography>
-          <WorkIcon
-            sx={{ marginLeft: "1rem", width: "2rem", height: "2rem" }}
-          />
-        </Box>
-      </Box>
+            <SingleForm
+              register={register}
+              handleSubmit={handleSubmit}
+              attributeName={"AName"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+              attributeLabel={"Application Name"}
+            />
+            <SingleForm
+              register={register}
+              handleSubmit={handleSubmit}
+              attributeName={"Notes"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+              additionalFieldStyles={{
+                marginTop: { xs: "1.5rem", md: 0 },
+                marginRight: { xs: "1rem" },
+              }}
+            />
+            <SingleForm
+              register={register}
+              handleSubmit={handleSubmit}
+              attributeName={"Status"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: { xs: "1.5rem", md: 0 },
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+            />
+            <SingleDate
+              handleSubmit={handleSubmit}
+              attributeName={"DateSubmitted"}
+              maxLength={64}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: { xs: "1.5rem", md: "0rem" },
+                marginBottom: { xs: "0rem" },
+                gridArea: "Deadline",
+              }}
+              additionalFieldStyles={{
+                paddingRight: "1rem",
+              }}
+              date={dateSubmitted}
+              setDate={setDateSubmitted}
+            />
+            {user && (
+              <Button
+                sx={{ marginTop: "1rem", height: "min-content" }}
+                type="submit"
+                variant="outlined"
+              >
+                Update
+              </Button>
+            )}
+          </Box>
+
+          <Box
+            display="flex"
+            marginTop={{ xs: "2rem", sm: "-2rem", md: "2rem" }}
+            marginLeft={{ xs: "1rem", md: "0rem" }}
+            flexDirection={{ xs: "column", md: "row" }}
+          >
+            <Box
+              display="flex"
+              flexDirection={{ xs: "column", sm: "row" }}
+              marginTop={{ xs: "0rem", md: "1.5rem" }}
+            >
+              <InfoSection
+                entityIDName="ApplicationID"
+                entityID={application.ApplicationID}
+                sectionTitle="Category"
+                sectionArray={application.Category}
+                entityName="Application"
+                entityTargetAttribute="Category"
+                isMarginRight
+                sectionURL="http://localhost:3000/api/applications/category"
+                maxCreateLength={16}
+                additionalStyles={{
+                  marginRight: { xs: "0" },
+                }}
+              />
+              <InfoSection
+                entityIDName="ApplicationID"
+                entityID={application.ApplicationID}
+                sectionTitle="Relevant URLs"
+                sectionArray={application.RelevantURL}
+                entityName="Application"
+                entityTargetAttribute="RelevantURL"
+                isMarginRight
+                sectionURL="http://localhost:3000/api/applications/URL"
+                maxCreateLength={16}
+                additionalStyles={{
+                  marginRight: { xs: "0" },
+                }}
+              />
+            </Box>
+
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ marginTop: { xs: "2rem", md: "0rem" } }}
+            >
+              <Typography fontWeight="bold">Submit With</Typography>
+              <InfoSection
+                entityIDName="ApplicationID"
+                entityID={application.ApplicationID}
+                sectionTitle="Documents"
+                sectionArray={application?.Documents?.map(
+                  (document, index) => document
+                )}
+                entityName="Document"
+                entityTargetAttribute="DocumentID"
+                entityTargetAttribute2="DocFileName"
+                sectionURL="http://localhost:3000/api/applications/submitWith"
+                fetchAllOptionsURL="http://localhost:3000/api/documents"
+                maxCreateLength={64}
+                isDocument
+              />
+            </Box>
+
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ marginTop: { xs: "2rem", md: "0rem" } }}
+            >
+              <Typography fontWeight="bold">Corresponds To</Typography>
+              <InfoSection
+                entityIDName="ApplicationID"
+                entityID={application.ApplicationID}
+                sectionTitle="Jobs"
+                sectionArray={application?.Jobs?.map(
+                  (job, index) => job.CORRESPONDS_TO
+                )}
+                entityName="Job"
+                entityTargetAttribute="PositionID"
+                entityTargetAttribute2="PositionName"
+                entitySecondTargetAttribute="JobPostURL"
+                sectionURL="http://localhost:3000/api/applications/corresponding-jobs"
+                fetchAllOptionsURL="http://localhost:3000/api/jobs"
+                maxCreateLength={64}
+                isJob
+              />
+            </Box>
+          </Box>
+        </FormControl>
+      </form>
     </MainPaper>
   );
 }
@@ -462,7 +494,8 @@ function InfoSection({
       create,
       {
         [entityTargetAttribute]:
-          getValues(entityTargetAttribute) || dropdownValue[entityTargetAttribute],
+          getValues(entityTargetAttribute) ||
+          dropdownValue[entityTargetAttribute],
         [entityIDName]: entityID,
       },
       sectionURL,
@@ -471,7 +504,7 @@ function InfoSection({
       null,
       {},
       false,
-      {...dropdownValue}
+      { ...dropdownValue }
     );
   }
 
@@ -481,7 +514,8 @@ function InfoSection({
       create,
       {
         [entityTargetAttribute]:
-          getValues(entityTargetAttribute) || dropdownValue[entityTargetAttribute],
+          getValues(entityTargetAttribute) ||
+          dropdownValue[entityTargetAttribute],
         [entityIDName]: entityID,
         [entitySecondTargetAttribute]: getValues(entitySecondTargetAttribute),
       },
@@ -513,10 +547,15 @@ function InfoSection({
   }
 
   console.log("TESTING");
-  console.log(entityName, entityTargetAttribute, maxCreateLength, handleCreate, dropdownValue);
+  console.log(
+    entityName,
+    entityTargetAttribute,
+    maxCreateLength,
+    handleCreate,
+    dropdownValue
+  );
   return (
     <Box
-      minWidth="100%"
       padding="0.5rem"
       marginRight={`${isMarginRight ? "2rem" : "0"}`}
       sx={{ ...additionalStyles }}
@@ -526,22 +565,22 @@ function InfoSection({
       </Typography>
       {!isJob && (
         <ChipDisplayer
-        onUpdateSectionArray={onUpdateSectionArray}
-        attributeName={entityTargetAttribute}
-        secondAttributeName={entityTargetAttribute2}
-        handleDelete={handleDelete}
-      />
+          onUpdateSectionArray={onUpdateSectionArray}
+          attributeName={entityTargetAttribute}
+          secondAttributeName={entityTargetAttribute2}
+          handleDelete={handleDelete}
+        />
       )}
       {isJob && (
         <ChipDisplayer
-        onUpdateSectionArray={onUpdateSectionArray}
-        attributeName={entityTargetAttribute}
-        secondAttributeName={entitySecondTargetAttribute}
-        handleDelete={handleDelete}
+          onUpdateSectionArray={onUpdateSectionArray}
+          attributeName={entityTargetAttribute}
+          secondAttributeName={entitySecondTargetAttribute}
+          handleDelete={handleDelete}
         />
       )}
-      
-{!isDocument && !isJob && (
+
+      {!isDocument && !isJob && (
         <NewEntry
           attributeName={entityTargetAttribute}
           maxCreateLength={maxCreateLength}
@@ -569,111 +608,119 @@ function InfoSection({
         </Box>
       )}
       {isJob && (
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <NewEntryDropdown
-          isDropdownObject
-          entityName={entityName}
-          entityAttributeName={entityTargetAttribute}
-          entityAttributeName2={entityTargetAttribute2}
-          maxCreateLength={maxCreateLength}
-          handleCreate={handleCreateJob}
-          createIsLoading={createIsLoading}
-          register={register}
-          fetchAllOptionsURL={fetchAllOptionsURL}
-          additionalStyles={{ width: "50%" }}
-          doNotShowButton
-          dropdownValue={dropdownValue}
-          setDropdownValue={setDropdownValue}
-        />
-        <NewEntry
-          attributeName={entitySecondTargetAttribute}
-          maxCreateLength={maxCreateLength}
-          handleCreate={handleCreateJob}
-          createIsLoading={createIsLoading}
-          register={register}
-        />
-      </Box>
+        <Box
+          display="flex"
+          flexDirection={{ xs: "column", sm: "row" }}
+          justifyContent="space-between"
+        >
+          <NewEntryDropdown
+            isDropdownObject
+            entityName={entityName}
+            entityAttributeName={entityTargetAttribute}
+            entityAttributeName2={entityTargetAttribute2}
+            maxCreateLength={maxCreateLength}
+            handleCreate={handleCreateJob}
+            createIsLoading={createIsLoading}
+            register={register}
+            fetchAllOptionsURL={fetchAllOptionsURL}
+            doNotShowButton
+            dropdownValue={dropdownValue}
+            setDropdownValue={setDropdownValue}
+          />
+          <NewEntry
+            additionalStyles={{ marginLeft: "2rem" }}
+            attributeName={entitySecondTargetAttribute}
+            maxCreateLength={maxCreateLength}
+            handleCreate={handleCreateJob}
+            createIsLoading={createIsLoading}
+            register={register}
+          />
+        </Box>
       )}
     </Box>
   );
 }
 
-function AddNewApplication({ setApplicationsInfo, applicationsInfo, ApplicantUsername }) {
-    const { executeRequest: create, isLoading: createIsLoading } = useCreate();
-    const { register, getValues, reset, handleSubmit, setValue } = useForm();
-    const [dateSubmitted, setDateSubmitted] = React.useState(null);
-    const { executeHandle } = useHandleOperation(
-      reset,
-      setApplicationsInfo,
-      applicationsInfo
+function AddNewApplication({
+  setApplicationsInfo,
+  applicationsInfo,
+  ApplicantUsername,
+}) {
+  const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { register, getValues, reset, handleSubmit, setValue } = useForm();
+  const [dateSubmitted, setDateSubmitted] = React.useState(null);
+  const { executeHandle } = useHandleOperation(
+    reset,
+    setApplicationsInfo,
+    applicationsInfo
+  );
+  const { user } = useAuthContext();
+
+  async function handleCreate(data) {
+    const result = await executeHandle(
+      "create",
+      create,
+      {
+        ...data,
+        DateSubmitted: dateSubmitted,
+      },
+      "http://localhost:3000/api/applications/details",
+      null,
+      false,
+      null,
+      {},
+      false
     );
-    const { user } = useAuthContext();
-  
-    async function handleCreate(data) {
-      const result = await executeHandle(
-        "create",
-        create,
-        {
-            ...data,
-            DateSubmitted: dateSubmitted
-        },
-        "http://localhost:3000/api/applications/details",
-        null,
-        false,
-        null,
-        {},
-        false
-      );
-    }
-  
-    return (
-        <>
-        {user && (
-          <MainPaper
-            overrideStyles={{
-              flexDirection: { xs: "column", md: "row" },
-              justifyContent: "space-between",
+  }
+
+  return (
+    <>
+      {user && (
+        <MainPaper
+          overrideStyles={{
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: "1.5rem",
+              fontWeight: "500",
             }}
           >
-            <Typography
-              variant="h2"
-              sx={{
-                fontSize: "1.5rem",
-                fontWeight: "500",
-              }}
-            >
-              Add New Application
-            </Typography>
-            <SingleForm
-              register={register}
-              handleSubmit={handleSubmit}
-              actionOnAttribute={null}
-              attributeName={"AName"}
-              isLoading={createIsLoading}
-              maxLength={64}
-              additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-              attributeLabel={"Application Name"}
-            />
-            <SingleForm
-              register={register}
-              handleSubmit={handleSubmit}
-              actionOnAttribute={null}
-              attributeName={"Notes"}
-              isLoading={createIsLoading}
-              maxLength={64}
-              isTextArea
-              additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-            />
-            <SingleForm
-              register={register}
-              handleSubmit={handleSubmit}
-              actionOnAttribute={null}
-              attributeName={"Status"}
-              isLoading={createIsLoading}
-              maxLength={64}
-              additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-            />
-            <SingleDate
+            Add New Application
+          </Typography>
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"AName"}
+            isLoading={createIsLoading}
+            maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
+            attributeLabel={"Application Name"}
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"Notes"}
+            isLoading={createIsLoading}
+            maxLength={64}
+            isTextArea
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"Status"}
+            isLoading={createIsLoading}
+            maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
+          />
+          <SingleDate
             handleSubmit={handleSubmit}
             attributeName={"DateSubmitted"}
             maxLength={64}
@@ -681,25 +728,25 @@ function AddNewApplication({ setApplicationsInfo, applicationsInfo, ApplicantUse
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
+              marginTop: { xs: "1.5rem" },
               marginBottom: { xs: "0rem" },
               gridArea: "Deadline",
             }}
             date={dateSubmitted}
             setDate={setDateSubmitted}
           />
-  
-            <Button
-              onClick={handleSubmit(handleCreate)}
-              type="submit"
-              variant="outlined"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={createIsLoading}
-              sx={{ marginTop: { xs: "1.5rem" } }}
-            >
-              Create
-            </Button>
-          </MainPaper>
-        )}
-      </>
-    );
-  }
+
+          <Button
+            onClick={handleSubmit(handleCreate)}
+            type="submit"
+            variant="outlined"
+            disabled={createIsLoading}
+            sx={{ marginTop: "1.5rem" }}
+          >
+            Create
+          </Button>
+        </MainPaper>
+      )}
+    </>
+  );
+}

@@ -145,7 +145,7 @@ export default function Companies() {
         <Box
           display="flex"
           sx={{
-            flexDirection: { xs: "row", xl: "column" },
+            flexDirection: { xs: "column", sm: "row", xl: "column" },
           }}
           alignItems="center"
           justifyContent="center"
@@ -183,8 +183,10 @@ export default function Companies() {
                 aria-labelledby="demo-radio-buttons-group-label"
                 defaultValue="ASC"
                 name="radio-buttons-group"
-                sx={{ display: "flex" }}
-                row
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                }}
               >
                 <FormControlLabel
                   value="ASC"
@@ -223,6 +225,7 @@ export default function Companies() {
               additionalStyles={{
                 marginTop: { xs: "1rem", xl: "0rem" },
                 flexShrink: 0,
+                marginRight: { xs: "1rem", md: "0rem" },
               }}
               attributeName={"CompanyName"}
               allowUnauthenticated
@@ -460,17 +463,37 @@ function Company({
         flexDirection="row"
         flexWrap="wrap"
         alignItems="center"
+        justifyContent="center"
+        alignContent="center"
         width="100%"
       >
         <Typography
           variant="h2"
-          sx={{ fontSize: "3rem", fontWeight: "bold", display: "inline-block" }}
+          sx={{
+            fontSize: "3rem",
+            fontWeight: "bold",
+            display: "inline-block",
+            overflowWrap: "break-word",
+            wordWrap: "break-word",
+            wordBreak: "break-all",
+          }}
         >
           {company.CompanyName}
         </Typography>
         <BusinessIcon
           sx={{ marginLeft: "1rem", width: "4rem", height: "4rem" }}
         />
+        {user?.data?.user?.AdminFlag &&
+          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+            <IconButton
+              aria-label="delete"
+              size="large"
+              sx={{ marginLeft: "1rem" }}
+              onClick={() => handleOpenDeleteConfirmationDialog(index)}
+            >
+              <Delete sx={{ width: "2.5rem", height: "2.5rem" }} />
+            </IconButton>
+          )}
 
         <FormControl
           onSubmit={handleSubmit(updateCompany)}
@@ -539,20 +562,6 @@ function Company({
             </Button>
           )}
         </FormControl>
-        {user?.data?.user?.AdminFlag &&
-          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
-            <IconButton
-              sx={{
-                marginLeft: "auto",
-                order: { xs: 3, lg: 4 },
-              }}
-              aria-label="delete"
-              size="large"
-              onClick={() => handleOpenDeleteConfirmationDialog(index)}
-            >
-              <Delete sx={{ width: "2rem", height: "2rem" }} />
-            </IconButton>
-          )}
       </Box>
 
       <Box

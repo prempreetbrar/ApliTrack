@@ -19,13 +19,18 @@ import Companies from "pages/Companies";
 import Applications from "pages/Applications";
 import Offers from "pages/Offers";
 import Documents from "pages/Documents";
+import { Box, CircularProgress } from "@mui/joy";
 
 function App() {
-  const { user } = useAuthContext();
-
-  if (user?.token === undefined) {
-    return null;
+  const { user, isLoading } = useAuthContext();
+  if (isLoading) {
+    return (
+      <Box display="flex" alignItems="center" justifyContent="center">
+        <CircularProgress />;
+      </Box>
+    );
   }
+
   /*
     If the user isn't logged in, then navigate them to the login page on a protected route.
     Otherwise, if they are logged in, let them see the protected route.
@@ -38,7 +43,7 @@ function App() {
           path="/"
           element={
             user ? (
-              <Navigate to="/applicants/profile" />
+              <Navigate to="/applicants/applicant/profile" />
             ) : (
               <Navigate to="/auth/login" />
             )
@@ -46,14 +51,18 @@ function App() {
         />
         <Route
           path="/auth/signup"
-          element={!user ? <Signup /> : <Navigate to="/applicants/profile" />}
+          element={
+            !user ? <Signup /> : <Navigate to="/applicants/applicant/profile" />
+          }
         />
         <Route
           path="/auth/login"
-          element={!user ? <Login /> : <Navigate to="/applicants/profile" />}
+          element={
+            !user ? <Login /> : <Navigate to="/applicants/applicant/profile" />
+          }
         />
         <Route
-          path="/applicants/profile"
+          path="/applicants/applicant/profile"
           element={user ? <Profile /> : <Navigate to="/auth/login" />}
         />
         <Route path="/applicants/applicant/offers" element={<Offers />} />
@@ -67,7 +76,10 @@ function App() {
         />
         <Route path="/contacts" element={<Contacts />} />
         <Route path="/companies" element={<Companies />} />
-        <Route path="/applications" element={<Applications />} />
+        <Route
+          path="/applicants/applicant/applications"
+          element={user ? <Applications /> : <Navigate to="/auth/login" />}
+        />
       </Routes>
     </Router>
   );
