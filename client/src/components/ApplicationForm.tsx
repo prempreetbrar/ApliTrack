@@ -20,6 +20,7 @@ export default function NameForm({
         {...register("AName")}
         label="AName"
         sx={{
+          marginTop: { xs: "1rem", sm: "0rem" },
           marginRight: "1rem",
         }}
         disabled={!user && !allowUnauthenticated}
@@ -30,6 +31,7 @@ export default function NameForm({
         label="Status"
         sx={{
           marginRight: "1rem",
+          marginTop: { xs: "1rem", sm: "0rem" },
         }}
         disabled={!user && !allowUnauthenticated}
       />
@@ -38,6 +40,7 @@ export default function NameForm({
         {...register("APPL_CATEGORY.Category")}
         label="Category"
         sx={{
+          marginTop: { xs: "1rem", sm: "0rem" },
           marginRight: "1rem",
         }}
         disabled={!user && !allowUnauthenticated}

@@ -569,7 +569,11 @@ function Company({
         marginTop="2.5rem"
         width="100%"
       >
-        <Box display="flex" alignItems="center">
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent={{ xs: "center", sm: "flex-start" }}
+        >
           <Typography
             variant="h3"
             sx={{ fontWeight: "bold", fontSize: "2rem" }}
@@ -867,6 +871,7 @@ function Job({
         <Box
           sx={{
             display: "grid",
+            justifyItems: "center",
             gridTemplateAreas: {
               lg: `
             'PositionName ApplicationDeadline Qualification Responsibility' 
@@ -890,7 +895,7 @@ function Job({
           'JobPostFile JobPostFile Track Track'
           'Update Update d d'
         `,
-              xs: `
+              sm: `
         'PositionName ApplicationDeadline' 
         'PositionType Salary'
         'Description Description'
@@ -904,10 +909,29 @@ function Job({
         'Track Track'
         'd d'
       `,
+              xs: `
+      'PositionName' 
+      'PositionType'
+      'ApplicationDeadline'
+      'Salary'
+      'Description'
+      'Qualification'
+      'Responsibility'
+      'JobPostFile'
+      'JobPostFile'
+      'JobPostFile'
+      'Update'
+      'Track'
+      'Track'
+      'd'
+    `,
             },
             marginTop: "2rem",
             alignItems: "start",
+            gridAutoColumns: "minmax(0, 1fr)",
             gridGap: "0.75rem",
+            boxSizing: "border-box",
+            maxWidth: "100%",
           }}
         >
           <SingleForm
@@ -938,9 +962,10 @@ function Job({
             maxLength={64}
             additionalStyles={{
               gridArea: "ApplicationDeadline",
+              marginTop: { xs: "1rem", sm: 0 },
             }}
             additionalFieldStyles={{
-              width: "100%",
+              maxWidth: "100%",
             }}
             date={applicationDeadline}
             setDate={setApplicationDeadline}
@@ -952,10 +977,12 @@ function Job({
             isLoading={updateIsLoading}
             additionalStyles={{
               gridArea: "Salary",
+              boxSizing: "border-box",
             }}
             additionalFieldStyles={{
               marginTop: "1rem",
-              width: "100%",
+              maxWidth: "100%",
+              boxSizing: "border-box",
             }}
           />
           <SingleForm
@@ -966,9 +993,11 @@ function Job({
             additionalStyles={{
               gridArea: "Description",
               marginTop: "1rem",
+              maxWidth: "80%",
             }}
             additionalFieldStyles={{
               marginRight: { xs: "0rem" },
+              maxWidth: "100%",
             }}
             isTextArea
           />
@@ -979,6 +1008,11 @@ function Job({
               display: "flex",
               flexDirection: "column",
               marginTop: "2rem",
+              marginLeft: "0",
+              marginRight: "0",
+              padding: 0,
+              boxSizing: "border-box",
+              maxWidth: "100%",
             }}
           >
             <Typography>Job Posting</Typography>
@@ -986,9 +1020,9 @@ function Job({
               <iframe
                 src={`http://localhost:3000/uploads/jobPosts/${currentlyUploadedJobPostFile}`}
                 title={currentlyUploadedJobPostFile}
-                width="fit-content"
                 style={{
                   height: "20rem",
+                  maxWidth: "100%",
                 }}
               ></iframe>
             )}
@@ -1006,10 +1040,7 @@ function Job({
                 placement="top"
                 arrow
               >
-                <Typography
-                  noWrap
-                  sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
-                >
+                <Typography sx={{ marginTop: "1rem", width: "100%" }}>
                   Existing File: {currentlyUploadedJobPostFile}
                 </Typography>
               </Tooltip>
@@ -1020,10 +1051,7 @@ function Job({
                 placement="top"
                 arrow
               >
-                <Typography
-                  noWrap
-                  sx={{ marginTop: "1rem", maxWidth: "17.5rem" }}
-                >
+                <Typography sx={{ marginTop: "1rem", maxWidth: "100%" }}>
                   No File Has Been Uploaded for the Job Posting
                 </Typography>
               </Tooltip>
@@ -1232,16 +1260,26 @@ function NewJobForm({ companyName, jobs, setJobs }) {
               md: `'Title Name Description Deadline Create'
               'Title Type Salary File Create'
             `,
-              xs: `'. Title Title .'
+              sm: `'. Title Title .'
             'Name Name Type Type'
             'Salary Salary Deadline Deadline'
             'Description Description File File'
             '. Create Create .'
           `,
+              xs: `'Title'
+            'Name'
+            'Type'
+            'Salary'
+            'Deadline'
+            'Description'
+            'File'
+            'Create'
+          `,
             },
             alignItems: "center",
             justifyItems: "center",
             gridGap: "1rem",
+            gridAutoColumns: "minmax(0, 1fr)",
           }}
         >
           <Typography
