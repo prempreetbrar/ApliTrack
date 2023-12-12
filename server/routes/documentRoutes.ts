@@ -23,6 +23,7 @@ router
   .get(
     authController.checkIfLoggedIn,
     documentController.filterApplicant,
+    documentController.addSearch,
     documentController.getAllDocuments
   )
   .patch(
