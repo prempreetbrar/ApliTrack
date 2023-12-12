@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Box,
   FormControl,
@@ -528,6 +529,7 @@ function NewDocumentForm({ documents, setDocuments }) {
             flexDirection: { xs: "column", md: "column" },
             justifyContent: "center",
             alignItems: { xs: "center", md: "flex-start" },
+            marginTop: "2rem",
           }}
         >
           <Box

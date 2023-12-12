@@ -127,6 +127,7 @@ export default function Navbar() {
                 onClick={handleLoginClick}
                 variant="contained"
                 disableElevation
+                sx={{ display: { xs: "none", sm: "block" } }}
               >
                 Login
               </Button>
@@ -135,6 +136,7 @@ export default function Navbar() {
                 onClick={handleSignupClick}
                 variant="contained"
                 disableElevation
+                sx={{ visibility: { xs: "hidden", sm: "visible" } }}
               >
                 Sign Up
               </Button>
@@ -148,17 +150,13 @@ export default function Navbar() {
         onClose={handleMenuClose}
       >
         {user && (
-          <MenuItem onClick={() => handleMenuItemClick("/applicants/profile")}>
+          <MenuItem
+            onClick={() => handleMenuItemClick("/applicants/applicant/profile")}
+          >
             Profile
           </MenuItem>
         )}
-        {user && (
-          <MenuItem
-            onClick={() => handleMenuItemClick("/applicants/applicant/offers")}
-          >
-            Offers
-          </MenuItem>
-        )}
+
         {user && (
           <MenuItem
             onClick={() =>
@@ -166,6 +164,22 @@ export default function Navbar() {
             }
           >
             Documents
+          </MenuItem>
+        )}
+        {user && (
+          <MenuItem
+            onClick={() =>
+              handleMenuItemClick("/applicants/applicant/applications")
+            }
+          >
+            Applications
+          </MenuItem>
+        )}
+        {user && (
+          <MenuItem
+            onClick={() => handleMenuItemClick("/applicants/applicant/offers")}
+          >
+            Offers
           </MenuItem>
         )}
         {user && (

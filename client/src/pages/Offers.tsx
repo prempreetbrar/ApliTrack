@@ -744,7 +744,7 @@ function NewOfferForm({ offers, setOffers }) {
       create,
       {
         ...newData,
-        PositionID: offerJob.PositionID,
+        PositionID: offerJob?.PositionID,
         ResponseDeadline: responseDeadline,
         StartDate: startDate,
       },
@@ -760,9 +760,9 @@ function NewOfferForm({ offers, setOffers }) {
       false,
       {
         Job: {
-          PositionID: offerJob.PositionID,
-          CompanyName: offerJob.CompanyName,
-          PositionName: offerJob.PositionName,
+          PositionID: offerJob?.PositionID,
+          CompanyName: offerJob?.CompanyName,
+          PositionName: offerJob?.PositionName,
         },
       }
     );

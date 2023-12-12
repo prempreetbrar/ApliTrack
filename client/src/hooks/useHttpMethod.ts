@@ -11,9 +11,11 @@ const useHttpMethod = (method) => {
   const { user } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
 
-  const executeRequest = async (data, url, config = {}) => {
+  const executeRequest = async (data, url, config = {} as any) => {
     setIsLoading(true);
     setError(null);
+
+    console.log(url);
 
     try {
       if (method === "delete") {
@@ -32,7 +34,9 @@ const useHttpMethod = (method) => {
       let response;
 
       if (method === "delete" || method === "get") {
+        console.log(url, config);
         response = await axios[method](url, config);
+        console.log(response);
       } else {
         response = await axios[method](url, data, config);
       }
@@ -55,6 +59,7 @@ const useHttpMethod = (method) => {
       setIsLoading(false);
       setError(error?.response?.data.message);
 
+      console.log(error);
       enqueueSnackbar(error.response?.data.message, {
         variant: "error",
         autoHideDuration: 1000,
