@@ -32,6 +32,7 @@ import SingleDate from "components/SingleDate";
 import { DELETE_ONLY } from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import MainBox from "components/MainBox";
+import ApplicationForm from "components/ApplicationForm";
 
 export default function Applications() {
   const { user } = useAuthContext();
@@ -135,7 +136,7 @@ export default function Applications() {
             >
               Search by:
             </Typography>
-            <NameForm
+            <ApplicationForm
               register={register}
               handleSubmit={handleSubmit}
               additionalStyles={{
