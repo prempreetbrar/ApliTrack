@@ -17,7 +17,7 @@ import NameUpdater from "components/NameForm";
 import MainPaper from "components/MainPaper";
 
 export default function UserSection({ applicantInfo }) {
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, reset } = useForm();
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
 
   React.useEffect(() => {
@@ -36,6 +36,9 @@ export default function UserSection({ applicantInfo }) {
   ]);
 
   function updateUser(data) {
+    delete data["Password"];
+    delete data["NewPassword"];
+    delete data["ConfirmNewPassword"];
     if ((data.Fname || data.Lname) && data.Education) {
       update(data, "http://localhost:3000/api/users/");
       update(data, "http://localhost:3000/api/applicants/education", {}, false);
@@ -48,6 +51,7 @@ export default function UserSection({ applicantInfo }) {
 
   async function updatePassword(data) {
     update(data, "http://localhost:3000/api/auth/change-password");
+    setValue("Password");
   }
 
   return (

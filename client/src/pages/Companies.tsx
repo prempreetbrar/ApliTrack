@@ -1451,6 +1451,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             isLoading={createIsLoading}
             maxLength={64}
             additionalStyles={{ marginTop: { xs: "1.5rem" } }}
+            isTextArea
           />
 
           <Button
