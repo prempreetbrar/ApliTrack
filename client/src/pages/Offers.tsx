@@ -174,6 +174,7 @@ export default function Offers() {
                       label="Sort by Response Deadline Ascending"
                       labelPlacement="start"
                       sx={{
+                        marginTop: { xs: "1rem", sm: "0" },
                         width: "100%",
                       }}
                     />
@@ -183,6 +184,7 @@ export default function Offers() {
                       label="Sort by Start Date Ascending"
                       labelPlacement="start"
                       sx={{
+                        marginTop: { xs: "1rem", sm: "0" },
                         width: "100%",
                       }}
                     />
@@ -200,6 +202,7 @@ export default function Offers() {
                       label="Sort by Response Deadline Descending"
                       labelPlacement="start"
                       sx={{
+                        marginTop: { xs: "1rem", sm: "0" },
                         width: "100%",
                       }}
                     />
@@ -210,6 +213,7 @@ export default function Offers() {
                       label="Sort by Start Date Descending"
                       labelPlacement="start"
                       sx={{
+                        marginTop: { xs: "1rem", sm: "0" },
                         width: "100%",
                       }}
                     />
@@ -219,6 +223,7 @@ export default function Offers() {
                       label="Sort by Compensation Descending"
                       labelPlacement="start"
                       sx={{
+                        marginTop: { xs: "1rem", sm: "0" },
                         width: "100%",
                       }}
                     />
@@ -481,23 +486,26 @@ function Offer({
         justifyContent="space-between"
         width="100%"
       >
-        <Box display="flex">
+        <Box display="flex" alignItems="center">
           <Typography variant="h2">Offer</Typography>
           <EmojiEventsIcon
-            sx={{ width: "4rem", height: "4rem", marginLeft: "2rem" }}
+            sx={{
+              width: { xs: "2rem", sm: "4rem" },
+              height: { xs: "2rem", sm: "4rem" },
+              marginLeft: { xs: "1rem", sm: "2rem" },
+            }}
           />
         </Box>
-        {user?.data?.user?.AdminFlag &&
-          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
-            <IconButton
-              sx={{}}
-              aria-label="delete"
-              size="large"
-              onClick={() => handleOpenDeleteConfirmationDialog(index)}
-            >
-              <Delete sx={{ width: "2rem", height: "2rem" }} />
-            </IconButton>
-          )}
+        {user && (
+          <IconButton
+            sx={{}}
+            aria-label="delete"
+            size="large"
+            onClick={() => handleOpenDeleteConfirmationDialog(index)}
+          >
+            <Delete sx={{ width: "2rem", height: "2rem" }} />
+          </IconButton>
+        )}
       </Box>
 
       <form
@@ -629,8 +637,10 @@ function Offer({
             display="flex"
             flexDirection="column"
             alignItems="center"
-            sx={{ marginTop: { xs: "2rem", md: "-1.5rem" } }}
-            marginLeft="2rem"
+            sx={{
+              marginTop: { xs: "2rem", md: "-1.5rem" },
+              marginLeft: { xs: "0rem", sm: "2rem" },
+            }}
             flexGrow="1"
           >
             <Typography>Job Posting</Typography>
@@ -912,8 +922,10 @@ function NewOfferForm({ offers, setOffers }) {
                   display="flex"
                   flexDirection="column"
                   alignItems="center"
-                  sx={{ marginTop: { xs: "2rem", md: "-1.5rem" } }}
-                  marginLeft="2rem"
+                  sx={{
+                    marginTop: { xs: "2rem", md: "-1.5rem" },
+                    marginLeft: { xs: "0rem", sm: "2rem" },
+                  }}
                   flexGrow="1"
                 >
                   <Typography>Job Posting</Typography>
