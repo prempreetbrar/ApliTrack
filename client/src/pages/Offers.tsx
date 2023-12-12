@@ -132,7 +132,7 @@ export default function Offers() {
         <MainBox>
           <form
             onSubmit={handleSubmit(handleGet)}
-            style={{ display: "flex", flexDirection: "column" }}
+            style={{ display: "flex", flexDirection: "column", width: "100%" }}
           >
             <Box
               display="flex"
@@ -141,51 +141,90 @@ export default function Offers() {
               }}
               alignItems="center"
               marginRight="2.5rem"
+              width="100%"
             >
-              <FormControl>
+              <FormControl sx={{ width: "100%" }}>
                 <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
                   defaultValue="Compensation-ASC"
                   name="radio-buttons-group"
-                  sx={{ display: "flex" }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
                   row
                 >
-                  <FormControlLabel
-                    value="Compensation-ASC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Compensation Ascending"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="Compensation-DESC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Compensation Descending"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="ResponseDeadline-ASC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Response Deadline Ascending"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="ResponseDeadline-DESC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Response Deadline Descending"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="StartDate-ASC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Start Date Ascending"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="StartDate-DESC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort by Start Date Descending"
-                    labelPlacement="start"
-                  />
+                  <Box
+                    display="flex"
+                    maxWidth={{ xs: "100%", sm: "50%" }}
+                    flexDirection="column"
+                    paddingRight="2rem"
+                  >
+                    <FormControlLabel
+                      value="Compensation-ASC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Compensation Ascending"
+                      labelPlacement="start"
+                      sx={{ width: "100%" }}
+                    />
+                    <FormControlLabel
+                      value="ResponseDeadline-ASC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Response Deadline Ascending"
+                      labelPlacement="start"
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                    <FormControlLabel
+                      value="StartDate-ASC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Start Date Ascending"
+                      labelPlacement="start"
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                  </Box>
+
+                  <Box
+                    display="flex"
+                    maxWidth={{ xs: "100%", sm: "50%" }}
+                    flexDirection="column"
+                    paddingRight="2rem"
+                  >
+                    <FormControlLabel
+                      value="ResponseDeadline-DESC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Response Deadline Descending"
+                      labelPlacement="start"
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+
+                    <FormControlLabel
+                      value="StartDate-DESC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Start Date Descending"
+                      labelPlacement="start"
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                    <FormControlLabel
+                      value="Compensation-DESC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Compensation Descending"
+                      labelPlacement="start"
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                  </Box>
                 </RadioGroup>
               </FormControl>
             </Box>
@@ -206,101 +245,124 @@ export default function Offers() {
               >
                 Search by:
               </Typography>
-              <SingleForm
-                register={register}
-                handleSubmit={handleSubmit}
-                additionalStyles={{
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                attributeName={"LowestCompensation"}
-                allowUnauthenticated
-              />
-              <SingleForm
-                register={register}
-                handleSubmit={handleSubmit}
-                additionalStyles={{
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                attributeName={"HighestCompensation"}
-                allowUnauthenticated
-              />
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"EarliestResponseDeadline"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-                date={EarliestResponseDeadline}
-                setDate={setEarliestResponseDeadline}
-                allowUnauthenticated
-              />
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"LatestResponseDeadline"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-                date={LatestResponseDeadline}
-                setDate={setLatestResponseDeadline}
-                allowUnauthenticated
-              />
+              <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", xl: "0rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    width: "100%",
+                    marginRight: { xs: "1rem" },
+                  }}
+                  attributeName={"LowestCompensation"}
+                  allowUnauthenticated
+                />
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", xl: "0rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    width: "100%",
+                    marginRight: { xs: "1rem" },
+                  }}
+                  attributeName={"HighestCompensation"}
+                  allowUnauthenticated
+                />
+              </Box>
 
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"EarliestStartDate"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-                date={EarliestStartDate}
-                setDate={setEarliestStartDate}
-              />
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"LatestStartDate"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-                date={LatestStartDate}
-                setDate={setLatestStartDate}
-              />
+              <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"EarliestResponseDeadline"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", xl: "0rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={EarliestResponseDeadline}
+                  setDate={setEarliestResponseDeadline}
+                  allowUnauthenticated
+                />
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"LatestResponseDeadline"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", xl: "0rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={LatestResponseDeadline}
+                  setDate={setLatestResponseDeadline}
+                  allowUnauthenticated
+                />
+              </Box>
+
+              <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"EarliestStartDate"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", xl: "0rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={EarliestStartDate}
+                  setDate={setEarliestStartDate}
+                />
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"LatestStartDate"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", xl: "0rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={LatestStartDate}
+                  setDate={setLatestStartDate}
+                />
+              </Box>
               <IconButton type="submit">
                 <SearchIcon color="primary" />
               </IconButton>
