@@ -150,7 +150,7 @@ export default function Contacts() {
           width: "100%",
           flexDirection: "row",
           marginBottom: "1rem",
-          justifyContent: "space-between",
+          justifyContent: "center",
           alignItems: "center",
         }}
       >
@@ -175,9 +175,9 @@ export default function Contacts() {
           <Box
             display="flex"
             sx={{
-              marginTop: { xs: "2rem", md: "0rem" },
+              marginTop: { xs: "1rem", md: "1rem" },
               flexDirection: { xs: "column", sm: "row" },
-              alignItems: { xs: "flex-start", sm: "center" },
+              alignItems: { xs: "center", sm: "center" },
             }}
           >
             <Typography
@@ -191,13 +191,19 @@ export default function Contacts() {
               handleSubmit={handleSubmit}
               additionalStyles={{
                 marginTop: { xs: "1rem", sm: "0rem" },
+                flexDirection: { xs: "column", sm: "row" },
               }}
               additionalLnameStyles={{
+                marginTop: { xs: "1rem", sm: "0rem" },
                 marginRight: { xs: "1rem" },
               }}
               allowUnauthenticated
             />
-            <Box display="flex" alignItems="center">
+            <Box
+              display="flex"
+              alignItems="center"
+              flexDirection={{ xs: "column", sm: "row" }}
+            >
               {user && onlyShowContactsIKnow && (
                 <>
                   <SingleDate
@@ -479,7 +485,6 @@ function Contact({
                   <SingleForm
                     register={register}
                     handleSubmit={handleSubmit}
-                    actionOnAttribute={updateKnows}
                     attributeName={"Relationship"}
                     maxLength={64}
                     isLoading={updateIsLoading}
@@ -487,6 +492,7 @@ function Contact({
                       display: "flex",
                       flexDirection: "row",
                       alignItems: "center",
+                      marginTop: "1.5rem",
                     }}
                     additionalFieldStyles={{
                       marginRight: { xs: "1rem" },
@@ -494,7 +500,6 @@ function Contact({
                   />
                   <SingleDate
                     handleSubmit={handleSubmit}
-                    actionOnAttribute={updateKnows}
                     attributeName={"LastContactDate"}
                     maxLength={64}
                     isLoading={updateIsLoading}
@@ -502,6 +507,7 @@ function Contact({
                       display: "flex",
                       flexDirection: "row",
                       alignItems: "center",
+                      marginTop: "1.5rem",
                     }}
                     date={date || null}
                     setDate={setDate}
@@ -518,8 +524,9 @@ function Contact({
                     isLoading={updateIsLoading}
                     additionalStyles={{
                       display: "flex",
-                      flexDirection: "row",
+                      flexDirection: "column",
                       alignItems: "center",
+                      marginTop: "1.5rem",
                       marginBottom: { xs: "2rem", md: "0rem" },
                     }}
                     additionalFieldStyles={{
@@ -570,7 +577,11 @@ function Contact({
           handleSubmit={handleSubmit}
           actionOnAttribute={updateNameOrLinkedInURL}
           isLoading={updateIsLoading}
-          additionalLnameStyles={{ marginRight: { xs: "1rem" } }}
+          additionalStyles={{ flexDirection: { xs: "column", sm: "row" } }}
+          additionalLnameStyles={{
+            marginTop: { xs: "1rem", sm: 0 },
+            marginRight: { xs: "1rem" },
+          }}
           buttonName={"Update"}
         />
         <SingleForm
@@ -626,7 +637,7 @@ function Contact({
           />
         </Box>
         <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
-          Employed At
+          Works At
         </Typography>
         <InfoSection
           entityIDName="ContactID"
@@ -773,7 +784,11 @@ function InfoSection({
         />
       )}
       {isCompany && (
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Box
+          display="flex"
+          flexDirection={{ xs: "column", sm: "row" }}
+          justifyContent="space-between"
+        >
           <NewEntryDropdown
             entityName={entityName}
             entityAttributeName={entityTargetAttribute}
