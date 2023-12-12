@@ -41,6 +41,10 @@ exports.uploadJobPostFile = errorHandling.catchAsync(
   }
 );
 
+// for many-to-many relationship(s)
+exports.createJobMentionsInterview = factory.createOne(Job.JobMentionsInterview);
+exports.deleteJobMentionsInterview = factory.deleteInstance(Job.JobMentionsInterview);
+
 exports.deleteJob = factory.deleteInstance(Job.Job);
 exports.deleteJobQual = factory.deleteInstance(Job.JobQualification);
 exports.deleteJobResp = factory.deleteInstance(Job.JobResponsibility);

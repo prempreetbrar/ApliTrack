@@ -27,7 +27,7 @@ import InterviewForm from "components/InterviewForm";
 import SingleDate from "components/SingleDate";
 import NewEntry from "components/NewEntry";
 import ChipDisplayer from "components/ChipDisplayer";
-import NewEntryDropdownInterview from "components/NewEntryDropdownInterview";
+import NewEntryDropdownLabel from "components/NewEntryDropdownLabel";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 
 export default function Interviews() {
@@ -43,7 +43,8 @@ export default function Interviews() {
     React.useState(false);
   const [selectedIndexToDelete, setSelectedIndexToDelete] =
     React.useState(null);
-  const [Date, setDate] = React.useState(null);
+  const [fromDate, setFromDate] = React.useState(null);
+  const [toDate, setToDate] = React.useState(null);
 
     const handleOpenDeleteConfirmationDialog = (index) => {
       setSelectedIndexToDelete(index);
@@ -79,7 +80,7 @@ export default function Interviews() {
     executeHandle(
       "get",
       get,
-      data,
+      {...data, fromDate, toDate},
       "http://localhost:3000/api/interviews/my-interviews",
       null,
       false,
@@ -146,7 +147,7 @@ export default function Interviews() {
             <SingleDate
               register={register}
               handleSubmit={handleSubmit}
-              attributeName={"Date"}
+              attributeName={"From-Date"}
               maxLength={64}
               additionalStyles={{
                 display: "flex",
@@ -158,8 +159,26 @@ export default function Interviews() {
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
               }}
-              date={Date}
-              setDate={setDate}
+              date={fromDate}
+              setDate={setFromDate}
+            />
+            <SingleDate
+              register={register}
+              handleSubmit={handleSubmit}
+              attributeName={"To-Date"}
+              maxLength={64}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: { xs: "0rem" },
+                marginTop: { xs: "1rem", sm: "0rem" },
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+              date={toDate}
+              setDate={setToDate}
             />
             <IconButton type="submit">
                 <SearchIcon color="primary" />
@@ -238,7 +257,9 @@ function Interview({
 
   function updateStageorDateorAID(data) {
     update(
-      { ...data, InterviewID: interview.InterviewID},
+      { ...data, 
+      InterviewID: interview.InterviewID,
+      Date: date},
       "http://localhost:3000/api/interviews/details"
     );
   }
@@ -323,18 +344,36 @@ function Interview({
           maxCreateLength={64}
           isContact
         />
+
+        <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
+          Jobs Mentioned
+        </Typography>
+        <InfoSection
+          entityIDName="InterviewID"
+          entityID={interview.InterviewID}
+          sectionTitle="Job(s)"
+          sectionArray={interview?.Job?.map(
+            (job, index) => job.MENTIONS
+          )}
+          entityName="Job"
+          entityTargetAttribute="PositionID"
+          sectionURL="http://localhost:3000/api/jobs/mentions"
+          fetchAllOptionsURL="http://localhost:3000/api/jobs"
+          maxCreateLength={64}
+          isContact
+        />
       </Box>
       <IconButton
-            sx={{
-              alignSelf: { xs: "flex-end", md: "flex-start" },
-              order: { xs: 1, md: 3 },
-            }}
-            aria-label="delete"
-            size="large"
-            onClick={() => handleOpenDeleteConfirmationDialog(index)}
-          >
-            <Delete sx={{ width: "2rem", height: "2rem" }} />
-          </IconButton>
+        sx={{
+          alignSelf: { xs: "flex-end", md: "flex-start" },
+          order: { xs: 1, md: 3 },
+        }}
+        aria-label="delete"
+        size="large"
+        onClick={() => handleOpenDeleteConfirmationDialog(index)}
+      >
+        <Delete sx={{ width: "2rem", height: "2rem" }} />
+      </IconButton>
     </MainPaper>
   );
 }
@@ -424,7 +463,7 @@ function InfoSection({
       )}
       {isContact && (
         <Box display="flex" flexDirection="row" justifyContent="space-between">
-          <NewEntryDropdownInterview
+          <NewEntryDropdownLabel
             entityName={entityName}
             entityAttributeName={entityTargetAttribute}
             maxCreateLength={maxCreateLength}

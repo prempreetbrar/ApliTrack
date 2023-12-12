@@ -15,6 +15,7 @@ export default function NewEntryDropdown({
   doNotShowButton,
   dropdownValue,
   setDropdownValue,
+  label
 }) {
   const { user } = useAuthContext();
   const { executeRequest, isLoading, error } = useGet();
@@ -47,7 +48,7 @@ export default function NewEntryDropdown({
             placeholder={`Enter New ${entityName}`}
             fullWidth
             options={allOptions}
-            renderInput={(params) => <TextField {...params} label="Contact" />}
+            renderInput={(params) => <TextField {...params} label={entityName} />}
             value={dropdownValue}
             onChange={(event, value) => setDropdownValue(value)}
           />

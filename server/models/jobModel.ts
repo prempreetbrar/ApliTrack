@@ -118,11 +118,7 @@ Job.hasMany(JobResponsibility, {
 });
 // ---
 
-/*
-  If any changes occurred to the model, sequelize.sync just ensures that they are
-  applied to the database.
-*/
-sequelize.sync();
+
 exports.Job = Job;
 exports.JobQualification = JobQualification;
 exports.JobResponsibility = JobResponsibility;
@@ -185,3 +181,9 @@ Interview.belongsToMany(Job, {
 });
 
 exports.JobMentionsInterview = JobMentionsInterview;
+
+/*
+  If any changes occurred to the model, sequelize.sync just ensures that they are
+  applied to the database.
+*/
+sequelize.sync();
