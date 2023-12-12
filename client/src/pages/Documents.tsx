@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import MainBox from "components/MainBox";
-import SingleDate from "components/SingleDate";
 import SingleForm from "components/SingleForm";
 import useAuthContext from "hooks/useAuthContext";
 import useHandleOperation from "hooks/useHandleOperation";
@@ -21,10 +20,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import SearchIcon from "@mui/icons-material/Search";
 import { Delete } from "@mui/icons-material";
-import { DELETE_ONLY } from "Constants";
 import MainPaper from "components/MainPaper";
-import NewEntryDropdown from "components/NewEntryDropdown";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+
+import ArticleIcon from "@mui/icons-material/Article";
 
 export default function Documents() {
   const { user } = useAuthContext();
@@ -118,33 +116,34 @@ export default function Documents() {
             onSubmit={handleSubmit(handleGet)}
             style={{ display: "flex", flexDirection: "column", width: "100%" }}
           >
-            <Box
-              display="flex"
-              sx={{
-                flexDirection: { xs: "column", xl: "row" },
-              }}
-              alignItems="center"
-              marginRight="2.5rem"
-              width="100%"
-            >
-              <FormControl sx={{ width: "100%" }}>
+            <FormControl sx={{ width: "100%" }}>
+              <Box
+                display="flex"
+                sx={{
+                  flexDirection: { xs: "column", md: "row" },
+                }}
+                justifyContent="center"
+                alignItems="center"
+                width="100%"
+              >
                 <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
                   defaultValue="DocFileName-ASC"
                   name="radio-buttons-group"
                   sx={{
                     display: "flex",
-                    flexDirection: { xs: "column", sm: "row" },
+                    flexDirection: { xs: "column", md: "row" },
                     justifyContent: "center",
                     alignItems: "center",
-                    width: "100%",
+                    width: { xs: "100%", md: "50%" },
                   }}
-                  row
                 >
                   <Box
                     display="flex"
-                    maxWidth={{ xs: "100%", sm: "50%" }}
-                    flexDirection="column"
+                    width="100%"
+                    justifyContent="center"
+                    alignItems="center"
+                    flexDirection={{ xs: "column", sm: "row" }}
                     paddingRight="2rem"
                   >
                     <FormControlLabel
@@ -152,7 +151,6 @@ export default function Documents() {
                       control={<Radio {...register("Sort")} />}
                       label="Sort by Document Name Ascending"
                       labelPlacement="start"
-                      sx={{ width: "100%" }}
                     />
                     <FormControlLabel
                       value="DocFileName-DESC"
@@ -160,55 +158,49 @@ export default function Documents() {
                       label="Sort by Document Name Descending"
                       labelPlacement="start"
                       sx={{
-                        width: "100%",
+                        marginLeft: { xs: "0.5rem", sm: "4rem" },
+                        marginTop: { xs: "1rem", sm: "0rem" },
                       }}
                     />
                   </Box>
                 </RadioGroup>
-              </FormControl>
-            </Box>
 
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              marginTop="1rem"
-              marginBottom="1rem"
-              sx={{
-                flexDirection: { xs: "column", xl: "row" },
-              }}
-            >
-              <Typography
-                variant="h3"
-                sx={{ fontSize: "1rem", marginRight: "1rem", flexShrink: 0 }}
-              >
-                Search by:
-              </Typography>
-              <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
-                <SingleForm
-                  register={register}
-                  handleSubmit={handleSubmit}
-                  additionalStyles={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: { xs: "0rem" },
-                    marginTop: { xs: "1rem", xl: "0rem" },
-                    flexShrink: 0,
-                  }}
-                  additionalFieldStyles={{
-                    width: "100%",
-                    marginRight: { xs: "1rem" },
-                  }}
-                  attributeName={"DocFileName"}
-                  allowUnauthenticated
-                />
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      fontSize: "1rem",
+                      marginRight: "1rem",
+                      flexShrink: 0,
+                    }}
+                  >
+                    Search by:
+                  </Typography>
+                  <SingleForm
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: { xs: "0rem" },
+                      marginTop: { xs: "1rem", xl: "0rem" },
+                      flexShrink: 0,
+                    }}
+                    attributeName={"DocFileName"}
+                    allowUnauthenticated
+                  />
+                  <IconButton type="submit">
+                    <SearchIcon color="primary" />
+                  </IconButton>
+                </Box>
               </Box>
-
-              <IconButton type="submit">
-                <SearchIcon color="primary" />
-              </IconButton>
-            </Box>
+            </FormControl>
           </form>
           {documents?.map((document, index) => (
             <Document
@@ -303,6 +295,7 @@ function Document({
         flexDirection: { xs: "column", md: "column" },
         justifyContent: "center",
         alignItems: { xs: "center", md: "flex-start" },
+        marginTop: "2rem",
       }}
       paperKey={index}
     >
@@ -312,24 +305,41 @@ function Document({
         alignItems="center"
         justifyContent="space-between"
         width="100%"
+        boxSizing="border-box"
+        flexWrap="wrap"
       >
-        <Box display="flex">
-          <Typography variant="h2">Document</Typography>
-          <EmojiEventsIcon
-            sx={{ width: "4rem", height: "4rem", marginLeft: "2rem" }}
+        <Box
+          display="flex"
+          alignItems="center"
+          flexWrap="wrap"
+          justifyContent="center"
+        >
+          <Typography variant="h2" sx={{ fontSize: { xs: "2rem" } }}>
+            Document
+          </Typography>
+          <ArticleIcon
+            sx={{
+              width: { xs: "2rem", md: "3rem" },
+              height: { xs: "2rem", md: "3rem" },
+              marginLeft: { xs: "0.75rem", md: "2rem" },
+            }}
           />
         </Box>
-        {user?.data?.user?.AdminFlag &&
-          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
-            <IconButton
-              sx={{}}
-              aria-label="delete"
-              size="large"
-              onClick={() => handleOpenDeleteConfirmationDialog(index)}
-            >
-              <Delete sx={{ width: "2rem", height: "2rem" }} />
-            </IconButton>
-          )}
+        {user && (
+          <IconButton
+            sx={{}}
+            aria-label="delete"
+            size="large"
+            onClick={() => handleOpenDeleteConfirmationDialog(index)}
+          >
+            <Delete
+              sx={{
+                width: { xs: "1.75rem", sm: "2rem" },
+                height: { xs: "1.75rem", sm: "2rem" },
+              }}
+            />
+          </IconButton>
+        )}
       </Box>
 
       <form
@@ -400,7 +410,7 @@ function Document({
             flexDirection="column"
             alignItems="center"
             sx={{ marginTop: { xs: "2rem", md: "-1.5rem" } }}
-            marginLeft="2rem"
+            marginLeft={{ xs: "0rem", md: "2rem" }}
             flexGrow="1"
           >
             <Typography>Document File</Typography>
@@ -522,7 +532,7 @@ function NewDocumentForm({ documents, setDocuments }) {
         >
           <Box
             display="flex"
-            flexDirection={{ xs: "column", md: "row" }}
+            flexDirection={{ xs: "column", lg: "row" }}
             alignItems="center"
             justifyContent="space-between"
             width="100%"
@@ -596,8 +606,8 @@ function NewDocumentForm({ documents, setDocuments }) {
                   display="flex"
                   flexDirection="column"
                   alignItems="center"
-                  sx={{ marginTop: { xs: "2rem", md: "-1.5rem" } }}
-                  marginLeft="2rem"
+                  sx={{ marginTop: { xs: "2rem", md: "0.75rem" } }}
+                  marginLeft={{ xs: "0rem", sm: "2rem" }}
                   flexGrow="1"
                 >
                   <Typography>File</Typography>
