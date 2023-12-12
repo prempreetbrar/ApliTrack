@@ -17,8 +17,12 @@ import {
   Input,
   Tooltip,
   Button,
+  FormControl,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import SearchIcon from "@mui/icons-material/Search";
 
 import { DELETE_ONLY } from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
@@ -40,14 +44,12 @@ export default function Offers() {
     React.useState(false);
   const [selectedIndexToDelete, setSelectedIndexToDelete] =
     React.useState(null);
-  const [onlyShowContactsIKnow, setOnlyShowContactsIKnow] =
-    React.useState(false);
-  const [
-    mostRecentEarliestLastContactDate,
-    setMostRecentEarliestLastContactDate,
-  ] = React.useState(null);
-  const [mostRecentLatestLastContactDate, setMostRecentLatestLastContactDate] =
+  const [EarliestResponseDeadline, setEarliestResponseDeadline] =
     React.useState(null);
+  const [LatestResponseDeadline, setLatestResponseDeadline] =
+    React.useState(null);
+  const [EarliestStartDate, setEarliestStartDate] = React.useState(null);
+  const [LatestStartDate, setLatestStartDate] = React.useState(null);
 
   const handleOpenDeleteConfirmationDialog = (index) => {
     setSelectedIndexToDelete(index);
@@ -73,7 +75,8 @@ export default function Offers() {
       false,
       null,
       {},
-      false
+      false,
+      null
     );
   }
 
@@ -81,67 +84,255 @@ export default function Offers() {
     executeHandle(
       "get",
       get,
-      data,
-      "http://localhost:3000/api/contacts",
+      {
+        ...data,
+        EarliestResponseDeadline,
+        LatestResponseDeadline,
+        EarliestStartDate,
+        LatestStartDate,
+      },
+      "http://localhost:3000/api/applicants/offers",
       null,
       false,
       null,
       {},
-      false
+      false,
+      null
     );
   }
 
-  /*
-    Get the applicant's info upon loading the page (and anytime
-    the user themselves changes, for example if someone goes into
-    the backend and changes a column themselves).  
-    )
-  */
   React.useEffect(() => {
-    const fetchOffers = async () => {
-      if (user) {
-        const response = await get(
-          {},
-          "http://localhost:3000/api/applicants/offers"
-        );
+    if (user) {
+      executeHandle(
+        "get",
+        get,
+        {
+          Sort: "ResponseDeadline-ASC",
+        },
+        "http://localhost:3000/api/applicants/offers",
+        null,
+        false,
+        null,
+        {},
+        true,
+        null
+      );
+    }
 
-        setOffers(response?.offer);
-      }
-    };
-
-    fetchOffers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
+  console.log(offers);
+
   return (
-    <MainBox>
-      {offers?.map((offer, index) => (
-        <Offer
-          key={index}
-          offer={offer}
-          index={index}
-          handleOpenDeleteConfirmationDialog={
-            handleOpenDeleteConfirmationDialog
-          }
-        />
-      ))}
-      <NewOfferForm offers={offers} setOffers={setOffers} />
-      {deleteConfirmationDialogOpen && (
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={
-            "your Offer from " +
-            offers[selectedIndexToDelete]?.Job.CompanyName +
-            " for the " +
-            offers[selectedIndexToDelete]?.Job.PositionName +
-            ` [${offers[selectedIndexToDelete]?.Job.PositionID}] ` +
-            " Position"
-          }
-        />
+    <>
+      {user && (
+        <MainBox>
+          <form
+            onSubmit={handleSubmit(handleGet)}
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <Box
+              display="flex"
+              sx={{
+                flexDirection: { xs: "column", xl: "row" },
+              }}
+              alignItems="center"
+              marginRight="2.5rem"
+            >
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="Compensation-ASC"
+                  name="radio-buttons-group"
+                  sx={{ display: "flex" }}
+                  row
+                >
+                  <FormControlLabel
+                    value="Compensation-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Compensation Ascending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="Compensation-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Compensation Descending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="ResponseDeadline-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Response Deadline Ascending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="ResponseDeadline-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Response Deadline Descending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="StartDate-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Start Date Ascending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="StartDate-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Start Date Descending"
+                    labelPlacement="start"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              marginTop="1rem"
+              marginBottom="1rem"
+              sx={{
+                flexDirection: { xs: "column", xl: "row" },
+              }}
+            >
+              <Typography
+                variant="h3"
+                sx={{ fontSize: "1rem", marginRight: "1rem", flexShrink: 0 }}
+              >
+                Search by:
+              </Typography>
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                additionalStyles={{
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                attributeName={"LowestCompensation"}
+                allowUnauthenticated
+              />
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                additionalStyles={{
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                attributeName={"HighestCompensation"}
+                allowUnauthenticated
+              />
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"EarliestResponseDeadline"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={EarliestResponseDeadline}
+                setDate={setEarliestResponseDeadline}
+                allowUnauthenticated
+              />
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"LatestResponseDeadline"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={LatestResponseDeadline}
+                setDate={setLatestResponseDeadline}
+                allowUnauthenticated
+              />
+
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"EarliestStartDate"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={EarliestStartDate}
+                setDate={setEarliestStartDate}
+              />
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"LatestStartDate"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: { xs: "0rem" },
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                date={LatestStartDate}
+                setDate={setLatestStartDate}
+              />
+              <IconButton type="submit">
+                <SearchIcon color="primary" />
+              </IconButton>
+            </Box>
+          </form>
+          {offers?.map((offer, index) => (
+            <Offer
+              key={index}
+              offer={offer}
+              index={index}
+              handleOpenDeleteConfirmationDialog={
+                handleOpenDeleteConfirmationDialog
+              }
+            />
+          ))}
+          <NewOfferForm offers={offers} setOffers={setOffers} />
+          {deleteConfirmationDialogOpen && (
+            <DeleteConfirmationDialog
+              open={deleteConfirmationDialogOpen}
+              handleClose={handleCloseDeleteConfirmationDialog}
+              handleConfirm={() => handleDelete(selectedIndexToDelete)}
+              itemName={
+                "your Offer from " +
+                offers[selectedIndexToDelete]?.Job.CompanyName +
+                " for the " +
+                offers[selectedIndexToDelete]?.Job.PositionName +
+                ` [${offers[selectedIndexToDelete]?.Job.PositionID}] ` +
+                " Position"
+              }
+            />
+          )}
+        </MainBox>
       )}
-    </MainBox>
+    </>
   );
 }
 
@@ -492,7 +683,14 @@ function NewOfferForm({ offers, setOffers }) {
           "Content-Type": "multipart/form-data",
         },
       },
-      false
+      false,
+      {
+        Job: {
+          PositionID: offerJob.PositionID,
+          CompanyName: offerJob.CompanyName,
+          PositionName: offerJob.PositionName,
+        },
+      }
     );
     if (success) {
       setValue("Compensation", "");

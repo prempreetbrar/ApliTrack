@@ -27,6 +27,7 @@ router
   .get(
     authController.checkIfLoggedIn,
     offerController.filterApplicant,
+    offerController.addSearch,
     offerController.getAllOffers
   )
   .post(
