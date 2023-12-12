@@ -113,8 +113,6 @@ export default function Offers() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  console.log(offers);
-
   return (
     <MainBox>
       {offers?.map((offer, index) => (
@@ -127,6 +125,7 @@ export default function Offers() {
           }
         />
       ))}
+      <NewOfferForm offers={offers} setOffers={setOffers} />
       {deleteConfirmationDialogOpen && (
         <DeleteConfirmationDialog
           open={deleteConfirmationDialogOpen}
@@ -194,11 +193,11 @@ function Offer({
 
     const success = await update(
       {
+        ...newData,
         OfferID: offer.OfferID,
         PositionID: offerJob.PositionID,
         ResponseDeadline: responseDeadline,
         StartDate: startDate,
-        ...newData,
       },
       `http://localhost:3000/api/applicants/offers`,
       {
@@ -441,5 +440,179 @@ function Offer({
         )}
       </form>
     </MainPaper>
+  );
+}
+
+function NewOfferForm({ offers, setOffers }) {
+  const { register, handleSubmit, setValue, reset, getValues } = useForm();
+  const { executeRequest: create, isLoading: createIsLoading } = useCreate();
+  const { executeHandle } = useHandleOperation(reset, setOffers, offers);
+  const { user } = useAuthContext();
+
+  const [responseDeadline, setResponseDeadline] = React.useState(null);
+  const [offerJob, setOfferJob] = React.useState(null);
+  const [startDate, setStartDate] = React.useState(null);
+
+  React.useEffect(() => {
+    /*
+        We have forms that the user can change. However, we want to prepopulate them
+        with their current values from the database.
+      */
+    setValue("Compensation", "");
+    setValue("Notes", "");
+    setResponseDeadline(null);
+    setStartDate(null);
+    setOfferJob(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function createOffer(data) {
+    const OfferFileName = data?.OfferFileName?.[0];
+    const newData = { ...data };
+    delete newData.OfferFileName;
+    if (OfferFileName !== "/") {
+      newData.OfferFileName = OfferFileName;
+    }
+
+    const success = await executeHandle(
+      "create",
+      create,
+      {
+        ...newData,
+        PositionID: offerJob.PositionID,
+        ResponseDeadline: responseDeadline,
+        StartDate: startDate,
+      },
+      `http://localhost:3000/api/applicants/offers`,
+      null,
+      false,
+      null,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+      false
+    );
+    if (success) {
+      setValue("Compensation", "");
+      setValue("Notes", "");
+      setResponseDeadline(null);
+      setStartDate(null);
+      setOfferJob(null);
+    }
+  }
+
+  return (
+    <>
+      {user && (
+        <MainPaper
+          overrideStyles={{
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: "1.5rem",
+              fontWeight: "500",
+            }}
+          >
+            Add New Offer
+          </Typography>
+          <SingleDate
+            handleSubmit={handleSubmit}
+            attributeName={"ResponseDeadline"}
+            maxLength={64}
+            isLoading={createIsLoading}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              width: { xs: "100%", md: "50%" },
+            }}
+            date={responseDeadline || null}
+            setDate={setResponseDeadline}
+            additionalFieldStyles={{
+              marginRight: { xs: "0rem", md: "1rem" },
+              width: "100%",
+            }}
+          />
+          <SingleDate
+            handleSubmit={handleSubmit}
+            attributeName={"StartDate"}
+            maxLength={64}
+            isLoading={createIsLoading}
+            additionalStyles={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              width: { xs: "100%", md: "50%" },
+            }}
+            date={startDate || null}
+            setDate={setStartDate}
+            additionalFieldStyles={{
+              marginRight: { xs: "0rem", md: "1rem" },
+              width: "100%",
+            }}
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"Compensation"}
+            isLoading={createIsLoading}
+            maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
+          />
+          <SingleForm
+            register={register}
+            handleSubmit={handleSubmit}
+            actionOnAttribute={null}
+            attributeName={"Notes"}
+            isLoading={createIsLoading}
+            maxLength={64}
+            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
+            isTextArea
+          />
+
+          <NewEntryDropdown
+            entityName="Job"
+            entityAttributeName="CompanyName"
+            entityAttributeName2="PositionName"
+            entityAttributeName3="PositionID"
+            doNotShowButton
+            createIsLoading={createIsLoading}
+            register={register}
+            fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
+            dropdownValue={offerJob}
+            setDropdownValue={setOfferJob}
+            isDropdownObject
+            additionalStyles={{
+              width: "100%",
+              marginTop: { xs: "1rem" },
+              marginBottom: { xs: "0rem" },
+            }}
+          />
+          <Input
+            sx={{ marginTop: "1rem" }}
+            {...register("OfferFileName")}
+            type="file"
+            name="OfferFileName"
+          />
+
+          <Button
+            onClick={handleSubmit(createOffer)}
+            type="submit"
+            variant="outlined"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={createIsLoading}
+          >
+            Create
+          </Button>
+        </MainPaper>
+      )}
+    </>
   );
 }
