@@ -871,7 +871,7 @@ function Job({
         <Box
           sx={{
             display: "grid",
-            justifyItems: "start",
+            justifyItems: "center",
             gridTemplateAreas: {
               lg: `
             'PositionName ApplicationDeadline Qualification Responsibility' 
@@ -928,7 +928,7 @@ function Job({
             },
             marginTop: "2rem",
             alignItems: "start",
-            justifyItems: "center",
+            gridAutoColumns: "minmax(0, 1fr)",
             gridGap: "0.75rem",
             boxSizing: "border-box",
             maxWidth: "100%",
@@ -1260,16 +1260,26 @@ function NewJobForm({ companyName, jobs, setJobs }) {
               md: `'Title Name Description Deadline Create'
               'Title Type Salary File Create'
             `,
-              xs: `'. Title Title .'
+              sm: `'. Title Title .'
             'Name Name Type Type'
             'Salary Salary Deadline Deadline'
             'Description Description File File'
             '. Create Create .'
           `,
+              xs: `'Title'
+            'Name'
+            'Type'
+            'Salary'
+            'Deadline'
+            'Description'
+            'File'
+            'Create'
+          `,
             },
             alignItems: "center",
             justifyItems: "center",
             gridGap: "1rem",
+            gridAutoColumns: "minmax(0, 1fr)",
           }}
         >
           <Typography
