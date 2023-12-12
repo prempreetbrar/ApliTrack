@@ -386,10 +386,11 @@ function Interview({
       <Box
         display="flex"
         sx={{
-          alignItems: { xs: "center", md: "flex-start" },
+          alignItems: { xs: "center", md: "center" },
           order: { xs: 3, md: 2 },
         }}
         flexDirection="column"
+        justifyContent="center"
         width="100%"
       >
         <Box
@@ -456,41 +457,49 @@ function Interview({
           </Button>
         </Box>
 
-        <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
-          Contacts Attending
-        </Typography>
-        <InfoSection
-          entityIDName="InterviewID"
-          entityID={interview.InterviewID}
-          sectionTitle="Contact(s)"
-          sectionArray={interview?.Contacts?.map((contact, index) => contact)}
-          entityName="Contact"
-          entityTargetAttribute="ContactID"
-          entityAttribute2="Fname"
-          entityAttribute3="Lname"
-          sectionURL="http://localhost:3000/api/contacts/attends"
-          fetchAllOptionsURL="http://localhost:3000/api/contacts"
-          maxCreateLength={64}
-          isContact
-        />
+        <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
+          <Box>
+            <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
+              Contacts Attending
+            </Typography>
+            <InfoSection
+              entityIDName="InterviewID"
+              entityID={interview.InterviewID}
+              sectionTitle="Contact(s)"
+              sectionArray={interview?.Contacts?.map(
+                (contact, index) => contact
+              )}
+              entityName="Contact"
+              entityTargetAttribute="ContactID"
+              entityAttribute2="Fname"
+              entityAttribute3="Lname"
+              sectionURL="http://localhost:3000/api/contacts/attends"
+              fetchAllOptionsURL="http://localhost:3000/api/contacts"
+              maxCreateLength={64}
+              isContact
+            />
+          </Box>
 
-        <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
-          Jobs Mentioned
-        </Typography>
-        <InfoSection
-          entityIDName="InterviewID"
-          entityID={interview.InterviewID}
-          sectionTitle="Job(s)"
-          sectionArray={interview?.Jobs?.map((job, index) => job)}
-          entityName="Job"
-          entityTargetAttribute="PositionID"
-          entityAttribute2="CompanyName"
-          entityAttribute3="PositionName"
-          sectionURL="http://localhost:3000/api/jobs/mentions"
-          fetchAllOptionsURL="http://localhost:3000/api/jobs"
-          maxCreateLength={64}
-          isContact
-        />
+          <Box>
+            <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
+              Jobs Mentioned
+            </Typography>
+            <InfoSection
+              entityIDName="InterviewID"
+              entityID={interview.InterviewID}
+              sectionTitle="Job(s)"
+              sectionArray={interview?.Jobs?.map((job, index) => job)}
+              entityName="Job"
+              entityTargetAttribute="PositionID"
+              entityAttribute2="CompanyName"
+              entityAttribute3="PositionName"
+              sectionURL="http://localhost:3000/api/jobs/mentions"
+              fetchAllOptionsURL="http://localhost:3000/api/jobs"
+              maxCreateLength={64}
+              isContact
+            />
+          </Box>
+        </Box>
       </Box>
     </MainPaper>
   );
@@ -592,7 +601,12 @@ function InfoSection({
         />
       )}
       {isContact && (
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="flex-end"
+        >
           <NewEntryDropdown
             entityName={entityName}
             entityAttributeName={entityTargetAttribute}
@@ -611,7 +625,7 @@ function InfoSection({
           />
           <Button
             onClick={handleCreate}
-            sx={{ ml: 1, fontSize: "1.5rem" }}
+            sx={{ ml: 1, fontSize: "1.5rem", height: "100%" }}
             disabled={createIsLoading}
           >
             +
@@ -675,7 +689,8 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
           actionOnAttribute={null}
           isLoading={createIsLoading}
           additionalStyles={{
-            marginBottom: { md: "0", xs: "1rem" },
+            marginTop: "1rem",
+            marginRight: { xs: "-1rem", md: "1rem" },
           }}
         />
         <SingleDate
@@ -689,11 +704,8 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: { xs: "0rem" },
-            marginTop: { xs: "1rem", sm: "0rem" },
-          }}
-          additionalFieldStyles={{
-            marginRight: { xs: "1rem" },
+            marginTop: "1rem",
+            marginRight: { xs: "0rem", md: "1rem" },
           }}
           date={Date}
           setDate={setDate}
@@ -708,7 +720,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
           actionOnAttribute={null}
           register={register}
           fetchAllOptionsURL="http://localhost:3000/api/applications/my-applications"
-          additionalStyles={{ width: "50%" }}
+          additionalStyles={{ width: "50%", marginTop: "1rem" }}
           doNotShowButton
           dropdownValue={dropdownValue}
           setDropdownValue={setDropdownValue}
@@ -719,7 +731,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
           onClick={handleSubmit(handleCreate)}
           type="submit"
           variant="outlined"
-          sx={{ mt: 3, mb: 2 }}
+          sx={{ mt: 3, mb: 2, ml: { xs: 0, md: 2 } }}
           disabled={createIsLoading}
         >
           Create
