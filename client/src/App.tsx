@@ -51,11 +51,15 @@ function App() {
         />
         <Route
           path="/auth/signup"
-          element={!user ? <Signup /> : <Navigate to="/applicants/profile" />}
+          element={
+            !user ? <Signup /> : <Navigate to="/applicants/applicant/profile" />
+          }
         />
         <Route
           path="/auth/login"
-          element={!user ? <Login /> : <Navigate to="/applicants/profile" />}
+          element={
+            !user ? <Login /> : <Navigate to="/applicants/applicant/profile" />
+          }
         />
         <Route
           path="/applicants/applicant/profile"
