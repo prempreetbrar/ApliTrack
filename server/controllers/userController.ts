@@ -38,3 +38,9 @@ exports.preventPasswordOrAdminChange = errorHandling.catchAsync(
   }
 );
 exports.updateUser = factory.updateInstance(User);
+
+exports.addFilter = errorHandling.catchAsync(
+  async (request, response, next) => {
+    request.body.filter = {Username:request.body.Username};
+  }
+)

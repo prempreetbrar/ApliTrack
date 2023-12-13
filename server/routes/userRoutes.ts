@@ -6,6 +6,7 @@ const router = express.Router();
 router.patch(
   "",
   authController.checkIfLoggedIn,
+  userController.addFilter,
   userController.preventPasswordOrAdminChange,
   userController.updateUser
 );
