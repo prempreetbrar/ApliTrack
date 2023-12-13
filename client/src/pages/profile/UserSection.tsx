@@ -40,12 +40,12 @@ export default function UserSection({ applicantInfo }) {
     delete data["NewPassword"];
     delete data["ConfirmNewPassword"];
     if ((data.Fname || data.Lname) && data.Education) {
-      update(data, "http://localhost:3000/api/users/");
+      update(data, "http://localhost:3000/api/users/", {});
       update(data, "http://localhost:3000/api/applicants/education", {}, false);
     } else if (data.Education) {
       update(data, "http://localhost:3000/api/applicants/education", {});
     } else if (data.Fname || data.Lname) {
-      update(data, "http://localhost:3000/api/users/");
+      update(data, "http://localhost:3000/api/users/", {});
     }
   }
 

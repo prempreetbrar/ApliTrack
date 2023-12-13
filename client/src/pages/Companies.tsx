@@ -1453,6 +1453,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             attributeName={"Description"}
             isLoading={createIsLoading}
             maxLength={64}
+            isTextArea
             additionalStyles={{ marginTop: { xs: "1.5rem" } }}
             isTextArea
           />

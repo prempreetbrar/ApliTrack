@@ -948,18 +948,18 @@ function Referral({
           }}
         />
         {user && (
-          <IconButton
-            sx={{
-              alignSelf: { xs: "flex-start" },
-              marginLeft: "auto",
-            }}
-            aria-label="delete"
-            size="large"
-            onClick={() => handleOpenDeleteReferralConfirmationDialog(index)}
-          >
-            <Delete sx={{ width: "2rem", height: "2rem" }} />
-          </IconButton>
-        )}
+            <IconButton
+              sx={{
+                alignSelf: { xs: "flex-start" },
+                marginLeft: "auto",
+              }}
+              aria-label="delete"
+              size="large"
+              onClick={() => handleOpenDeleteReferralConfirmationDialog(index)}
+            >
+              <Delete sx={{ width: "2rem", height: "2rem" }} />
+            </IconButton>
+          )}
       </Box>
       <SingleDate
         handleSubmit={handleSubmit}
