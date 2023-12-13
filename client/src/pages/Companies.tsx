@@ -725,13 +725,12 @@ function Job({
   }
 
   async function handleDeleteResponsibilities(index) {
-    console.log(qualificationsArray);
     executeHandleResponsibilities(
       "delete",
       deleteInstance,
       {
         PositionID: job.PositionID,
-        Responsibility: qualificationsArray[index]["Responsibility"],
+        Responsibility: responsibilitiesArray[index]["Responsibility"],
       },
       "http://localhost:3000/api/companies/company/jobs/responsibilities",
       index,
