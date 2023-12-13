@@ -947,20 +947,19 @@ function Referral({
             marginLeft: "5rem",
           }}
         />
-        {user?.data?.user?.AdminFlag &&
-          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
-            <IconButton
-              sx={{
-                alignSelf: { xs: "flex-start" },
-                marginLeft: "auto",
-              }}
-              aria-label="delete"
-              size="large"
-              onClick={() => handleOpenDeleteReferralConfirmationDialog(index)}
-            >
-              <Delete sx={{ width: "2rem", height: "2rem" }} />
-            </IconButton>
-          )}
+        {user && (
+          <IconButton
+            sx={{
+              alignSelf: { xs: "flex-start" },
+              marginLeft: "auto",
+            }}
+            aria-label="delete"
+            size="large"
+            onClick={() => handleOpenDeleteReferralConfirmationDialog(index)}
+          >
+            <Delete sx={{ width: "2rem", height: "2rem" }} />
+          </IconButton>
+        )}
       </Box>
       <SingleDate
         handleSubmit={handleSubmit}
