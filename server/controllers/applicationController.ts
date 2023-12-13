@@ -29,18 +29,22 @@ exports.getAllApplicationURL = factory.getAll(Application.Appl_Relevant_URL);
 
 exports.addFilterID = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      ApplicationID: request.body.ApplicationID,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+    request.body.filter.ApplicationID = request.body.ApplicationID;
+
     next();
   }
 );
 
 exports.addFilterApplicant = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      ApplicantUsername: request.body.ApplicantUsername,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+    console.log(request.body);
+    request.body.filter.ApplicantUsername = request.body.ApplicantUsername;
     next();
   }
 );

@@ -4,35 +4,26 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
+router.use(authController.checkIfLoggedIn);
+
 router
   .route("")
   .get(
-    applicationController.addFilter,
     applicationController.addFilterApplicant,
+    applicationController.addFilter,
     applicationController.getAllApplications
   );
 
 router
   .route("/details")
-  .get(
-    authController.checkIfLoggedIn,
-    applicationController.addFilterID,
-    applicationController.getApplication
-  )
-  .post(authController.checkIfLoggedIn, applicationController.createApplication)
-  .delete(
-    authController.checkIfLoggedIn,
-    applicationController.deleteApplication
-  )
-  .patch(
-    authController.checkIfLoggedIn,
-    applicationController.updateApplication
-  );
+  .get(applicationController.addFilterID, applicationController.getApplication)
+  .post(applicationController.createApplication)
+  .delete(applicationController.deleteApplication)
+  .patch(applicationController.updateApplication);
 
 router
   .route("/my-applications")
   .get(
-    authController.checkIfLoggedIn,
     applicationController.addFilterApplicant,
     applicationController.getAllApplicantApplications
   );
@@ -40,45 +31,25 @@ router
 router
   .route("/URL")
   .get(
-    authController.checkIfLoggedIn,
     applicationController.addFilterID,
     applicationController.getAllApplicationURL
   )
-  .post(
-    authController.checkIfLoggedIn,
-    applicationController.createApplicationURL
-  )
-  .delete(
-    authController.checkIfLoggedIn,
-    applicationController.deleteApplicationURL
-  );
+  .post(applicationController.createApplicationURL)
+  .delete(applicationController.deleteApplicationURL);
 
 router
   .route("/category")
   .get(
-    authController.checkIfLoggedIn,
     applicationController.addFilter,
     applicationController.getAllApplicationCategories
   )
-  .post(
-    authController.checkIfLoggedIn,
-    applicationController.createApplicationCategory
-  )
-  .delete(
-    authController.checkIfLoggedIn,
-    applicationController.deleteApplicationCategory
-  );
+  .post(applicationController.createApplicationCategory)
+  .delete(applicationController.deleteApplicationCategory);
 
 router
   .route("/submitWith")
-  .post(
-    authController.checkIfLoggedIn,
-    applicationController.createApplicationSubmitWithDoc
-  )
-  .delete(
-    authController.checkIfLoggedIn,
-    applicationController.deleteApplicationSubmitWithDoc
-  );
+  .post(applicationController.createApplicationSubmitWithDoc)
+  .delete(applicationController.deleteApplicationSubmitWithDoc);
 
 router
   .route("/corresponding-jobs")

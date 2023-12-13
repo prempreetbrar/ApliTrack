@@ -13,8 +13,12 @@ exports.uploadJobPostFile = factory.uploadFile(
 );
 
 // for many-to-many relationship(s)
-exports.createJobMentionsInterview = factory.createOne(Job.JobMentionsInterview);
-exports.deleteJobMentionsInterview = factory.deleteInstance(Job.JobMentionsInterview);
+exports.createJobMentionsInterview = factory.createOne(
+  Job.JobMentionsInterview
+);
+exports.deleteJobMentionsInterview = factory.deleteInstance(
+  Job.JobMentionsInterview
+);
 
 exports.deleteJob = factory.deleteInstance(Job.Job);
 exports.deleteJobQual = factory.deleteInstance(Job.JobQualification);
@@ -28,18 +32,23 @@ exports.getAllCompanyJobs = factory.getAll(Job.Job);
 
 exports.addFilterID = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      PositionID: request.body.PositionID || request.params.PositionID,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    request.body.filter.PositionID =
+      request.body.PositionID || request.params.PositionID;
     next();
   }
 );
 
 exports.addFilterCompany = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      CompName: request.body.CompName,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    request.body.filter.CompName = request.body.CompName;
     next();
   }
 );

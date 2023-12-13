@@ -28,12 +28,22 @@ exports.updateContactWorksAtCompany = factory.updateInstance(
 );
 
 //TODO: CHECK
-exports.createContactAttendsInterview = factory.createOne(Contact.ContactAttendsInterview);
-exports.deleteContactAttendsInterview = factory.deleteInstance(Contact.ContactAttendsInterview);
+exports.createContactAttendsInterview = factory.createOne(
+  Contact.ContactAttendsInterview
+);
+exports.deleteContactAttendsInterview = factory.deleteInstance(
+  Contact.ContactAttendsInterview
+);
 
 exports.addFilter = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {};
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    if (!request.body.order) {
+      request.body.order = [];
+    }
     if (request.body.ContactID || request.query.ContactID) {
       request.body.filter.ContactID =
         request.body.ContactID || request.query.ContactID;

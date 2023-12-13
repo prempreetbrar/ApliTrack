@@ -13,18 +13,21 @@ exports.getAllDocuments = factory.getAll(Document.Document);
 exports.getAllApplicantDocuments = factory.getAll(Document.Document);
 
 exports.filterID = errorHandling.catchAsync(async (request, response, next) => {
-  request.body.filter = {
-    DocumentID: request.body.DocumentID,
-  };
+  if (!request.body.filter) {
+    request.body.filter = {};
+  }
+
+  request.body.filter.DocumentID = request.body.DocumentID;
   next();
 });
 
 exports.filterApplicant = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      ApplicantUsername: request.body.ApplicantUsername,
-    };
-    console.log(request.body.filter);
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    request.body.filter.ApplicantUsername = request.body.ApplicantUsername;
     next();
   }
 );
