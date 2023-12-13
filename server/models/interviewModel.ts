@@ -39,7 +39,7 @@ const Interview = sequelize.define(
 Interview.beforeCreate(async (instance, options) => {
   try {
     const maxInterviewID = await Interview.max("InterviewID", {
-      where: { ApplicantUsername: instance.ApplicantUsername },
+      //where: { ApplicantUsername: instance.ApplicantUsername },
     });
 
     instance.InterviewID = maxInterviewID ? maxInterviewID + 1 : 1;
