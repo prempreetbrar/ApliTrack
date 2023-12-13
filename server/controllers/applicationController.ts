@@ -6,13 +6,19 @@ const errorHandling = require("../utils/errorHandling");
 
 exports.createApplication = factory.createOne(Application.Application);
 exports.createApplicationURL = factory.createOne(Application.Appl_Relevant_URL);
-exports.createApplicationCategory = factory.createOne(Application.Appl_Category);
+exports.createApplicationCategory = factory.createOne(
+  Application.Appl_Category
+);
 
 exports.updateApplication = factory.updateInstance(Application.Application);
 
 exports.deleteApplication = factory.deleteInstance(Application.Application);
-exports.deleteApplicationURL = factory.deleteInstance(Application.Appl_Relevant_URL);
-exports.deleteApplicationCategory = factory.deleteInstance(Application.Appl_Category);
+exports.deleteApplicationURL = factory.deleteInstance(
+  Application.Appl_Relevant_URL
+);
+exports.deleteApplicationCategory = factory.deleteInstance(
+  Application.Appl_Category
+);
 
 exports.getApplication = factory.getOne(Application.Application);
 exports.getAllApplications = factory.getAll(Application.Application);
@@ -22,38 +28,55 @@ exports.getAllApplicationCategories = factory.getAll(Application.Appl_Category);
 exports.getAllApplicationURL = factory.getAll(Application.Appl_Relevant_URL);
 
 exports.addFilterID = errorHandling.catchAsync(
-    async (request, response, next) => {
-      request.body.filter = {
-        ApplicationID: request.body.ApplicationID,
-      };
-      next();
-    }
-  );
+  async (request, response, next) => {
+    request.body.filter = {
+      ApplicationID: request.body.ApplicationID,
+    };
+    next();
+  }
+);
 
-  exports.addFilterApplicant = errorHandling.catchAsync(
-    async (request, response, next) => {
-      request.body.filter = {
-        ApplicantUsername: request.body.ApplicantUsername,
-      };
-      next();
-    }
-  );
+exports.addFilterApplicant = errorHandling.catchAsync(
+  async (request, response, next) => {
+    request.body.filter = {
+      ApplicantUsername: request.body.ApplicantUsername,
+    };
+    next();
+  }
+);
 
 // for many-to-many relationships
-exports.createApplicationCorrespondsToJob = factory.createOne(Application.ApplicationCorrespondsToJob);
-exports.deleteApplicationCorrespondsToJob = factory.deleteInstance(Application.ApplicationCorrespondsToJob);
-exports.updateApplicationCorrespondsToJob = factory.updateInstance(Application.ApplicationCorrespondsToJob);
-exports.getApplicationCorrespondsToJob = factory.getAll(Application.ApplicationCorrespondsToJob);
+exports.createApplicationCorrespondsToJob = factory.createOne(
+  Application.ApplicationCorrespondsToJob
+);
+exports.deleteApplicationCorrespondsToJob = factory.deleteInstance(
+  Application.ApplicationCorrespondsToJob
+);
+exports.updateApplicationCorrespondsToJob = factory.updateInstance(
+  Application.ApplicationCorrespondsToJob
+);
+exports.getApplicationCorrespondsToJob = factory.getAll(
+  Application.ApplicationCorrespondsToJob
+);
 
-exports.createApplicationSubmitWithDoc = factory.createOne(Application.ApplicationSubmitWithDoc);
-exports.deleteApplicationSubmitWithDoc = factory.deleteInstance(Application.ApplicationSubmitWithDoc);
+exports.createApplicationSubmitWithDoc = factory.createOne(
+  Application.ApplicationSubmitWithDoc
+);
+exports.deleteApplicationSubmitWithDoc = factory.deleteInstance(
+  Application.ApplicationSubmitWithDoc
+);
 
 //being used for front-end
 exports.addFilter = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {};
-    request.body.order = [];
-    
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    if (!request.body.order) {
+      request.body.order = [];
+    }
+
     if (request.body.ApplicationID || request.query.ApplicationID) {
       request.body.filter.ApplicationID =
         request.body.ApplicationID || request.query.ApplicationID;
@@ -80,10 +103,7 @@ exports.addFilter = errorHandling.catchAsync(
       request.query.toDate !== "MM/DD/YYYY"
     ) {
       request.body.filter.DateSubmitted = {
-        [Op.between]: [
-          request.query.fromDate,
-          request.query.toDate,
-        ],
+        [Op.between]: [request.query.fromDate, request.query.toDate],
       };
     } else if (
       request.query.fromDate &&
@@ -92,10 +112,7 @@ exports.addFilter = errorHandling.catchAsync(
       request.body.filter.DateSubmitted = {
         [Op.gte]: request.query.fromDate,
       };
-    } else if (
-      request.query.toDate &&
-      request.query.toDate !== "MM/DD/YYYY"
-    ) {
+    } else if (request.query.toDate && request.query.toDate !== "MM/DD/YYYY") {
       request.body.filter.DateSubmitted = {
         [Op.lte]: request.query.toDate,
       };
@@ -111,9 +128,14 @@ exports.addFilter = errorHandling.catchAsync(
 
 exports.addFilterCategory = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {};
-    request.body.order = [];
-    
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    if (!request.body.order) {
+      request.body.order = [];
+    }
+
     if (request.body.ApplicationID || request.query.ApplicationID) {
       request.body.filter.ApplicationID =
         request.body.ApplicationID || request.query.ApplicationID;

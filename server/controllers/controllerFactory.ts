@@ -59,6 +59,7 @@ exports.getOne = (Model) => {
 
 exports.getAll = (Model) => {
   return errorHandling.catchAsync(async (request, response) => {
+    console.log(request.body.filter, request.body.order);
     if (!request.body.filter) {
       request.body.filter = {};
     }

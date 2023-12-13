@@ -24,14 +24,20 @@ exports.filterApplicant = errorHandling.catchAsync(
     request.body.filter = {
       ApplicantUsername: request.body.ApplicantUsername,
     };
+    console.log(request.body.filter);
     next();
   }
 );
 
 exports.addSearch = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {};
-    request.body.order = [];
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    if (!request.body.order) {
+      request.body.order = [];
+    }
 
     if (request.query.DocFileName) {
       request.body.filter.DocFileName = {

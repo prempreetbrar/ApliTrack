@@ -59,7 +59,7 @@ export default function Documents() {
       "delete",
       deleteInstance,
       {
-        DocumentID: documents[index].OfferID,
+        DocumentID: documents[index].DocumentID,
       },
       "http://localhost:3000/api/applicants/documents",
       index,
