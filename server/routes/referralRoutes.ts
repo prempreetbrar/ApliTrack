@@ -28,7 +28,6 @@ router
   .delete(
     authController.checkIfLoggedIn,
     referralController.addFilter,
-    authController.restrictTo(authController.DELETE_ONLY),
     referralController.deleteReferral
   );
 

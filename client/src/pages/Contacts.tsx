@@ -948,8 +948,7 @@ function Referral({
             marginLeft: "5rem",
           }}
         />
-        {user?.data?.user?.AdminFlag &&
-          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+        {user && (
             <IconButton
               sx={{
                 alignSelf: { xs: "flex-start" },
