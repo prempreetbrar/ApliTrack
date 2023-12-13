@@ -33,7 +33,7 @@ exports.preventPasswordOrAdminChange = errorHandling.catchAsync(
       }
     }
 
-    request.body = filteredBody;
+    request.body = { ...request.body, ...filteredBody };
     next();
   }
 );
@@ -41,6 +41,7 @@ exports.updateUser = factory.updateInstance(User);
 
 exports.addFilter = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {Username:request.body.Username};
+    request.body.filter = { Username: request.body.Username };
+    next();
   }
-)
+);
