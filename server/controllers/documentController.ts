@@ -33,8 +33,6 @@ exports.addSearch = errorHandling.catchAsync(
     request.body.filter = {};
     request.body.order = [];
 
-    console.log("Document File Name!", request.query.DocFileName);
-
     if (request.query.DocFileName) {
       request.body.filter.DocFileName = {
         [Op.like]: `%${request.query.DocFileName}%`,

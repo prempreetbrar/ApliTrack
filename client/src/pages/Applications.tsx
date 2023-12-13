@@ -118,8 +118,6 @@ export default function Applications() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  console.log(user);
-
   return (
     <MainBox>
       <form onSubmit={handleSubmit(handleGet)}>
@@ -546,14 +544,6 @@ function InfoSection({
     );
   }
 
-  console.log("TESTING");
-  console.log(
-    entityName,
-    entityTargetAttribute,
-    maxCreateLength,
-    handleCreate,
-    dropdownValue
-  );
   return (
     <Box
       padding="0.5rem"

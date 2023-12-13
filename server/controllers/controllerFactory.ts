@@ -76,8 +76,6 @@ exports.getAll = (Model) => {
       },
     });
 
-    // console.log("\nAll results", documents, "\n");
-
     response.status(200).json({
       status: "success",
       data: {
@@ -125,8 +123,6 @@ exports.updateInstance = (Model) => {
         [Model.name.toLowerCase()]: instance,
       },
     });
-
-    console.log(instance.toJSON());
   });
 };
 
@@ -144,7 +140,7 @@ exports.updateOneWithKey = (Model) => {
     */
     const pkAttributes = Model.primaryKeyAttributes;
     const uniqueAttributes = getUniqueAttributes(Model);
-    console.log("Key Attribtues", pkAttributes, uniqueAttributes);
+    console.log("Key Attributes", pkAttributes, uniqueAttributes);
     console.log("Body and Params", request.body, request.params);
 
     const keys = {};

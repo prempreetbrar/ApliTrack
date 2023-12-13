@@ -20,8 +20,6 @@ const useHttpMethod = (method) => {
     setIsLoading(true);
     setError(null);
 
-    console.log(url);
-
     try {
       if (method === "delete") {
         config.data = data;
@@ -39,9 +37,7 @@ const useHttpMethod = (method) => {
       let response;
 
       if (method === "delete" || method === "get") {
-        console.log(url, config);
         response = await axios[method](url, config);
-        console.log(response);
       } else {
         response = await axios[method](url, data, config);
       }
@@ -64,7 +60,6 @@ const useHttpMethod = (method) => {
       setIsLoading(false);
       setError(error?.response?.data.message);
 
-      console.log(error);
       enqueueSnackbar(error.response?.data.message, {
         variant: "error",
         autoHideDuration: 1000,

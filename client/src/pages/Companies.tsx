@@ -706,6 +706,7 @@ function Job({
   }
 
   async function handleDeleteQualifications(index) {
+    console.log(qualificationsArray);
     executeHandleQualifications(
       "delete",
       deleteInstance,
@@ -724,6 +725,7 @@ function Job({
   }
 
   async function handleDeleteResponsibilities(index) {
+    console.log(qualificationsArray);
     executeHandleResponsibilities(
       "delete",
       deleteInstance,

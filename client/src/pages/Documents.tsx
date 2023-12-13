@@ -494,7 +494,6 @@ function NewDocumentForm({ documents, setDocuments }) {
     if (DocFileName !== "/") {
       newData.DocFileName = DocFileName;
     }
-    console.log(newData);
 
     const success = await executeHandle(
       "create",
