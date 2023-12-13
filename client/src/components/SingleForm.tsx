@@ -14,10 +14,10 @@ export default function SingleForm({
   additionalFieldStyles,
   isTextArea,
   allowUnauthenticated,
-  attributeLabel
+  attributeLabel,
 }) {
   const { user } = useAuthContext();
-  console.log(attributeLabel, attributeName);
+
   return (
     <Box sx={{ ...additionalStyles }}>
       {isTextArea && (

@@ -11,21 +11,16 @@ const upload = multer({
   storage: controllerFactory.uploadStorage("./uploads/offers"),
 });
 
-router
-  .route("/details")
-  .post(authController.checkIfLoggedIn, offerController.createOffer)
-
-  .put(authController.checkIfLoggedIn, offerController.updateOffer)
-  .get(
-    authController.checkIfLoggedIn,
-    offerController.filterApplicantFile,
-    offerController.getOffer
-  );
+router.use(authController.checkIfLoggedIn);
+// router
+//   .route("/details")
+//   .post(offerController.createOffer)
+//   .put(offerController.updateOffer)
+//   .get(offerController.filterApplicantFile, offerController.getOffer);
 
 router
   .route("")
   .get(
-    authController.checkIfLoggedIn,
     offerController.filterApplicant,
     offerController.addSearch,
     offerController.getAllOffers
@@ -33,15 +28,10 @@ router
   .post(
     upload.single("OfferFileName"),
     authController.checkIfLoggedIn,
-    offerController.filterApplicant,
     offerController.uploadOfferFile,
     offerController.createOffer
   )
-  .delete(
-    authController.checkIfLoggedIn,
-    offerController.filterApplicant,
-    offerController.deleteOffer
-  )
+  .delete(offerController.filterApplicant, offerController.deleteOffer)
   .patch(
     upload.single("OfferFileName"),
     authController.checkIfLoggedIn,

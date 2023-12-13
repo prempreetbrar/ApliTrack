@@ -327,8 +327,6 @@ function Interview({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interview, AName]);
 
-  //console.log(interview);
-
   React.useEffect(() => {
     setDate(interview.Date);
     setDropdownValue(interview.Application);
@@ -345,7 +343,7 @@ function Interview({
       "http://localhost:3000/api/interviews/details"
     );
   }
-  console.log(dropdownValue);
+
   return (
     <MainPaper
       overrideStyles={{
@@ -556,8 +554,6 @@ function InfoSection({
       false,
       { ...dropdownValue }
     );
-    console.log(onUpdateSectionArray);
-    console.log({ ...dropdownValue });
   }
 
   async function handleDelete(index) {
@@ -649,10 +645,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
     interviewInfo
   );
 
-  //console.log(setInterviewInfo, interviewInfo);
-
   async function handleCreate(data) {
-    console.log(data);
     const result = await executeHandle(
       "create",
       create,

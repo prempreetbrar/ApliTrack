@@ -77,16 +77,19 @@ exports.updateApplicantTracksJob = factory.updateInstance(
 */
 exports.addFilter = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      Username: request.body.Username,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+    request.body.filter.Username = request.body.Username;
     next();
   }
 );
 
 exports.addTracksFilter = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {};
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
     if (
       request.query.EarliestDateToApply &&
       request.query.LatestDateToApply &&

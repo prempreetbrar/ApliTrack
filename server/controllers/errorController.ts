@@ -62,7 +62,7 @@ function handleDBDuplicateError(error) {
 function handleDBValidationError(error) {
   const errorItem = error.errors[0];
   let errorValue = "";
-  console.log(errorItem);
+
   switch (errorItem.path) {
     case "Password":
     case "PasswordConfirm":

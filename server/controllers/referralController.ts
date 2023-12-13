@@ -11,18 +11,23 @@ exports.getAllReferrals = factory.getAll(Referral.Referral);
 exports.getAllApplicantReferrals = factory.getAll(Referral.Referral);
 
 exports.filterID = errorHandling.catchAsync(async (request, response, next) => {
-  request.body.filter = {
-    ReferralID: request.body.ReferralID,
-  };
+  if (!request.body.filter) {
+    request.body.filter = {};
+  }
+
+  request.body.filter.ReferralID = request.body.ReferralID;
   next();
 });
 
 exports.addFilter = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      ApplicantUsername: request.body.ApplicantUsername,
-      ContactID: request.query.ContactID,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    request.body.filter.ApplicantUsername = request.body.ApplicantUsername;
+    request.body.filter.ContactID = request.query.ContactID;
+
     next();
   }
 );

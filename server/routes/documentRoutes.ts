@@ -19,7 +19,11 @@ router
     documentController.uploadDocFile,
     documentController.createDocument
   )
-  .delete(authController.checkIfLoggedIn, documentController.deleteDocument)
+  .delete(
+    authController.checkIfLoggedIn,
+    documentController.filterApplicant,
+    documentController.deleteDocument
+  )
   .get(
     authController.checkIfLoggedIn,
     documentController.filterApplicant,

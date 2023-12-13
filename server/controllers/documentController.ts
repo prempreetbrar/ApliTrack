@@ -13,27 +13,34 @@ exports.getAllDocuments = factory.getAll(Document.Document);
 exports.getAllApplicantDocuments = factory.getAll(Document.Document);
 
 exports.filterID = errorHandling.catchAsync(async (request, response, next) => {
-  request.body.filter = {
-    DocumentID: request.body.DocumentID,
-  };
+  if (!request.body.filter) {
+    request.body.filter = {};
+  }
+
+  request.body.filter.DocumentID = request.body.DocumentID;
   next();
 });
 
 exports.filterApplicant = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      ApplicantUsername: request.body.ApplicantUsername,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    request.body.filter.ApplicantUsername = request.body.ApplicantUsername;
     next();
   }
 );
 
 exports.addSearch = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {};
-    request.body.order = [];
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
 
-    console.log("Document File Name!", request.query.DocFileName);
+    if (!request.body.order) {
+      request.body.order = [];
+    }
 
     if (request.query.DocFileName) {
       request.body.filter.DocFileName = {

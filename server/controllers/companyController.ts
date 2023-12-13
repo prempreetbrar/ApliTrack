@@ -13,17 +13,23 @@ exports.getAllCompanies = factory.getAll(Company.Company);
 
 exports.addFilter = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      CompanyName: request.body.CompanyName,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+    request.body.filter.CompanyName = request.body.CompanyName;
     next();
   }
 );
 
 exports.addSearch = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {};
-    request.body.order = [];
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    if (!request.body.order) {
+      request.body.order = [];
+    }
 
     if (request.query.CompanyName) {
       request.body.filter.CompanyName = {

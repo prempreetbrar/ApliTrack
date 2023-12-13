@@ -26,11 +26,10 @@ export default function NewEntryDropdown({
 
   React.useEffect(() => {
     const fetchAllOptions = async () => {
-      console.log(fetchAllOptionsURL);
       const response = await executeRequest(null, fetchAllOptionsURL);
-      console.log(response);
+
       const newAllOptionsHashtable = {};
-      console.log(response[entityName.toLowerCase()]);
+
       setAllOptions(
         response[entityName.toLowerCase()].map((entity, index) => {
           const string =
@@ -49,13 +48,12 @@ export default function NewEntryDropdown({
           return string;
         })
       );
-      console.log(newAllOptionsHashtable);
-      console.log(isDropdownObject);
+
       setAllOptionsHashtable(newAllOptionsHashtable);
     };
     fetchAllOptions();
   }, []);
-  console.log(allOptions, allOptionsHashtable);
+
   return (
     <>
       {user && (
@@ -89,11 +87,6 @@ export default function NewEntryDropdown({
             }
             onChange={(event, value) => {
               if (isDropdownObject) {
-                console.log(
-                  allOptionsHashtable,
-                  value,
-                  allOptionsHashtable[value as any]
-                );
                 setDropdownValue(allOptionsHashtable[value as any]);
               } else {
                 setDropdownValue(value);

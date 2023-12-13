@@ -458,111 +458,113 @@ function Company({
         width: "100%",
       }}
     >
-      <Box
-        display="flex"
-        flexDirection="row"
-        flexWrap="wrap"
-        alignItems="center"
-        justifyContent="center"
-        alignContent="center"
-        width="100%"
-      >
-        <Typography
-          variant="h2"
-          sx={{
-            fontSize: "3rem",
-            fontWeight: "bold",
-            display: "inline-block",
-            overflowWrap: "break-word",
-            wordWrap: "break-word",
-            wordBreak: "break-all",
-          }}
+      <form onSubmit={handleSubmit(updateCompany)}>
+        <Box
+          display="flex"
+          flexDirection="row"
+          flexWrap="wrap"
+          alignItems="center"
+          justifyContent="center"
+          alignContent="center"
+          width="100%"
         >
-          {company.CompanyName}
-        </Typography>
-        <BusinessIcon
-          sx={{ marginLeft: "1rem", width: "4rem", height: "4rem" }}
-        />
-        {user?.data?.user?.AdminFlag &&
-          user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
-            <IconButton
-              aria-label="delete"
-              size="large"
-              sx={{ marginLeft: "1rem" }}
-              onClick={() => handleOpenDeleteConfirmationDialog(index)}
-            >
-              <Delete sx={{ width: "2.5rem", height: "2.5rem" }} />
-            </IconButton>
-          )}
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: "3rem",
+              fontWeight: "bold",
+              display: "inline-block",
+              overflowWrap: "break-word",
+              wordWrap: "break-word",
+              wordBreak: "break-all",
+            }}
+          >
+            {company.CompanyName}
+          </Typography>
+          <BusinessIcon
+            sx={{ marginLeft: "1rem", width: "4rem", height: "4rem" }}
+          />
+          {user?.data?.user?.AdminFlag &&
+            user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+              <IconButton
+                aria-label="delete"
+                size="large"
+                sx={{ marginLeft: "1rem" }}
+                onClick={() => handleOpenDeleteConfirmationDialog(index)}
+              >
+                <Delete sx={{ width: "2.5rem", height: "2.5rem" }} />
+              </IconButton>
+            )}
 
-        <FormControl
-          onSubmit={handleSubmit(updateCompany)}
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: "center",
-            width: { xs: "100%", md: "fit-content" },
-            marginTop: { xs: "2rem", md: 0 },
-            marginLeft: { xs: "0rem", lg: "5rem" },
-            order: { xs: 4, lg: 3 },
-          }}
-        >
-          <SingleForm
-            register={register}
-            attributeName={"Industry"}
-            maxLength={64}
-            isLoading={updateIsLoading}
-            additionalStyles={{
+          <FormControl
+            onSubmit={handleSubmit(updateCompany)}
+            sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: { xs: "column", md: "row" },
               alignItems: "center",
+              width: { xs: "100%", md: "fit-content" },
+              marginTop: { xs: "2rem", md: 0 },
+              marginLeft: { xs: "0rem", lg: "5rem" },
+              order: { xs: 4, lg: 3 },
             }}
-            additionalFieldStyles={{
-              marginRight: { xs: "1rem" },
-            }}
-          />
-          <SingleForm
-            register={register}
-            attributeName={"HomePageURL"}
-            maxLength={64}
-            isLoading={updateIsLoading}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-            additionalFieldStyles={{
-              marginTop: { xs: "1.5rem", md: 0 },
-              marginRight: { xs: "1rem" },
-            }}
-          />
-          <SingleForm
-            register={register}
-            attributeName={"Description"}
-            maxLength={64}
-            isLoading={updateIsLoading}
-            additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: { xs: "1.5rem", md: 0 },
-            }}
-            additionalFieldStyles={{
-              marginRight: { xs: "1rem" },
-            }}
-            isTextArea
-          />
-          {user && (
-            <Button
-              sx={{ marginTop: "1rem", height: "min-content" }}
-              type="submit"
-              variant="outlined"
-            >
-              Update
-            </Button>
-          )}
-        </FormControl>
-      </Box>
+          >
+            <SingleForm
+              register={register}
+              attributeName={"Industry"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+            />
+            <SingleForm
+              register={register}
+              attributeName={"HomePageURL"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+              additionalFieldStyles={{
+                marginTop: { xs: "1.5rem", md: 0 },
+                marginRight: { xs: "1rem" },
+              }}
+            />
+            <SingleForm
+              register={register}
+              attributeName={"Description"}
+              maxLength={64}
+              isLoading={updateIsLoading}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: { xs: "1.5rem", md: 0 },
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+              isTextArea
+            />
+            {user && (
+              <Button
+                sx={{ marginTop: "1rem", height: "min-content" }}
+                type="submit"
+                variant="outlined"
+              >
+                Update
+              </Button>
+            )}
+          </FormControl>
+        </Box>
+      </form>
 
       <Box
         sx={{ marginLeft: { xs: 0, md: "1rem" } }}
@@ -704,6 +706,7 @@ function Job({
   }
 
   async function handleDeleteQualifications(index) {
+    console.log(qualificationsArray);
     executeHandleQualifications(
       "delete",
       deleteInstance,
@@ -727,7 +730,7 @@ function Job({
       deleteInstance,
       {
         PositionID: job.PositionID,
-        Responsibility: qualificationsArray[index]["Responsibility"],
+        Responsibility: responsibilitiesArray[index]["Responsibility"],
       },
       "http://localhost:3000/api/companies/company/jobs/responsibilities",
       index,
@@ -1452,6 +1455,7 @@ function NewCompanyForm({ companies, setCompanies }) {
             maxLength={64}
             isTextArea
             additionalStyles={{ marginTop: { xs: "1.5rem" } }}
+            isTextArea
           />
 
           <Button

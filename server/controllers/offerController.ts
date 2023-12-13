@@ -14,27 +14,36 @@ exports.getAllApplicantOffers = factory.getAll(Offer.Offer);
 
 exports.filterApplicantFile = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      ApplicantUsername: request.body.ApplicantUsername,
-      OfferFileName: request.body.OfferFileName,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    request.body.filter.ApplicantUsername = request.body.ApplicantUsername;
+    request.body.filter.OfferFileName = request.body.OfferFileName;
     next();
   }
 );
 
 exports.filterApplicant = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {
-      ApplicantUsername: request.body.ApplicantUsername,
-    };
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    request.body.filter.ApplicantUsername = request.body.ApplicantUsername;
     next();
   }
 );
 
 exports.addSearch = errorHandling.catchAsync(
   async (request, response, next) => {
-    request.body.filter = {};
-    request.body.order = [];
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    if (!request.body.order) {
+      request.body.order = [];
+    }
 
     if (
       request.query.LowestCompensation &&

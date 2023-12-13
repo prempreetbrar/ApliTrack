@@ -25,7 +25,7 @@ const useAuthAction = (apiEndpoint) => {
           wait 1 second before redirecting the user (just so they
           can see the success message)
         */
-      setTimeout(() => navigate("/applicants/profile"), 1000);
+      setTimeout(() => navigate("/applicants/applicant/profile"), 1000);
       flag = true;
     } catch (error) {
       setIsLoading(false);

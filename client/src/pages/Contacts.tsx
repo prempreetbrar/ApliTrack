@@ -825,7 +825,6 @@ function AddNewContact({ setContactsInfo, contactsInfo }) {
   );
 
   async function handleCreate(data) {
-    console.log(data);
     const result = await executeHandle(
       "create",
       create,

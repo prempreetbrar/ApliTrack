@@ -104,9 +104,9 @@ const { Applicant } = require("../models/applicantModel");
 async function createAdminUser() {
   try {
     const adminUser = await User.create({
-      Username: "admin@admin.com",
-      Password: "admin",
-      PasswordConfirm: "admin",
+      Username: process.env.ADMIN_USERNAME,
+      Password: process.env.ADMIN_PASSWORD,
+      PasswordConfirm: process.env.ADMIN_PASSWORD,
       AdminFlag: true,
     });
 
