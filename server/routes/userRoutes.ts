@@ -11,4 +11,6 @@ router.patch(
   userController.updateUser
 );
 
+router.get("", userController.getAllUsers);
+
 module.exports = router;
