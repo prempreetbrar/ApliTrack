@@ -57,6 +57,11 @@ exports.addSearchFilter = errorHandling.catchAsync(
       request.body.filter = {};
     }
 
+    if (request.body.Username || request.query.Username) {
+      request.body.filter.Username = {
+        [Op.like]: `%${request.body.Username || request.query.Username}%`,
+      };
+    }
     if (request.body.Fname || request.query.Fname) {
       request.body.filter.Fname = {
         [Op.like]: `%${request.body.Fname || request.query.Fname}%`,

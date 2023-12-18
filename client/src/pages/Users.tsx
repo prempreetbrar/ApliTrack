@@ -157,6 +157,24 @@ export default function Users() {
               }}
               allowUnauthenticated
             />
+            <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", xl: "0rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    width: "100%",
+                    marginRight: { xs: "1rem" },
+                  }}
+                  attributeName={"Username"}
+                  allowUnauthenticated
+                />
             <Box
               display="flex"
               alignItems="center"
@@ -222,6 +240,7 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
       */
     setValue("Fname", user?.Fname);
     setValue("Lname", user?.Lname);
+    setValue("Username", user?.Username);
     setValue("IsActive", user?.IsActive ? "Activated" : "Deactivated");
     setValue("PermissionLevel", user?.PermissionLevel);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -296,6 +315,23 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
         }}
         flexDirection="column"
       >
+        <SingleForm
+          register={register}
+          handleSubmit={handleSubmit}
+          actionOnAttribute={updateNameOrLinkedInURL}
+          attributeName={"Username"}
+          maxLength={64}
+          isLoading={updateIsLoading}
+          additionalStyles={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: "1rem",
+          }}
+          additionalFieldStyles={{
+            marginRight: { xs: "1rem" },
+          }}
+        />
         <NameForm
           register={register}
           handleSubmit={handleSubmit}
