@@ -197,9 +197,11 @@ export default function Navbar() {
         <MenuItem onClick={() => handleMenuItemClick("/companies")}>
           Companies
         </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick("/users")}>
-          Users
-        </MenuItem>
+        {user && user.data.user.AdminFlag && (
+          <MenuItem onClick={() => handleMenuItemClick("/users")}>
+            Users
+          </MenuItem>
+        )}
       </Menu>
     </Box>
   );

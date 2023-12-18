@@ -32,11 +32,15 @@ import PermissionForm from "components/PermissionForm";
 import Person from "components/Person";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import SingleDate from "components/SingleDate";
-import { DELETE_ONLY } from "Constants";
+import {
+  GET_AND_DELETE,
+  GET_AND_DELETE_AND_CREATE,
+  GET_AND_DELETE_AND_CREATE_AND_UPDATE,
+} from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 
 export default function Users() {
-  const { userAuth } = useAuthContext();
+  const { user:userAuth } = useAuthContext();
   const [usersInfo, setUsersInfo] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
@@ -71,7 +75,7 @@ export default function Users() {
       {
         Username: usersInfo[index].Username,
       },
-      "http://localhost:3000/api/users",
+      "http://localhost:3000/api/users/details",
       index,
       false,
       null,
@@ -110,6 +114,8 @@ export default function Users() {
     fetchUsersInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAuth]);
+
+  console.log(userAuth);
 
   return (
     <MainBox>
@@ -165,28 +171,23 @@ export default function Users() {
       </FormGroup>
       {usersInfo &&
         usersInfo.map((user, index) => {
-            return (
-                <User
-                  key={index}
-                  user={user}
-                  index={index}
-                  handleOpenDeleteConfirmationDialog={
-                    handleOpenDeleteConfirmationDialog
-                  }
-                />
-              );
+          return (
+            <User
+              key={index}
+              user={user}
+              index={index}
+              handleOpenDeleteConfirmationDialog={
+                handleOpenDeleteConfirmationDialog
+              }
+            />
+          );
         })}
-        <AddNewUser
-          setUsersInfo={setUsersInfo}
-          usersInfo={usersInfo}
-        />
-        
-      {/* {userAuth && (
-        <AddNewUser
-          setUsersInfo={setUsersInfo}
-          usersInfo={usersInfo}
-        />
-      )}
+
+      {userAuth &&
+        userAuth.data.user.AdminFlag &&
+        userAuth.data.user.PermissionLevel >= GET_AND_DELETE_AND_CREATE && (
+          <AddNewUser setUsersInfo={setUsersInfo} usersInfo={usersInfo} />
+        )}
       {deleteConfirmationDialogOpen && ( //TODO: check
         <DeleteConfirmationDialog
           open={deleteConfirmationDialogOpen}
@@ -198,16 +199,12 @@ export default function Users() {
             usersInfo[selectedIndexToDelete]?.Lname
           }
         />
-      )} */}
+      )}
     </MainBox>
   );
 }
 
-function User({
-  user,
-  index,
-  handleOpenDeleteConfirmationDialog,
-}) {
+function User({ user, index, handleOpenDeleteConfirmationDialog }) {
   const { register, handleSubmit, setValue } = useForm();
 
   const { executeRequest: get, isLoading: getIsLoading } = useGet();
@@ -216,8 +213,7 @@ function User({
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
-  const { userAuth } = useAuthContext();
-
+  const { user:userAuth } = useAuthContext();
 
   React.useEffect(() => {
     /*
@@ -226,31 +222,47 @@ function User({
       */
     setValue("Fname", user?.Fname);
     setValue("Lname", user?.Lname);
-    setValue("IsActive", user?.IsActive);
+    setValue("IsActive", user?.IsActive ? "Activated" : "Deactivated");
     setValue("PermissionLevel", user?.PermissionLevel);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   function updateNameOrLinkedInURL(data) {
     update(
-      { ...data, Username: user.Username },
+      { ...data, Username: user?.Username },
       "http://localhost:3000/api/users/details"
     );
   }
 
   function updateAccountActive(data) {
     update(
-        {...data, Username: user.Username, IsActive: true},
-        "http://localhost:3000/api/users/details"
+      { ...data, Username: user?.Username, IsActive: true },
+      "http://localhost:3000/api/users/details"
     );
+    setValue("IsActive", "Activated");
   }
 
   function updateAccountDeactive(data) {
     update(
-        {...data, Username: user.Username, IsActive: false},
-        "http://localhost:3000/api/users/details"
+      { ...data, Username: user?.Username, IsActive: false },
+      "http://localhost:3000/api/users/details"
+    );
+    setValue("IsActive", "Deactivated");
+  }
+
+  function resetAccountPassword(data) {
+    update(
+      {
+        ...data,
+        Username: user?.Username,
+        NewPassword: "test",
+        ConfirmNewPassword: "test",
+      },
+      "http://localhost:3000/api/auth/reset-password"
     );
   }
+
+  console.log(userAuth);
 
   return (
     <MainPaper
@@ -287,7 +299,14 @@ function User({
         <NameForm
           register={register}
           handleSubmit={handleSubmit}
-          actionOnAttribute={updateNameOrLinkedInURL}
+          actionOnAttribute={
+            userAuth &&
+            userAuth.data.user.AdminFlag &&
+            userAuth.data.user.PermissionLevel >=
+              GET_AND_DELETE_AND_CREATE_AND_UPDATE
+              ? updateNameOrLinkedInURL
+              : undefined
+          }
           isLoading={updateIsLoading}
           additionalStyles={{ flexDirection: { xs: "column", sm: "row" } }}
           additionalLnameStyles={{
@@ -299,8 +318,22 @@ function User({
         <StatusForm
           register={register}
           handleSubmit={handleSubmit}
-          actionOnAttribute={updateAccountActive}
-          actionOnAttribute2={updateAccountDeactive}
+          actionOnAttribute={
+            userAuth &&
+            userAuth.data.user.AdminFlag &&
+            userAuth.data.user.PermissionLevel >=
+              GET_AND_DELETE_AND_CREATE_AND_UPDATE
+              ? updateAccountActive
+              : undefined
+          }
+          actionOnAttribute2={
+            userAuth &&
+            userAuth.data.user.AdminFlag &&
+            userAuth.data.user.PermissionLevel >=
+              GET_AND_DELETE_AND_CREATE_AND_UPDATE
+              ? updateAccountDeactive
+              : undefined
+          }
           attributeName={"IsActive"}
           attributeLabel={"Account Status"}
           maxLength={64}
@@ -318,7 +351,14 @@ function User({
         <PermissionForm
           register={register}
           handleSubmit={handleSubmit}
-          actionOnAttribute={updateNameOrLinkedInURL}
+          actionOnAttribute={
+            userAuth &&
+            userAuth.data.user.AdminFlag &&
+            userAuth.data.user.PermissionLevel >=
+              GET_AND_DELETE_AND_CREATE_AND_UPDATE
+              ? updateNameOrLinkedInURL
+              : undefined
+          }
           isLoading={updateIsLoading}
           additionalStyles={{ flexDirection: { xs: "column", sm: "row" } }}
           additionalLnameStyles={{
@@ -327,9 +367,24 @@ function User({
           }}
           buttonName={"Update"}
         />
+        {userAuth &&
+          userAuth.data.user.AdminFlag &&
+          userAuth.data.user.PermissionLevel >=
+            GET_AND_DELETE_AND_CREATE_AND_UPDATE && (
+            <Button
+              onClick={handleSubmit(resetAccountPassword)}
+              type="submit"
+              variant="outlined"
+              sx={{ mt: 1, mb: 1, color: "red", borderColor: "red" }}
+              disabled={createIsLoading}
+            >
+              Reset Password
+            </Button>
+          )}
       </Box>
-      {userAuth?.data?.userAuth?.AdminFlag &&
-       userAuth?.data?.userAuth?.PermissionLevel >= DELETE_ONLY && (
+
+      {userAuth?.data?.user?.AdminFlag &&
+        userAuth?.data?.user?.PermissionLevel >= GET_AND_DELETE && (
           <IconButton
             sx={{
               alignSelf: { xs: "flex-end", md: "flex-start" },
@@ -349,11 +404,7 @@ function User({
 function AddNewUser({ setUsersInfo, usersInfo }) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { register, getValues, reset, handleSubmit, setValue } = useForm();
-  const { executeHandle } = useHandleOperation(
-    reset,
-    setUsersInfo,
-    usersInfo
-  );
+  const { executeHandle } = useHandleOperation(reset, setUsersInfo, usersInfo);
 
   async function handleCreate(data) {
     const result = await executeHandle(

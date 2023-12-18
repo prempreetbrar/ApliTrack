@@ -10,7 +10,7 @@ router
   .post(authController.checkIfLoggedIn, contactController.createContact)
   .delete(
     authController.checkIfLoggedIn,
-    authController.restrictTo(authController.DELETE_ONLY),
+    authController.restrictTo(authController.GET_AND_DELETE),
     contactController.deleteContact
   )
   .patch(authController.checkIfLoggedIn, contactController.updateContact);

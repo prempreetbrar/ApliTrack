@@ -9,5 +9,12 @@ router.patch(
   authController.checkIfLoggedIn,
   authController.changePassword
 );
+router.patch(
+  "/reset-password",
+  authController.restrictTo(
+    authController.GET_AND_DELETE_AND_CREATE_AND_UPDATE
+  ),
+  authController.resetPassword
+);
 
 module.exports = router;

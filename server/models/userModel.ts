@@ -110,11 +110,11 @@ async function createAdminUser() {
       AdminFlag: true,
     });
 
-    adminUser.PermissionLevel = authController.DELETE_ONLY;
+    adminUser.PermissionLevel = authController.GET_AND_DELETE_AND_CREATE_AND_UPDATE;
     await adminUser.save();
 
     const newApplicant = await Applicant.create({
-      Username: "admin@admin.com",
+      Username: process.env.ADMIN_USERNAME,
     });
 
     console.log("Admin user created:", adminUser);

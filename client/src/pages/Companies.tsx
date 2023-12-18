@@ -34,7 +34,7 @@ import useHandleOperation from "hooks/useHandleOperation";
 import SingleDate from "components/SingleDate";
 import useAuthContext from "hooks/useAuthContext";
 
-import { DELETE_ONLY } from "Constants";
+import { GET_AND_DELETE } from "Constants";
 import { CircularProgress } from "@mui/joy";
 
 export default function Companies() {
@@ -488,7 +488,7 @@ function Company({
             sx={{ marginLeft: "1rem", width: "4rem", height: "4rem" }}
           />
           {user?.data?.user?.AdminFlag &&
-            user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+            user?.data?.user?.PermissionLevel >= GET_AND_DELETE && (
               <IconButton
                 aria-label="delete"
                 size="large"
@@ -1096,7 +1096,7 @@ function Job({
           </Box>
 
           {user?.data?.user?.AdminFlag &&
-            user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+            user?.data?.user?.PermissionLevel >= GET_AND_DELETE && (
               <Box
                 sx={{
                   gridArea: "d",

@@ -3,6 +3,7 @@ import { TextField, Button, Box } from "@mui/material";
 import useAuthContext from "hooks/useAuthContext";
 import React from "react";
 import { useState, useEffect } from 'react';
+import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
 
 export default function SingleForm({
   register,
@@ -19,10 +20,11 @@ export default function SingleForm({
   attributeLabel,
 }) {
   const { user } = useAuthContext();
+  const { executeRequest: get } = useGet();
 
-  const [currentValue, setCurrentValue] = useState({...register("IsActive")});
+  const [currentValue, setCurrentValue] = useState(true);
 
-  console.log({...register("IsActive")});
+  //console.log(user);
 
   useEffect(() => {
     if (user && user[attributeName] !== undefined) {
@@ -42,26 +44,10 @@ export default function SingleForm({
 
   return (
     <Box sx={{ ...additionalStyles }}>
-      {isTextArea && (
-        <FormControl>
-          <FormLabel>{attributeLabel || attributeName}</FormLabel>
-          <Textarea
-            {...register(attributeName)}
-            label={attributeLabel || attributeName}
-            value={currentValue ? 'Activated' : 'Deactivated'}
-            sx={{
-              marginRight: { xs: "0", md: "1rem" },
-              ...additionalFieldStyles,
-            }}
-            minRows={3}
-            disabled={!user && !allowUnauthenticated}
-          />
-        </FormControl>
-      )}
       {!isTextArea && (
         <TextField
+         {...register("IsActive")}
           label={attributeLabel || attributeName}
-          value={currentValue ? 'Activated' : 'Deactivated'}
           sx={{
             marginRight: { xs: "0", md: "1rem" },
             ...additionalFieldStyles,

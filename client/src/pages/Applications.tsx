@@ -30,7 +30,7 @@ import SingleForm from "components/SingleForm";
 import Person from "components/Person";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import SingleDate from "components/SingleDate";
-import { DELETE_ONLY } from "Constants";
+import { GET_AND_DELETE } from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import MainBox from "components/MainBox";
 import ApplicationForm from "components/ApplicationForm";

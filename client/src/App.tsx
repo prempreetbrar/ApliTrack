@@ -32,6 +32,7 @@ function App() {
     );
   }
 
+  console.log(user);
   /*
     If the user isn't logged in, then navigate them to the login page on a protected route.
     Otherwise, if they are logged in, let them see the protected route.
@@ -81,7 +82,10 @@ function App() {
           path="/applicants/applicant/applications"
           element={user ? <Applications /> : <Navigate to="/auth/login" />}
         />
-        <Route path="/users" element={<Users />} />
+        <Route
+          path="/users"
+          element={user && user.data.user.AdminFlag ? <Users /> : <Navigate to="/auth/login" />}
+        />
       </Routes>
     </Router>
   );

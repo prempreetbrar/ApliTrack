@@ -12,7 +12,7 @@ router
   .patch(authController.checkIfLoggedIn, companyController.updateCompany)
   .delete(
     authController.checkIfLoggedIn,
-    authController.restrictTo(authController.DELETE_ONLY),
+    authController.restrictTo(authController.GET_AND_DELETE),
     companyController.deleteCompany
   );
 

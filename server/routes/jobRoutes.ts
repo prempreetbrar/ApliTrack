@@ -20,7 +20,7 @@ router
   )
   .delete(
     authController.checkIfLoggedIn,
-    authController.restrictTo(authController.DELETE_ONLY),
+    authController.restrictTo(authController.GET_AND_DELETE),
     jobController.deleteJob
   )
   .patch(

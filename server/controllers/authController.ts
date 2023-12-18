@@ -166,9 +166,10 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
   before you "next()" and move to that route, we check if the user belongs to one of those permissionLevels.
   If they don't, then they don't get access to that function.
 */
-exports.DELETE_ONLY = 1;
-exports.DELETE_AND_CREATE = 2;
-exports.DELETE_AND_CREATE_AND_UPDATE = 3;
+exports.GET = 0;
+exports.GET_AND_DELETE = 1;
+exports.GET_AND_DELETE_AND_CREATE = 2;
+exports.GET_AND_DELETE_AND_CREATE_AND_UPDATE = 3;
 exports.restrictTo = (permissionLevel) => {
   return (request, response, next) => {
     if (
@@ -208,6 +209,31 @@ exports.changePassword = errorHandling.catchAsync(
         401
       );
     }
+
+    /*
+      Update password. Even though the user didn't send a password confirm
+      in their request body, we still need to manually make sure that
+      password and password confirm are identical, otherwise the model will
+      prevent the update.
+    */
+    userWithPassword.Password = request.body.NewPassword;
+    userWithPassword.PasswordConfirm = request.body.ConfirmNewPassword;
+    await userWithPassword.save();
+
+    // 4) Send new JWT token with updated password
+    createSendToken(userWithPassword, 200, request, response);
+  }
+);
+
+exports.resetPassword = errorHandling.catchAsync(
+  async (request, response, next) => {
+    /*
+       1) we want user to still write their password (so that somebody
+       can't just find an open computer and change the password)
+      */
+    const userWithPassword = await User.findByPk(request.body.Username, {
+      attributes: { include: ["Password"] },
+    });
 
     /*
       Update password. Even though the user didn't send a password confirm

@@ -30,7 +30,7 @@ import SingleForm from "components/SingleForm";
 import Person from "components/Person";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import SingleDate from "components/SingleDate";
-import { DELETE_ONLY } from "Constants";
+import { GET_AND_DELETE } from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 
 export default function Contacts() {
@@ -686,7 +686,7 @@ function Contact({
       </Box>
 
       {user?.data?.user?.AdminFlag &&
-        user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
+        user?.data?.user?.PermissionLevel >= GET_AND_DELETE && (
           <IconButton
             sx={{
               alignSelf: { xs: "flex-end", md: "flex-start" },
