@@ -2,6 +2,7 @@ import { FormControl, FormLabel, Textarea } from "@mui/joy";
 import { TextField, Button, Box } from "@mui/material";
 import useAuthContext from "hooks/useAuthContext";
 import React from "react";
+import { useState, useEffect } from 'react';
 
 export default function SingleForm({
   register,
@@ -19,6 +20,26 @@ export default function SingleForm({
 }) {
   const { user } = useAuthContext();
 
+  const [currentValue, setCurrentValue] = useState({...register("IsActive")});
+
+  console.log({...register("IsActive")});
+
+  useEffect(() => {
+    if (user && user[attributeName] !== undefined) {
+      setCurrentValue(user[attributeName]);
+    }
+  }, [user, attributeName]);
+
+  const handleActivate = () => {
+    handleSubmit(actionOnAttribute)();
+    setCurrentValue(true);
+  };
+
+  const handleDeactivate = () => {
+    handleSubmit(actionOnAttribute2)();
+    setCurrentValue(false);
+  };
+
   return (
     <Box sx={{ ...additionalStyles }}>
       {isTextArea && (
@@ -27,6 +48,7 @@ export default function SingleForm({
           <Textarea
             {...register(attributeName)}
             label={attributeLabel || attributeName}
+            value={currentValue ? 'Activated' : 'Deactivated'}
             sx={{
               marginRight: { xs: "0", md: "1rem" },
               ...additionalFieldStyles,
@@ -38,8 +60,8 @@ export default function SingleForm({
       )}
       {!isTextArea && (
         <TextField
-          {...register(attributeName)}
           label={attributeLabel || attributeName}
+          value={currentValue ? 'Activated' : 'Deactivated'}
           sx={{
             marginRight: { xs: "0", md: "1rem" },
             ...additionalFieldStyles,
@@ -51,9 +73,9 @@ export default function SingleForm({
           disabled={!user && !allowUnauthenticated}
         />
       )}
-      {actionOnAttribute2 && user && (
+      {actionOnAttribute && user && (
         <Button
-          onClick={handleSubmit(actionOnAttribute2)}
+          onClick={handleActivate}
           type="submit"
           variant="outlined"
           sx={{ mt: 3, mb: 2 }}
@@ -63,9 +85,9 @@ export default function SingleForm({
         </Button>
         
       )}
-      {actionOnAttribute && user && (
+      {actionOnAttribute2 && user && (
         <Button
-          onClick={handleSubmit(actionOnAttribute)}
+          onClick={handleDeactivate}
           type="submit"
           variant="outlined"
           sx={{ mt: 3, mb: 2, ml: 2, color: 'red', borderColor: 'red'}}

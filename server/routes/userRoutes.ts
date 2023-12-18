@@ -11,6 +11,10 @@ router.patch(
   userController.updateUser
 );
 
-router.get("", userController.getAllUsers);
+router
+  .route("/details")
+  .post(userController.createUser)
+  .get(userController.getAllUsers)
+  .patch(userController.updateUser);
 
 module.exports = router;

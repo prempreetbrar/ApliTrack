@@ -28,6 +28,7 @@ import ChipDisplayer from "components/ChipDisplayer";
 import NameForm from "components/NameForm";
 import SingleForm from "components/SingleForm";
 import StatusForm from "components/StatusForm";
+import PermissionForm from "components/PermissionForm";
 import Person from "components/Person";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import SingleDate from "components/SingleDate";
@@ -84,7 +85,7 @@ export default function Users() {
       "get",
       get,
       data,
-      "http://localhost:3000/api/users",
+      "http://localhost:3000/api/users/details",
       null,
       false,
       null,
@@ -101,7 +102,7 @@ export default function Users() {
   */
   React.useEffect(() => {
     const fetchUsersInfo = async () => {
-      const response = await get({}, "http://localhost:3000/api/users");
+      const response = await get({}, "http://localhost:3000/api/users/details");
 
       setUsersInfo(response.user); //TODO: check
     };
@@ -175,7 +176,12 @@ export default function Users() {
                 />
               );
         })}
-      {userAuth && (
+        <AddNewUser
+          setUsersInfo={setUsersInfo}
+          usersInfo={usersInfo}
+        />
+        
+      {/* {userAuth && (
         <AddNewUser
           setUsersInfo={setUsersInfo}
           usersInfo={usersInfo}
@@ -192,7 +198,7 @@ export default function Users() {
             usersInfo[selectedIndexToDelete]?.Lname
           }
         />
-      )}
+      )} */}
     </MainBox>
   );
 }
@@ -221,27 +227,28 @@ function User({
     setValue("Fname", user?.Fname);
     setValue("Lname", user?.Lname);
     setValue("IsActive", user?.IsActive);
+    setValue("PermissionLevel", user?.PermissionLevel);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   function updateNameOrLinkedInURL(data) {
     update(
       { ...data, Username: user.Username },
-      "http://localhost:3000/api/users"
+      "http://localhost:3000/api/users/details"
     );
   }
 
   function updateAccountActive(data) {
     update(
         {...data, Username: user.Username, IsActive: true},
-        "http://localhost:3000/api/users"
+        "http://localhost:3000/api/users/details"
     );
   }
 
   function updateAccountDeactive(data) {
     update(
         {...data, Username: user.Username, IsActive: false},
-        "http://localhost:3000/api/users"
+        "http://localhost:3000/api/users/details"
     );
   }
 
@@ -308,6 +315,18 @@ function User({
             marginRight: { xs: "1rem" },
           }}
         />
+        <PermissionForm
+          register={register}
+          handleSubmit={handleSubmit}
+          actionOnAttribute={updateNameOrLinkedInURL}
+          isLoading={updateIsLoading}
+          additionalStyles={{ flexDirection: { xs: "column", sm: "row" } }}
+          additionalLnameStyles={{
+            marginTop: { xs: "1rem", sm: 0 },
+            marginRight: { xs: "1rem" },
+          }}
+          buttonName={"Update"}
+        />
       </Box>
       {userAuth?.data?.userAuth?.AdminFlag &&
        userAuth?.data?.userAuth?.PermissionLevel >= DELETE_ONLY && (
@@ -341,7 +360,7 @@ function AddNewUser({ setUsersInfo, usersInfo }) {
       "create",
       create,
       data,
-      "http://localhost:3000/api/users",
+      "http://localhost:3000/api/users/details",
       undefined,
       false,
       undefined,
@@ -356,7 +375,7 @@ function AddNewUser({ setUsersInfo, usersInfo }) {
     if (result) {
       setValue("Fname", "");
       setValue("Lname", "");
-    //   setValue("LinkedInURL", "");
+      setValue("Username", "");
     }
   }
 
@@ -384,14 +403,14 @@ function AddNewUser({ setUsersInfo, usersInfo }) {
             marginBottom: { md: "0", xs: "1rem" },
           }}
         />
-        {/* <SingleForm
+        <SingleForm
           register={register}
           handleSubmit={handleSubmit}
           actionOnAttribute={null}
-          attributeName={"LinkedInURL"}
+          attributeName={"Username"}
           isLoading={createIsLoading}
           maxLength={64}
-        /> */}
+        />
         <Button
           onClick={handleSubmit(handleCreate)}
           type="submit"

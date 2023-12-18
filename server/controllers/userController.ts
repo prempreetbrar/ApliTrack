@@ -40,6 +40,7 @@ exports.preventPasswordOrAdminChange = errorHandling.catchAsync(
 exports.updateUser = factory.updateInstance(User);
 
 exports.getAllUsers = factory.getAll(User);
+exports.createUser = factory.createOne(User);
 
 exports.addFilter = errorHandling.catchAsync(
   async (request, response, next) => {
