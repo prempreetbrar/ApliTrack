@@ -30,7 +30,7 @@ export default function Documents() {
   const [documents, setDocuments] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -112,7 +112,7 @@ export default function Documents() {
   return (
     <>
       {user && (
-        <MainBox>
+        <MainBox isLoading={getIsLoading}>
           <form
             onSubmit={handleSubmit(handleGet)}
             style={{ display: "flex", flexDirection: "column", width: "100%" }}
@@ -171,6 +171,7 @@ export default function Documents() {
                   flexDirection="row"
                   alignItems="center"
                   justifyContent="center"
+                  marginTop={{ xs: "1rem", md: "0rem" }}
                 >
                   <Typography
                     variant="h3"
@@ -190,7 +191,7 @@ export default function Documents() {
                       flexDirection: "row",
                       alignItems: "center",
                       marginBottom: { xs: "0rem" },
-                      marginTop: { xs: "1rem", xl: "0rem" },
+                      marginTop: { xl: "0rem" },
                       flexShrink: 0,
                     }}
                     attributeName={"DocFileName"}
@@ -358,10 +359,15 @@ function Document({
           width="100%"
           sx={{ flexDirection: { xs: "column", md: "row" } }}
         >
-          <Box display="flex" flexDirection="column">
+          <Box
+            display="flex"
+            flexDirection="column"
+            width={{ xs: "100%", md: "50%" }}
+          >
             <Box
               display="flex"
-              sx={{ flexDirection: { xs: "column", md: "row" } }}
+              sx={{ flexDirection: { xs: "column" } }}
+              width="100%"
             >
               <SingleForm
                 register={register}
@@ -402,6 +408,8 @@ function Document({
                   width: "100%",
                 }}
                 isTextArea
+                textAreaStyles={{ width: "100%" }}
+                formControlStyles={{ width: "100%" }}
               />
             </Box>
           </Box>
@@ -599,6 +607,7 @@ function NewDocumentForm({ documents, setDocuments }) {
                         width: "100%",
                       }}
                       isTextArea
+                      formControlStyles={{ width: "100%" }}
                     />
                   </Box>
                 </Box>

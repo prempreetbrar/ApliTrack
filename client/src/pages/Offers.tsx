@@ -39,7 +39,7 @@ export default function Offers() {
   const [offers, setOffers] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -124,12 +124,10 @@ export default function Offers() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  console.log(offers);
-
   return (
     <>
       {user && (
-        <MainBox>
+        <MainBox isLoading={getIsLoading}>
           <form
             onSubmit={handleSubmit(handleGet)}
             style={{ display: "flex", flexDirection: "column", width: "100%" }}
@@ -199,6 +197,16 @@ export default function Offers() {
                     paddingRight="2rem"
                   >
                     <FormControlLabel
+                      value="Compensation-DESC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Compensation Descending"
+                      labelPlacement="start"
+                      sx={{
+                        marginTop: { xs: "1rem", sm: "0" },
+                        width: "100%",
+                      }}
+                    />
+                    <FormControlLabel
                       value="ResponseDeadline-DESC"
                       control={<Radio {...register("Sort")} />}
                       label="Sort by Response Deadline Descending"
@@ -213,16 +221,6 @@ export default function Offers() {
                       value="StartDate-DESC"
                       control={<Radio {...register("Sort")} />}
                       label="Sort by Start Date Descending"
-                      labelPlacement="start"
-                      sx={{
-                        marginTop: { xs: "1rem", sm: "0" },
-                        width: "100%",
-                      }}
-                    />
-                    <FormControlLabel
-                      value="Compensation-DESC"
-                      control={<Radio {...register("Sort")} />}
-                      label="Sort by Compensation Descending"
                       labelPlacement="start"
                       sx={{
                         marginTop: { xs: "1rem", sm: "0" },
@@ -632,6 +630,7 @@ function Offer({
                 width: "100%",
               }}
               isTextArea
+              formControlStyles={{ width: "100%" }}
             />
           </Box>
 
@@ -917,6 +916,7 @@ function NewOfferForm({ offers, setOffers }) {
                       width: "100%",
                     }}
                     isTextArea
+                    formControlStyles={{ width: "100%" }}
                   />
                 </Box>
 

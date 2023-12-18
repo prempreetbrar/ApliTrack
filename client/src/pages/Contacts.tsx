@@ -39,7 +39,7 @@ export default function Contacts() {
   const [knownContactsInfo, setKnownContactsInfo] = React.useState({});
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -143,7 +143,7 @@ export default function Contacts() {
   }, [user, contactsInfo, onlyShowContactsIKnow]);
 
   return (
-    <MainBox>
+    <MainBox isLoading={getIsLoading}>
       <FormGroup
         sx={{
           display: "flex",
@@ -175,7 +175,7 @@ export default function Contacts() {
           <Box
             display="flex"
             sx={{
-              marginTop: { xs: "1rem", md: "1rem" },
+              marginTop: { xs: "1rem", md: "0rem" },
               flexDirection: { xs: "column", sm: "row" },
               alignItems: { xs: "center", sm: "center" },
             }}
@@ -470,6 +470,8 @@ function Contact({
           marginRight: { xs: "0", md: "2.5rem" },
           marginBottom: { xs: "1.5rem", md: "0" },
           order: { xs: 2, md: 1 },
+          justifyContent: "center",
+          width: { xs: "100%", md: "30%" },
         }}
       >
         <Person />
@@ -480,84 +482,70 @@ function Contact({
               label="I know this person!"
             />
             {stillKnown && (
-              <Box>
-                <Box>
-                  <SingleForm
-                    register={register}
-                    handleSubmit={handleSubmit}
-                    attributeName={"Relationship"}
-                    maxLength={64}
-                    isLoading={updateIsLoading}
-                    additionalStyles={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginTop: "1.5rem",
-                    }}
-                    additionalFieldStyles={{
-                      marginRight: { xs: "1rem" },
-                    }}
-                  />
-                  <SingleDate
-                    handleSubmit={handleSubmit}
-                    attributeName={"LastContactDate"}
-                    maxLength={64}
-                    isLoading={updateIsLoading}
-                    additionalStyles={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginTop: "1.5rem",
-                    }}
-                    date={date || null}
-                    setDate={setDate}
-                    additionalFieldStyles={{
-                      marginRight: { xs: "1rem" },
-                    }}
-                  />
-                  <SingleForm
-                    register={register}
-                    handleSubmit={handleSubmit}
-                    actionOnAttribute={updateKnows}
-                    attributeName={"Notes"}
-                    maxLength={64}
-                    isLoading={updateIsLoading}
-                    additionalStyles={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      marginTop: "1.5rem",
-                      marginBottom: { xs: "2rem", md: "0rem" },
-                    }}
-                    additionalFieldStyles={{
-                      marginRight: { xs: "1rem" },
-                    }}
-                    isTextArea
-                  />
-                </Box>
-
-                <Box marginTop="2rem">
-                  <Typography variant="h3" fontSize="1rem" marginBottom="1rem">
-                    Referral(s)
-                  </Typography>
-                  {referrals.map((referral, index) => (
-                    <Referral
-                      referral={referral}
-                      key={index}
-                      index={index}
-                      setReferrals={setReferrals}
-                      referrals={referrals}
-                      handleOpenDeleteReferralConfirmationDialog={
-                        handleOpenDeleteReferralConfirmationDialog
-                      }
-                    />
-                  ))}
-                  <NewReferralForm
-                    setReferrals={setReferrals}
-                    referrals={referrals}
-                    ContactID={contact.ContactID}
-                  />
-                </Box>
+              <Box
+                width="100%"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+              >
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  attributeName={"Relationship"}
+                  maxLength={64}
+                  isLoading={updateIsLoading}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: "1.5rem",
+                    width: "inherit",
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: "0rem",
+                    width: "inherit",
+                  }}
+                />
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"LastContactDate"}
+                  maxLength={64}
+                  isLoading={updateIsLoading}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: "1.5rem",
+                    width: "inherit",
+                  }}
+                  date={date || null}
+                  setDate={setDate}
+                  additionalFieldStyles={{
+                    marginRight: "0rem",
+                    width: "inherit",
+                  }}
+                />
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  actionOnAttribute={updateKnows}
+                  attributeName={"Notes"}
+                  maxLength={64}
+                  isLoading={updateIsLoading}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    marginTop: "1.5rem",
+                    marginBottom: { xs: "2rem", md: "0rem" },
+                    width: "inherit",
+                  }}
+                  additionalFieldStyles={{
+                    width: "inherit",
+                  }}
+                  isTextArea
+                  formControlStyles={{ width: "inherit" }}
+                />
               </Box>
             )}
           </>
@@ -569,6 +557,7 @@ function Contact({
           alignItems: { xs: "center", md: "flex-start" },
           alignSelf: { xs: "center", md: "flex-start" },
           order: { xs: 3, md: 2 },
+          width: { xs: "100%", md: "70%" },
         }}
         flexDirection="column"
       >
@@ -605,7 +594,11 @@ function Contact({
         <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
           Contact Info
         </Typography>
-        <Box display="flex" sx={{ flexDirection: { xs: "column", sm: "row" } }}>
+        <Box
+          display="flex"
+          sx={{ flexDirection: { xs: "column", sm: "row" } }}
+          width="100%"
+        >
           <InfoSection
             entityIDName="ContactID"
             entityID={contact.ContactID}
@@ -654,7 +647,44 @@ function Contact({
           maxCreateLength={64}
           isCompany
         />
+        <Box marginTop="2rem" display="flex" flexDirection="column">
+          <Typography
+            variant="h3"
+            fontSize="1rem"
+            marginBottom="2rem"
+            fontWeight="bold"
+          >
+            Referral(s)
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection={{ xs: "column", sm: "row" }}
+            flexWrap="wrap"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {referrals.map((referral, index) => (
+              <Referral
+                referral={referral}
+                key={index}
+                index={index}
+                setReferrals={setReferrals}
+                referrals={referrals}
+                handleOpenDeleteReferralConfirmationDialog={
+                  handleOpenDeleteReferralConfirmationDialog
+                }
+              />
+            ))}
+            <NewReferralForm
+              setReferrals={setReferrals}
+              referrals={referrals}
+              ContactID={contact.ContactID}
+              additionalStyles={{ marginLeft: "2rem" }}
+            />
+          </Box>
+        </Box>
       </Box>
+
       {user?.data?.user?.AdminFlag &&
         user?.data?.user?.PermissionLevel >= DELETE_ONLY && (
           <IconButton
@@ -784,11 +814,7 @@ function InfoSection({
         />
       )}
       {isCompany && (
-        <Box
-          display="flex"
-          flexDirection={{ xs: "column", sm: "row" }}
-          justifyContent="space-between"
-        >
+        <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
           <NewEntryDropdown
             entityName={entityName}
             entityAttributeName={entityTargetAttribute}
@@ -797,7 +823,7 @@ function InfoSection({
             createIsLoading={createIsLoading}
             register={register}
             fetchAllOptionsURL={fetchAllOptionsURL}
-            additionalStyles={{ width: "50%" }}
+            additionalStyles={{ width: "50%", paddingRight: "2rem" }}
             doNotShowButton
             dropdownValue={dropdownValue}
             setDropdownValue={setDropdownValue}
@@ -929,25 +955,32 @@ function Referral({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(updateReferral)}
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
+    <form onSubmit={handleSubmit(updateReferral)}>
       <Box
-        display="flex"
-        alignItems="center"
-        width="75%"
-        justifyContent="center"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          marginRight: { xs: "0rem", sm: "1rem", md: "2rem" },
+        }}
       >
-        <BadgeIcon
-          sx={{
-            width: "5rem",
-            height: "5rem",
-            marginBottom: "2rem",
-            marginLeft: "5rem",
-          }}
-        />
-        {user && (
+        <Box
+          display="flex"
+          alignItems="center"
+          width="75%"
+          justifyContent="center"
+          marginRight="2rem"
+        >
+          <BadgeIcon
+            sx={{
+              width: "5rem",
+              height: "5rem",
+              marginBottom: "2rem",
+              marginLeft: "5rem",
+            }}
+          />
+          {user && (
             <IconButton
               sx={{
                 alignSelf: { xs: "flex-start" },
@@ -960,76 +993,82 @@ function Referral({
               <Delete sx={{ width: "2rem", height: "2rem" }} />
             </IconButton>
           )}
+        </Box>
+        <SingleDate
+          handleSubmit={handleSubmit}
+          attributeName={"Date"}
+          maxLength={64}
+          isLoading={updateIsLoading}
+          additionalStyles={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+          date={referralDate || null}
+          setDate={setReferralDate}
+          additionalFieldStyles={{
+            marginRight: { xs: "1rem" },
+          }}
+        />
+        <SingleForm
+          register={register}
+          handleSubmit={handleSubmit}
+          attributeName={"Notes"}
+          maxLength={64}
+          isLoading={updateIsLoading}
+          additionalStyles={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: { xs: "1rem" },
+            marginBottom: { xs: "0rem" },
+          }}
+          additionalFieldStyles={{
+            marginRight: { xs: "1rem" },
+          }}
+          isTextArea
+        />
+        <NewEntryDropdown
+          entityName="Job"
+          entityAttributeName="CompanyName"
+          entityAttributeName2="PositionName"
+          entityAttributeName3="PositionID"
+          doNotShowButton
+          createIsLoading={updateIsLoading}
+          register={register}
+          fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
+          dropdownValue={referralJob}
+          setDropdownValue={setReferralJob}
+          isDropdownObject
+          additionalStyles={{
+            width: "100%",
+            marginTop: { xs: "1rem" },
+            marginBottom: { xs: "0rem" },
+          }}
+        />
+        <Button
+          type="submit"
+          variant="outlined"
+          sx={{
+            width: "min-content",
+            alignSelf: "center",
+            marginTop: "1rem",
+            marginBottom: { xs: "3.5rem" },
+          }}
+        >
+          Update
+        </Button>
       </Box>
-      <SingleDate
-        handleSubmit={handleSubmit}
-        attributeName={"Date"}
-        maxLength={64}
-        isLoading={updateIsLoading}
-        additionalStyles={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-        date={referralDate || null}
-        setDate={setReferralDate}
-        additionalFieldStyles={{
-          marginRight: { xs: "1rem" },
-        }}
-      />
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        attributeName={"Notes"}
-        maxLength={64}
-        isLoading={updateIsLoading}
-        additionalStyles={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: { xs: "1rem" },
-          marginBottom: { xs: "0rem" },
-        }}
-        additionalFieldStyles={{
-          marginRight: { xs: "1rem" },
-        }}
-        isTextArea
-      />
-      <NewEntryDropdown
-        entityName="Job"
-        entityAttributeName="CompanyName"
-        entityAttributeName2="PositionName"
-        entityAttributeName3="PositionID"
-        doNotShowButton
-        createIsLoading={updateIsLoading}
-        register={register}
-        fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
-        dropdownValue={referralJob}
-        setDropdownValue={setReferralJob}
-        isDropdownObject
-        additionalStyles={{
-          width: "100%",
-          marginTop: { xs: "1rem" },
-          marginBottom: { xs: "0rem" },
-        }}
-      />
-      <Button
-        type="submit"
-        variant="outlined"
-        sx={{
-          width: "min-content",
-          alignSelf: "center",
-          marginTop: "1rem",
-          marginBottom: { xs: "3.5rem" },
-        }}
-      >
-        Update
-      </Button>
     </form>
   );
 }
 
-function NewReferralForm({ setReferrals, referrals, ContactID }) {
+function NewReferralForm({
+  setReferrals,
+  referrals,
+  ContactID,
+  additionalStyles,
+}) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { register, getValues, reset, handleSubmit, setValue } = useForm();
   const { executeHandle } = useHandleOperation(reset, setReferrals, referrals);
@@ -1072,80 +1111,83 @@ function NewReferralForm({ setReferrals, referrals, ContactID }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(createReferral)}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <Typography>Add New Referral</Typography>
-      <SingleDate
-        handleSubmit={handleSubmit}
-        attributeName={"Date"}
-        maxLength={64}
-        isLoading={createIsLoading}
-        additionalStyles={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-        date={referralDate || null}
-        setDate={setReferralDate}
-        additionalFieldStyles={{
-          marginRight: { xs: "1rem" },
-          marginTop: "1rem",
-        }}
-      />
-      <SingleForm
-        register={register}
-        handleSubmit={handleSubmit}
-        attributeName={"Notes"}
-        maxLength={64}
-        isLoading={createIsLoading}
-        additionalStyles={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: { xs: "1rem" },
-          marginBottom: { xs: "0rem" },
-        }}
-        additionalFieldStyles={{
-          marginRight: { xs: "1rem" },
-        }}
-        isTextArea
-      />
-      <NewEntryDropdown
-        entityName="Job"
-        entityAttributeName="PositionID"
-        entityAttributeName2="CompanyName"
-        entityAttributeName3="PositionName"
-        doNotShowButton
-        createIsLoading={createIsLoading}
-        register={register}
-        fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
-        dropdownValue={referralJob}
-        setDropdownValue={setReferralJob}
-        isDropdownObject
-        additionalStyles={{
-          width: "100%",
-          marginTop: { xs: "1rem" },
-          marginBottom: { xs: "0rem" },
-        }}
-      />
-      <Button
-        type="submit"
-        variant="outlined"
+    <form onSubmit={handleSubmit(createReferral)}>
+      <Box
         sx={{
-          width: "min-content",
-          alignSelf: "center",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          ...additionalStyles,
           marginTop: "1rem",
-          marginBottom: { xs: "2rem", md: "0rem" },
         }}
       >
-        Create
-      </Button>
+        <Typography>Add New Referral</Typography>
+        <SingleDate
+          handleSubmit={handleSubmit}
+          attributeName={"Date"}
+          maxLength={64}
+          isLoading={createIsLoading}
+          additionalStyles={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+          date={referralDate || null}
+          setDate={setReferralDate}
+          additionalFieldStyles={{
+            marginRight: { xs: "1rem" },
+            marginTop: "1rem",
+          }}
+        />
+        <SingleForm
+          register={register}
+          handleSubmit={handleSubmit}
+          attributeName={"Notes"}
+          maxLength={64}
+          isLoading={createIsLoading}
+          additionalStyles={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: { xs: "1rem" },
+            marginBottom: { xs: "0rem" },
+          }}
+          additionalFieldStyles={{
+            marginRight: { xs: "1rem" },
+          }}
+          isTextArea
+        />
+        <NewEntryDropdown
+          entityName="Job"
+          entityAttributeName="PositionID"
+          entityAttributeName2="CompanyName"
+          entityAttributeName3="PositionName"
+          doNotShowButton
+          createIsLoading={createIsLoading}
+          register={register}
+          fetchAllOptionsURL={"http://localhost:3000/api/jobs"}
+          dropdownValue={referralJob}
+          setDropdownValue={setReferralJob}
+          isDropdownObject
+          additionalStyles={{
+            width: "100%",
+            marginTop: { xs: "1rem" },
+            marginBottom: { xs: "0rem" },
+          }}
+        />
+        <Button
+          type="submit"
+          variant="outlined"
+          sx={{
+            width: "min-content",
+            alignSelf: "center",
+            marginTop: "1rem",
+            marginBottom: { xs: "2rem", md: "0rem" },
+          }}
+        >
+          Create
+        </Button>
+      </Box>
     </form>
   );
 }

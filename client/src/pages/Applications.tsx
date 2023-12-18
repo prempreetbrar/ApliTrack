@@ -44,7 +44,7 @@ export default function Applications() {
   const [applicationsInfo, setApplicationsInfo] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -119,7 +119,7 @@ export default function Applications() {
   }, [user]);
 
   return (
-    <MainBox>
+    <MainBox isLoading={getIsLoading}>
       <form onSubmit={handleSubmit(handleGet)}>
         <Box
           display="flex"
