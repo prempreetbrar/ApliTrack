@@ -18,7 +18,7 @@ export default function ChipDisplayer({
           key={index}
           title={`${entity[attributeName]}${
             secondAttributeName ? ` - ${entity[secondAttributeName]}` : ""
-          }`}
+          }${thirdAttributeName ? ` - [${entity[thirdAttributeName]}]` : ""}`}
           arrow
           placement="top"
         >
@@ -27,7 +27,7 @@ export default function ChipDisplayer({
               <EllipsisText>
                 {entity[attributeName]}
                 {secondAttributeName && ` - ${entity[secondAttributeName]}`}
-                {thirdAttributeName && ` ${entity[thirdAttributeName]}`}
+                {thirdAttributeName && ` - [${entity[thirdAttributeName]}]`}
               </EllipsisText>
             }
             onDelete={user && (() => handleDelete(index))}

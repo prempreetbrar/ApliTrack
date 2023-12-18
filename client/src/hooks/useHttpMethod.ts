@@ -62,7 +62,7 @@ const useHttpMethod = (method) => {
 
       enqueueSnackbar(error.response?.data.message, {
         variant: "error",
-        autoHideDuration: 1000,
+        autoHideDuration: 3000,
       });
       return null;
     }

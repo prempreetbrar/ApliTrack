@@ -648,7 +648,12 @@ function Contact({
           isCompany
         />
         <Box marginTop="2rem" display="flex" flexDirection="column">
-          <Typography variant="h3" fontSize="1rem" marginBottom="2rem">
+          <Typography
+            variant="h3"
+            fontSize="1rem"
+            marginBottom="2rem"
+            fontWeight="bold"
+          >
             Referral(s)
           </Typography>
           <Box

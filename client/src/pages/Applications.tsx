@@ -487,6 +487,7 @@ function InfoSection({
   }, [sectionArray]);
 
   async function handleCreate() {
+    console.log(dropdownValue);
     executeHandle(
       "create",
       create,

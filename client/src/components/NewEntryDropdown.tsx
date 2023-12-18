@@ -40,7 +40,7 @@ export default function NewEntryDropdown({
               ? " - " + entity[entityAttributeName2]
               : "") +
             (entity[entityAttributeName3]
-              ? " - " + entity[entityAttributeName3]
+              ? " - [" + entity[entityAttributeName3] + "]"
               : "");
 
           if (isDropdownObject) {
