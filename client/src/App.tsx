@@ -19,6 +19,7 @@ import Companies from "pages/Companies";
 import Applications from "pages/Applications";
 import Offers from "pages/Offers";
 import Documents from "pages/Documents";
+import Users from "pages/Users";
 import { Box, CircularProgress } from "@mui/joy";
 
 function App() {
@@ -80,6 +81,7 @@ function App() {
           path="/applicants/applicant/applications"
           element={user ? <Applications /> : <Navigate to="/auth/login" />}
         />
+        <Route path="/users" element={<Users />} />
       </Routes>
     </Router>
   );
