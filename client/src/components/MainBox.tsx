@@ -1,8 +1,9 @@
 import React from "react";
 
 import { Box } from "@mui/material";
+import { CircularProgress } from "@mui/joy";
 
-export default function MainBox({ children }) {
+export default function MainBox({ isLoading, children }) {
   return (
     <Box
       display="flex"
@@ -16,7 +17,8 @@ export default function MainBox({ children }) {
         width: "100%",
       }}
     >
-      {children}
+      {isLoading && <CircularProgress />}
+      {!isLoading && children}
     </Box>
   );
 }

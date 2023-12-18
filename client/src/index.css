@@ -6,6 +6,6 @@
   margin: 0;
 }
 
-iframe#webpack-dev-server-client-overlay {
+/* iframe#webpack-dev-server-client-overlay {
   display: none !important;
-}
+} */

@@ -39,7 +39,7 @@ export default function Contacts() {
   const [knownContactsInfo, setKnownContactsInfo] = React.useState({});
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -143,7 +143,7 @@ export default function Contacts() {
   }, [user, contactsInfo, onlyShowContactsIKnow]);
 
   return (
-    <MainBox>
+    <MainBox isLoading={getIsLoading}>
       <FormGroup
         sx={{
           display: "flex",

@@ -40,7 +40,7 @@ export default function Interviews() {
   const [interviewInfo, setInterviewInfo] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -134,7 +134,7 @@ export default function Interviews() {
   }, [user]);
 
   return (
-    <MainBox>
+    <MainBox isLoading={getIsLoading}>
       <form onSubmit={handleSubmit(handleGet)}>
         <FormGroup
           sx={{

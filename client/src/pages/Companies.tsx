@@ -35,6 +35,7 @@ import SingleDate from "components/SingleDate";
 import useAuthContext from "hooks/useAuthContext";
 
 import { DELETE_ONLY } from "Constants";
+import { CircularProgress } from "@mui/joy";
 
 export default function Companies() {
   const [companies, setCompanies] = React.useState([]);
@@ -64,7 +65,7 @@ export default function Companies() {
     React.useState(null);
 
   const { user } = useAuthContext();
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const { register, handleSubmit, setValue } = useForm();
@@ -140,139 +141,100 @@ export default function Companies() {
   }
 
   return (
-    <MainBox>
-      <form onSubmit={handleSubmit(handleGet)} style={{ width: "100%" }}>
-        <Box
-          display="flex"
-          sx={{
-            flexDirection: { xs: "column", sm: "row", xl: "column" },
-          }}
-          alignItems="center"
-          justifyContent="center"
-          marginBottom="1rem"
-        >
+    <>
+      <MainBox isLoading={getIsLoading}>
+        <form onSubmit={handleSubmit(handleGet)} style={{ width: "100%" }}>
           <Box
             display="flex"
             sx={{
-              flexDirection: { xs: "column", xl: "row" },
+              flexDirection: { xs: "column", sm: "row", xl: "column" },
             }}
-            alignItems="center"
-            marginRight="2.5rem"
-          >
-            {user && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Switch
-                    checked={onlyShowJobsITrack}
-                    onChange={(event) => {
-                      setOnlyShowJobsITrack(event.target.checked);
-                      if (!event.target.checked) {
-                        setMostRecentEarliestDateToApply(null);
-                        setMostRecentLatestDateToApply(null);
-                      }
-                    }}
-                  />
-                }
-                label="Only Show Jobs I Track"
-              />
-            )}
-
-            <FormControl>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="ASC"
-                name="radio-buttons-group"
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                }}
-              >
-                <FormControlLabel
-                  value="ASC"
-                  control={<Radio {...register("Sort")} />}
-                  label="Sort Ascending"
-                  labelPlacement="start"
-                />
-                <FormControlLabel
-                  value="DESC"
-                  control={<Radio {...register("Sort")} />}
-                  label="Sort Descending"
-                  labelPlacement="start"
-                />
-              </RadioGroup>
-            </FormControl>
-          </Box>
-
-          <Box
-            display="flex"
             alignItems="center"
             justifyContent="center"
-            marginTop="1rem"
-            sx={{
-              flexDirection: { xs: "column", xl: "row" },
-            }}
+            marginBottom="1rem"
           >
-            <Typography
-              variant="h3"
-              sx={{ fontSize: "1rem", marginRight: "1rem", flexShrink: 0 }}
+            <Box
+              display="flex"
+              sx={{
+                flexDirection: { xs: "column", xl: "row" },
+              }}
+              alignItems="center"
+              marginRight="2.5rem"
             >
-              Search by:
-            </Typography>
-            <SingleForm
-              register={register}
-              handleSubmit={handleSubmit}
-              additionalStyles={{
-                marginTop: { xs: "1rem", xl: "0rem" },
-                flexShrink: 0,
-                marginRight: { xs: "1rem", md: "0rem" },
-              }}
-              attributeName={"CompanyName"}
-              allowUnauthenticated
-            />
-            <SingleDate
-              handleSubmit={handleSubmit}
-              attributeName={"EarliestApplicationDeadline"}
-              maxLength={64}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: { xs: "0rem" },
-                marginTop: { xs: "1rem", xl: "0rem" },
-                flexShrink: 0,
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "1rem" },
-              }}
-              date={mostRecentEarliestApplicationDeadline}
-              setDate={setMostRecentEarliestApplicationDeadline}
-              allowUnauthenticated
-            />
-            <SingleDate
-              handleSubmit={handleSubmit}
-              attributeName={"LatestApplicationDeadline"}
-              maxLength={64}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: { xs: "0rem" },
-                marginTop: { xs: "1rem", xl: "0rem" },
-                flexShrink: 0,
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "1rem" },
-              }}
-              date={mostRecentLatestApplicationDeadline}
-              setDate={setMostRecentLatestApplicationDeadline}
-              allowUnauthenticated
-            />
+              {user && (
+                <FormControlLabel
+                  labelPlacement="start"
+                  control={
+                    <Switch
+                      checked={onlyShowJobsITrack}
+                      onChange={(event) => {
+                        setOnlyShowJobsITrack(event.target.checked);
+                        if (!event.target.checked) {
+                          setMostRecentEarliestDateToApply(null);
+                          setMostRecentLatestDateToApply(null);
+                        }
+                      }}
+                    />
+                  }
+                  label="Only Show Jobs I Track"
+                />
+              )}
 
-            {user && onlyShowJobsITrack && (
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="ASC"
+                  name="radio-buttons-group"
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                  }}
+                >
+                  <FormControlLabel
+                    value="ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort Ascending"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value="DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort Descending"
+                    labelPlacement="start"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              marginTop="1rem"
+              sx={{
+                flexDirection: { xs: "column", xl: "row" },
+              }}
+            >
+              <Typography
+                variant="h3"
+                sx={{ fontSize: "1rem", marginRight: "1rem", flexShrink: 0 }}
+              >
+                Search by:
+              </Typography>
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                additionalStyles={{
+                  marginTop: { xs: "1rem", xl: "0rem" },
+                  flexShrink: 0,
+                  marginRight: { xs: "1rem", md: "0rem" },
+                }}
+                attributeName={"CompanyName"}
+                allowUnauthenticated
+              />
               <SingleDate
                 handleSubmit={handleSubmit}
-                attributeName={"EarliestDateToApply"}
+                attributeName={"EarliestApplicationDeadline"}
                 maxLength={64}
                 additionalStyles={{
                   display: "flex",
@@ -285,14 +247,13 @@ export default function Companies() {
                 additionalFieldStyles={{
                   marginRight: { xs: "1rem" },
                 }}
-                date={mostRecentEarliestDateToApply}
-                setDate={setMostRecentEarliestDateToApply}
+                date={mostRecentEarliestApplicationDeadline}
+                setDate={setMostRecentEarliestApplicationDeadline}
+                allowUnauthenticated
               />
-            )}
-            {user && onlyShowJobsITrack && (
               <SingleDate
                 handleSubmit={handleSubmit}
-                attributeName={"LatestDateToApply"}
+                attributeName={"LatestApplicationDeadline"}
                 maxLength={64}
                 additionalStyles={{
                   display: "flex",
@@ -305,43 +266,85 @@ export default function Companies() {
                 additionalFieldStyles={{
                   marginRight: { xs: "1rem" },
                 }}
-                date={mostRecentLatestDateToApply}
-                setDate={setMostRecentLatestDateToApply}
+                date={mostRecentLatestApplicationDeadline}
+                setDate={setMostRecentLatestApplicationDeadline}
+                allowUnauthenticated
               />
-            )}
-            <IconButton type="submit">
-              <SearchIcon color="primary" />
-            </IconButton>
+
+              {user && onlyShowJobsITrack && (
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"EarliestDateToApply"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", xl: "0rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={mostRecentEarliestDateToApply}
+                  setDate={setMostRecentEarliestDateToApply}
+                />
+              )}
+              {user && onlyShowJobsITrack && (
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"LatestDateToApply"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem", xl: "0rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={mostRecentLatestDateToApply}
+                  setDate={setMostRecentLatestDateToApply}
+                />
+              )}
+              <IconButton type="submit">
+                <SearchIcon color="primary" />
+              </IconButton>
+            </Box>
           </Box>
-        </Box>
-      </form>
+        </form>
 
-      {companies &&
-        companies.map((company, index) => (
-          <Company
-            key={index}
-            index={index}
-            handleOpenDeleteConfirmationDialog={
-              handleOpenDeleteConfirmationDialog
-            }
-            company={company}
-            onlyShowJobsITrack={onlyShowJobsITrack}
-            mostRecentEarliestDateToApply={mostRecentEarliestDateToApply}
-            mostRecentLatestDateToApply={mostRecentLatestDateToApply}
-            earliestApplicationDeadline={savedEarliestApplicationDeadline}
-            latestApplicationDeadline={savedLatestApplicationDeadline}
+        {companies &&
+          companies.map((company, index) => (
+            <Company
+              key={index}
+              index={index}
+              handleOpenDeleteConfirmationDialog={
+                handleOpenDeleteConfirmationDialog
+              }
+              company={company}
+              onlyShowJobsITrack={onlyShowJobsITrack}
+              mostRecentEarliestDateToApply={mostRecentEarliestDateToApply}
+              mostRecentLatestDateToApply={mostRecentLatestDateToApply}
+              earliestApplicationDeadline={savedEarliestApplicationDeadline}
+              latestApplicationDeadline={savedLatestApplicationDeadline}
+            />
+          ))}
+        <NewCompanyForm companies={companies} setCompanies={setCompanies} />
+        {deleteConfirmationDialogOpen && (
+          <DeleteConfirmationDialog
+            open={deleteConfirmationDialogOpen}
+            handleClose={handleCloseDeleteConfirmationDialog}
+            handleConfirm={() => handleDelete(selectedIndexToDelete)}
+            itemName={companies[selectedIndexToDelete]?.CompanyName}
           />
-        ))}
-      <NewCompanyForm companies={companies} setCompanies={setCompanies} />
-      {deleteConfirmationDialogOpen && (
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={companies[selectedIndexToDelete]?.CompanyName}
-        />
-      )}
-    </MainBox>
+        )}
+      </MainBox>
+    </>
   );
 }
 
