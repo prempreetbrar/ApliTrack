@@ -458,12 +458,12 @@ function Company({
         width: "100%",
       }}
     >
-      <form onSubmit={handleSubmit(updateCompany)}>
+      <form onSubmit={handleSubmit(updateCompany)} style={{ width: "100%" }}>
         <Box
           display="flex"
           flexDirection="row"
           flexWrap="wrap"
-          alignItems="center"
+          alignItems="flex-start"
           justifyContent="center"
           alignContent="center"
           width="100%"
@@ -500,43 +500,47 @@ function Company({
             onSubmit={handleSubmit(updateCompany)}
             sx={{
               display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              alignItems: "center",
-              width: { xs: "100%", md: "fit-content" },
-              marginTop: { xs: "2rem", md: 0 },
-              marginLeft: { xs: "0rem", lg: "5rem" },
+              flexDirection: { xs: "column" },
+              alignItems: { xs: "center", sm: "flex-start" },
+
+              flexGrow: 1,
+              marginTop: { xs: "2rem", md: "1rem" },
+              marginLeft: { md: "5rem" },
               order: { xs: 4, lg: 3 },
             }}
           >
-            <SingleForm
-              register={register}
-              attributeName={"Industry"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "1rem" },
-              }}
-            />
-            <SingleForm
-              register={register}
-              attributeName={"HomePageURL"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-              additionalFieldStyles={{
-                marginTop: { xs: "1.5rem", md: 0 },
-                marginRight: { xs: "1rem" },
-              }}
-            />
+            <Box
+              display="flex"
+              flexDirection={{ xs: "column", sm: "row" }}
+              alignItems="center"
+            >
+              <SingleForm
+                register={register}
+                attributeName={"Industry"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "0rem", sm: "1rem" },
+                }}
+              />
+              <SingleForm
+                register={register}
+                attributeName={"HomePageURL"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  marginTop: { xs: "1rem", sm: 0 },
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              />
+            </Box>
             <SingleForm
               register={register}
               attributeName={"Description"}
@@ -546,16 +550,19 @@ function Company({
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-                marginTop: { xs: "1.5rem", md: 0 },
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "1rem" },
+                marginTop: { xs: "1.5rem" },
+                width: "100%",
               }}
               isTextArea
+              formControlStyles={{ width: "100%" }}
             />
             {user && (
               <Button
-                sx={{ marginTop: "1rem", height: "min-content" }}
+                sx={{
+                  marginTop: "1rem",
+                  height: "min-content",
+                  alignSelf: "center",
+                }}
                 type="submit"
                 variant="outlined"
               >
@@ -996,13 +1003,14 @@ function Job({
             additionalStyles={{
               gridArea: "Description",
               marginTop: "1rem",
-              maxWidth: "80%",
+              width: "100%",
             }}
             additionalFieldStyles={{
               marginRight: { xs: "0rem" },
               maxWidth: "100%",
             }}
             isTextArea
+            formControlStyles={{ width: "100%" }}
           />
 
           <Box
@@ -1015,7 +1023,7 @@ function Job({
               marginRight: "0",
               padding: 0,
               boxSizing: "border-box",
-              maxWidth: "100%",
+              width: "100%",
             }}
           >
             <Typography>Job Posting</Typography>
@@ -1105,8 +1113,9 @@ function Job({
           <Box
             sx={{
               gridArea: "Responsibility",
-              marginTop: { xs: "-0.5rem", lg: "-1.5rem" },
-              marginLeft: { xs: "2rem", lg: 0 },
+              marginTop: { xs: "1rem", lg: "-1.5rem" },
+              marginLeft: { xs: "2rem" },
+              justifySelf: { xs: "center", md: "flex-start" },
             }}
           >
             <Typography sx={{ alignSelf: "flex-start" }}>
@@ -1135,6 +1144,8 @@ function Job({
                 flexDirection: "column",
                 alignItems: "center",
                 marginTop: { xs: "2rem", md: 0 },
+                padding: { xs: "0", md: "0 2rem" },
+                width: "100%",
               }}
             >
               <FormControlLabel
@@ -1153,6 +1164,10 @@ function Job({
                   setDate={setDate}
                   additionalStyles={{
                     marginTop: "1rem",
+                    width: "100%",
+                  }}
+                  additionalFieldStyles={{
+                    width: "100%",
                   }}
                 />
               )}
@@ -1168,9 +1183,12 @@ function Job({
                     flexDirection: "column",
                     alignItems: "center",
                     marginTop: "1rem",
+                    width: "100%",
                   }}
                   isLoading={updateIsLoading}
                   isTextArea
+                  additionalFieldStyles={{ marginRight: 0 }}
+                  formControlStyles={{ width: "100%" }}
                 />
               )}
             </Box>
@@ -1260,8 +1278,9 @@ function NewJobForm({ companyName, jobs, setJobs }) {
           display="grid"
           sx={{
             gridTemplateAreas: {
-              md: `'Title Name Description Deadline Create'
-              'Title Type Salary File Create'
+              md: `'Title Name Deadline Create'
+              'Title Type Salary Create'
+              'Title Description File Create'
             `,
               sm: `'. Title Title .'
             'Name Name Type Type'
@@ -1303,7 +1322,8 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             attributeName={"PositionName"}
             isLoading={createIsLoading}
             maxLength={64}
-            additionalStyles={{ gridArea: "Name" }}
+            additionalStyles={{ gridArea: "Name", width: "100%" }}
+            additionalFieldStyles={{ width: "100%" }}
           />
           <SingleForm
             register={register}
@@ -1315,7 +1335,9 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             additionalStyles={{
               gridArea: "Description",
               marginTop: { xs: 0 },
+              width: "100%",
             }}
+            additionalFieldStyles={{ width: "100%" }}
             isTextArea
           />
           <SingleForm
@@ -1323,16 +1345,18 @@ function NewJobForm({ companyName, jobs, setJobs }) {
             handleSubmit={handleSubmit}
             actionOnAttribute={null}
             attributeName={"PositionType"}
-            additionalStyles={{ gridArea: "Type" }}
+            additionalStyles={{ gridArea: "Type", width: "100%" }}
             isLoading={createIsLoading}
             maxLength={64}
+            additionalFieldStyles={{ width: "100%" }}
           />
           <SingleForm
             register={register}
             handleSubmit={handleSubmit}
             actionOnAttribute={null}
             attributeName={"Salary"}
-            additionalStyles={{ gridArea: "Salary" }}
+            additionalStyles={{ gridArea: "Salary", width: "100%" }}
+            additionalFieldStyles={{ width: "100%" }}
             isLoading={createIsLoading}
             maxLength={64}
           />
@@ -1346,7 +1370,10 @@ function NewJobForm({ companyName, jobs, setJobs }) {
               alignItems: "center",
               marginBottom: { xs: "0rem" },
               gridArea: "Deadline",
+              width: "100%",
+              marginRight: "0rem",
             }}
+            additionalFieldStyles={{ width: "100%", marginRight: "0rem" }}
             date={applicationDeadline}
             setDate={setApplicationDeadline}
           />
@@ -1418,45 +1445,76 @@ function NewCompanyForm({ companies, setCompanies }) {
           >
             Add New Company
           </Typography>
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            actionOnAttribute={null}
-            attributeName={"CompanyName"}
-            isLoading={createIsLoading}
-            maxLength={64}
-            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-          />
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            actionOnAttribute={null}
-            attributeName={"Industry"}
-            isLoading={createIsLoading}
-            maxLength={64}
-            isTextArea
-            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-          />
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            actionOnAttribute={null}
-            attributeName={"HomePageURL"}
-            isLoading={createIsLoading}
-            maxLength={64}
-            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-          />
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            actionOnAttribute={null}
-            attributeName={"Description"}
-            isLoading={createIsLoading}
-            maxLength={64}
-            isTextArea
-            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-            isTextArea
-          />
+          <Box flexGrow="1" padding={{ xs: 0, md: "0 2rem" }} width="100%">
+            <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                actionOnAttribute={null}
+                attributeName={"CompanyName"}
+                isLoading={createIsLoading}
+                maxLength={64}
+                additionalStyles={{
+                  marginTop: { xs: "1.5rem" },
+                  width: { xs: "100%", md: "50%" },
+                  paddingRight: { xs: 0, md: "1rem" },
+                }}
+                additionalFieldStyles={{ width: "100%" }}
+              />
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                actionOnAttribute={null}
+                attributeName={"HomePageURL"}
+                isLoading={createIsLoading}
+                maxLength={64}
+                additionalStyles={{
+                  marginTop: { xs: "1.5rem" },
+                  width: { xs: "100%", md: "50%" },
+                  paddingLeft: { xs: 0, md: "1rem" },
+                }}
+                additionalFieldStyles={{ width: "100%" }}
+              />
+            </Box>
+            <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                actionOnAttribute={null}
+                attributeName={"Industry"}
+                isLoading={createIsLoading}
+                maxLength={64}
+                isTextArea
+                additionalStyles={{
+                  margin: 0,
+                  marginTop: {
+                    xs: "1.5rem",
+                  },
+                  width: { xs: "100%", md: "50%" },
+                  paddingRight: { xs: 0, md: "1rem" },
+                }}
+                additionalFieldStyles={{ marginRight: 0 }}
+                formControlStyles={{ width: "100%" }}
+              />
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                actionOnAttribute={null}
+                attributeName={"Description"}
+                isLoading={createIsLoading}
+                maxLength={64}
+                isTextArea
+                additionalStyles={{
+                  margin: 0,
+                  marginTop: { xs: "1.5rem" },
+                  width: { xs: "100%", md: "50%" },
+                  paddingLeft: { xs: 0, md: "1rem" },
+                }}
+                additionalFieldStyles={{ marginRight: 0 }}
+                formControlStyles={{ width: "100%" }}
+              />
+            </Box>
+          </Box>
 
           <Button
             onClick={handleSubmit(handleCreate)}

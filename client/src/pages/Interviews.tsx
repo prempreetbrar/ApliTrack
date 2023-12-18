@@ -438,11 +438,12 @@ function Interview({
             setDropdownValue={setDropdownValue}
             additionalStyles={{
               marginTop: { xs: "1rem", md: "0rem" },
-              flexGrow: 0.5,
-              width: { xs: "50%", md: "auto" },
+              flexGrow: 1,
+              width: { xs: "100%", sm: "50%" },
             }}
             isDropdownObject
             doNotShowButton
+            additionalAutocompleteStyles={{ width: "100%" }}
           />
           <Button
             onClick={handleSubmit(updateStageorDateorAID)}
@@ -455,8 +456,12 @@ function Interview({
           </Button>
         </Box>
 
-        <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
-          <Box>
+        <Box
+          display="flex"
+          flexDirection={{ xs: "column", sm: "row" }}
+          width="100%"
+        >
+          <Box width={{ xs: "100%", md: "50%" }}>
             <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
               Contacts Attending
             </Typography>
@@ -478,7 +483,7 @@ function Interview({
             />
           </Box>
 
-          <Box>
+          <Box width={{ xs: "100%", md: "50%" }}>
             <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
               Jobs Mentioned
             </Typography>
@@ -597,12 +602,7 @@ function InfoSection({
         />
       )}
       {isContact && (
-        <Box
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-end"
-        >
+        <Box display="flex" flexDirection="row" alignItems="flex-end">
           <NewEntryDropdown
             entityName={entityName}
             entityAttributeName={entityTargetAttribute}
@@ -613,7 +613,7 @@ function InfoSection({
             createIsLoading={createIsLoading}
             register={register}
             fetchAllOptionsURL={fetchAllOptionsURL}
-            additionalStyles={{ width: "50%" }}
+            additionalStyles={{ width: "100%" }}
             doNotShowButton
             dropdownValue={dropdownValue}
             setDropdownValue={setDropdownValue}
@@ -710,14 +710,18 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
           entityAttributeName2="AName"
           maxCreateLength={64}
           handleSubmit={handleSubmit}
-          actionOnAttribute={null}
           register={register}
           fetchAllOptionsURL="http://localhost:3000/api/applications/my-applications"
-          additionalStyles={{ width: "50%", marginTop: "1rem" }}
-          doNotShowButton
           dropdownValue={dropdownValue}
           setDropdownValue={setDropdownValue}
+          additionalStyles={{
+            marginTop: { xs: "1rem" },
+            flexGrow: 1,
+            width: { xs: "100%", md: "50%" },
+          }}
           isDropdownObject
+          doNotShowButton
+          additionalAutocompleteStyles={{ width: "100%" }}
         />
 
         <Button

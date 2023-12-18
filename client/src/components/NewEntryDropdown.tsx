@@ -18,6 +18,8 @@ export default function NewEntryDropdown({
   dropdownValue,
   setDropdownValue,
   isDropdownObject,
+  additionalTextFieldStyles,
+  additionalAutocompleteStyles,
 }) {
   const { user } = useAuthContext();
   const { executeRequest, isLoading, error } = useGet();
@@ -65,6 +67,7 @@ export default function NewEntryDropdown({
           sx={{ ...additionalStyles }}
         >
           <Autocomplete
+            sx={{ ...additionalAutocompleteStyles }}
             {...register(entityName, { maxLength: maxCreateLength })}
             placeholder={`Enter New ${entityName}`}
             fullWidth
