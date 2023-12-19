@@ -11,9 +11,9 @@ router
   .get(
     applicationController.addFilterApplicant,
     applicationController.addSearchNameStatusDate,
-    applicationController.addSearchCategory,
     applicationController.addSort,
-    applicationController.getAllApplications
+    applicationController.getAllApplications,
+    applicationController.getAllApplicantApplications,
   );
 
 router
