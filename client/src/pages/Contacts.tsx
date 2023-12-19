@@ -177,7 +177,15 @@ export default function Contacts() {
             label="Only Show Contacts I Know"
           />
         )}
-        <form onSubmit={handleSubmit(handleGet)}>
+        <form
+          onSubmit={handleSubmit(handleGet)}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
             defaultValue="Fname-ASC,Lname-ASC"
@@ -231,7 +239,7 @@ export default function Contacts() {
                 label="Sort by Last Name Descending"
                 labelPlacement="start"
                 sx={{
-                  marginLeft: { xs: "0.5rem", md: "0rem" },
+                  marginLeft: { xs: "0.5rem", md: "0.5rem" },
                 }}
               />
             </Box>
