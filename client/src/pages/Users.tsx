@@ -1,5 +1,4 @@
-// @ts-nocheck
-
+//@ts-nocheck
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -12,6 +11,9 @@ import {
   IconButton,
   FormGroup,
   Switch,
+  Radio,
+  FormControl,
+  RadioGroup,
 } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
@@ -132,6 +134,106 @@ export default function Users() {
           <Box
             display="flex"
             sx={{
+              flexDirection: { xs: "column", xl: "row" },
+            }}
+            alignItems="center"
+            marginRight="2.5rem"
+            width="100%"
+          >
+            <FormControl sx={{ width: "100%" }}>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="Compensation-ASC"
+                name="radio-buttons-group"
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+                row
+              >
+                <Box
+                  display="flex"
+                  maxWidth={{ xs: "100%", sm: "50%" }}
+                  flexDirection="column"
+                  paddingRight="2rem"
+                >
+                  <FormControlLabel
+                    value="Username-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Username Ascending"
+                    labelPlacement="start"
+                    sx={{ width: "100%" }}
+                  />
+                  <FormControlLabel
+                    value="Fname-ASC,Lname-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by First Name Ascending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+                  <FormControlLabel
+                    value="Lname-ASC,Fname-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Last Name Ascending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+                </Box>
+
+                <Box
+                  display="flex"
+                  maxWidth={{ xs: "100%", sm: "50%" }}
+                  flexDirection="column"
+                  paddingRight="2rem"
+                >
+                  <FormControlLabel
+                    value="Username-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Username Descending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+                  <FormControlLabel
+                    value="Fname-DESC,Lname-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by First Name Descending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+
+                  <FormControlLabel
+                    value="Lname-DESC,Fname-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Last Name Descending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+                </Box>
+              </RadioGroup>
+            </FormControl>
+          </Box>
+
+          <Box
+            display="flex"
+            sx={{
               marginTop: { xs: "1rem", md: "1rem" },
               flexDirection: { xs: "column", sm: "row" },
               alignItems: { xs: "center", sm: "center" },
@@ -164,7 +266,7 @@ export default function Users() {
                 flexDirection: "row",
                 alignItems: "center",
                 marginBottom: { xs: "0rem" },
-                marginTop: { xs: "1rem", xl: "0rem" },
+                marginTop: { xs: "1rem", sm: "0rem" },
                 flexShrink: 0,
               }}
               additionalFieldStyles={{

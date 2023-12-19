@@ -24,6 +24,7 @@ router
     authController.checkIfLoggedInAdmin,
     authController.restrictTo(authController.GET),
     userController.addSearchUsernameName,
+    userController.addSortUser,
     userController.getAllUsers
   )
   .delete(
