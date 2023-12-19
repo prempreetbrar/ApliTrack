@@ -166,29 +166,43 @@ export default function Applications() {
               }}
             >
               <FormControlLabel
-                  value="AName-ASC"
-                  control={<Radio {...register("Sort")} />}
-                  label="Sort by Application Name Ascending"
-                  labelPlacement="start"
-                />
-                <FormControlLabel
-                  value="AName-DESC"
-                  control={<Radio {...register("Sort")} />}
-                  label="Sort by Application Name Descending"
-                  labelPlacement="start"
-                />
-                <FormControlLabel
-                  value="DateSubmitted-ASC"
-                  control={<Radio {...register("Sort")} />}
-                  label="Sort by Earliest Submitted Date"
-                  labelPlacement="start"
-                />
-                <FormControlLabel
-                  value="DateSubmitted-DESC"
-                  control={<Radio {...register("Sort")} />}
-                  label="Sort by Latest Submitted Date"
-                  labelPlacement="start"
-                />
+                value="AName-ASC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Application Name Ascending"
+                labelPlacement="start"
+              />
+              <FormControlLabel
+                value="AName-DESC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Application Name Descending"
+                labelPlacement="start"
+              />
+
+              <FormControlLabel
+                value="Status-ASC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Status Ascending"
+                labelPlacement="start"
+              />
+              <FormControlLabel
+                value="Status-DESC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Status Descending"
+                labelPlacement="start"
+              />
+
+              <FormControlLabel
+                value="DateSubmitted-ASC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Earliest Submitted Date"
+                labelPlacement="start"
+              />
+              <FormControlLabel
+                value="DateSubmitted-DESC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Latest Submitted Date"
+                labelPlacement="start"
+              />
             </RadioGroup>
           </FormControl>
         </Box>
