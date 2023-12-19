@@ -33,6 +33,7 @@ exports.deleteContactAttendsInterview = factory.deleteInstance(
   Contact.ContactAttendsInterview
 );
 
+exports.addSort = factory.addSort();
 exports.addFilterContactID = factory.addFilter("ContactID");
 exports.addSearchNameContactDate = factory.addSearch(
   ["Fname", "String"],

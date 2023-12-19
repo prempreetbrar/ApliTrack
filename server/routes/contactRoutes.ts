@@ -8,6 +8,7 @@ router
   .route("")
   .get(
     contactController.addSearchNameContactDate,
+    contactController.addSort,
     contactController.getAllContacts
   )
   .post(authController.checkIfLoggedIn, contactController.createContact)

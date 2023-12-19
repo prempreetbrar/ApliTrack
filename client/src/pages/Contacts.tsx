@@ -12,6 +12,8 @@ import {
   IconButton,
   FormGroup,
   Switch,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
@@ -108,13 +110,17 @@ export default function Contacts() {
     )
   */
   React.useEffect(() => {
-    const fetchContactsInfo = async () => {
-      const response = await get({}, "http://localhost:3000/api/contacts");
-
-      setContactsInfo(response.contact);
-    };
-
-    fetchContactsInfo();
+    executeHandle(
+      "get",
+      get,
+      { Sort: "Fname-ASC,Lname-ASC" },
+      "http://localhost:3000/api/contacts",
+      null,
+      false,
+      null,
+      {},
+      true
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -172,6 +178,64 @@ export default function Contacts() {
           />
         )}
         <form onSubmit={handleSubmit(handleGet)}>
+          <RadioGroup
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="Fname-ASC,Lname-ASC"
+            name="radio-buttons-group"
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              justifyContent: "center",
+              alignItems: "center",
+              width: { xs: "100%" },
+              marginBottom: "1rem",
+            }}
+          >
+            <Box
+              display="flex"
+              width="100%"
+              justifyContent="center"
+              alignItems="center"
+              flexDirection={{ xs: "column", md: "row" }}
+              paddingRight="2rem"
+            >
+              <FormControlLabel
+                value="Fname-ASC,Lname-ASC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by First Name Ascending"
+                labelPlacement="start"
+              />
+              <FormControlLabel
+                value="Fname-DESC,Lname-DESC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by First Name Descending"
+                labelPlacement="start"
+                sx={{
+                  marginLeft: { xs: "0.5rem", md: "1rem" },
+                  marginTop: { xs: "1rem", sm: "0rem" },
+                }}
+              />
+              <FormControlLabel
+                value="Lname-ASC,Fname-ASC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Last Name Ascending"
+                labelPlacement="start"
+                sx={{
+                  marginLeft: { xs: "1rem", md: "3rem" },
+                  marginTop: { xs: "1rem", sm: "0rem" },
+                }}
+              />
+              <FormControlLabel
+                value="Lname-DESC,Fname-DESC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Last Name Descending"
+                labelPlacement="start"
+                sx={{
+                  marginLeft: { xs: "0.5rem", md: "0rem" },
+                }}
+              />
+            </Box>
+          </RadioGroup>
           <Box
             display="flex"
             sx={{

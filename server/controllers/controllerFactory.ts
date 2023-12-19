@@ -401,7 +401,10 @@ exports.addSort = () => {
     }
 
     if (request.query.Sort) {
-      request.body.order.push(request.query.Sort.split("-"));
+      const allSorts = request.query.Sort.split(",");
+      for (const sort of allSorts) {
+        request.body.order.push(sort.split("-"));
+      }
     }
 
     next();
