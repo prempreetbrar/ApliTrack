@@ -8,12 +8,14 @@ module.exports = class Email {
   #lastName;
   #url;
   #from;
+  #generatedPassword;
 
-  constructor(user, url) {
+  constructor(user, url, generatedPassword) {
     this.#to = user.Username;
     this.#firstName = user.Fname;
     this.#lastName = user.Lname;
     this.#url = url;
+    this.#generatedPassword = generatedPassword;
     this.#from = `ApliTrack Inc. <${process.env.EMAIL_FROM}>`;
   }
 
@@ -47,6 +49,7 @@ module.exports = class Email {
         lastName: this.#lastName,
         url: this.#url,
         subject,
+        generatedPassword: this.#generatedPassword,
       }
     );
 
@@ -72,5 +75,9 @@ module.exports = class Email {
       "passwordReset",
       "Your password reset token (valid for 10 minutes)"
     );
+  }
+
+  async sendPasswordEmail() {
+    await this.#send("passwordEmail", "Your new password");
   }
 };

@@ -42,7 +42,8 @@ const useHttpMethod = (method) => {
         response = await axios[method](url, data, config);
       }
       if (method !== "get" && showSnackbar) {
-        enqueueSnackbar(`Success!`, {
+        console.log(response);
+        enqueueSnackbar(`Success! ${response?.data?.message || ""}`, {
           variant: "success",
           autoHideDuration: 1000,
         });

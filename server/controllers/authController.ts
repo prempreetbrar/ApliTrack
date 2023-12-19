@@ -175,10 +175,19 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
     */
 
     request.body.user = user;
-    request.body.Username = user.Username;
-    request.body.ApplicantUsername = user.Username;
-    request.body.ADMINUsername = user.Username;
-    request.body.APPLICANTUsername = user.Username;
+    if (!request.body.Username) {
+      request.body.Username = user.Username;
+    }
+    if (!request.body.ApplicantUsername) {
+      request.body.ApplicantUsername = user.Username;
+    }
+    if (!request.body.ADMINUsername) {
+      request.body.ADMINUsername = user.Username;
+    }
+    if (!request.body.APPLICANTUsername) {
+      request.body.APPLICANTUsername = user.Username;
+    }
+
     next();
   }
 );
@@ -247,6 +256,7 @@ exports.GET_AND_DELETE_AND_CREATE = 2;
 exports.GET_AND_DELETE_AND_CREATE_AND_UPDATE = 3;
 exports.restrictTo = (permissionLevel) => {
   return (request, response, next) => {
+    console.log(request.body.user);
     if (
       request.body.user.dataValues.PermissionLevel < permissionLevel ||
       !request.body.user.dataValues.AdminFlag
@@ -291,6 +301,7 @@ exports.changePassword = errorHandling.catchAsync(
       password and password confirm are identical, otherwise the model will
       prevent the update.
     */
+
     userWithPassword.Password = request.body.NewPassword;
     userWithPassword.PasswordConfirm = request.body.ConfirmNewPassword;
     await userWithPassword.save();
@@ -306,9 +317,7 @@ exports.resetPassword = errorHandling.catchAsync(
        1) we want user to still write their password (so that somebody
        can't just find an open computer and change the password)
       */
-    const userWithPassword = await User.findByPk(request.body.Username, {
-      attributes: { include: ["Password"] },
-    });
+    const user = await User.findByPk(request.body.Username);
 
     /*
       Update password. Even though the user didn't send a password confirm
@@ -316,14 +325,42 @@ exports.resetPassword = errorHandling.catchAsync(
       password and password confirm are identical, otherwise the model will
       prevent the update.
     */
-    userWithPassword.Password = request.body.NewPassword;
-    userWithPassword.PasswordConfirm = request.body.ConfirmNewPassword;
-    await userWithPassword.save();
 
-    // 4) Send new JWT token with updated password
-    createSendToken(userWithPassword, 200, request, response);
+    const generatedPassword = generatePassword();
+    user.Password = generatedPassword;
+    user.PasswordConfirm = generatedPassword;
+
+    try {
+      await new Email(
+        user,
+        "http://localhost:3001/auth/login",
+        generatedPassword
+      ).sendPasswordEmail();
+
+      await user.save();
+
+      response.status(200).json({
+        status: "success",
+        message: "New password sent to email!",
+      });
+    } catch (error) {
+      throw new errorHandling.AppError(
+        "There was an error resetting the password.",
+        500
+      );
+    }
   }
 );
+
+function generatePassword() {
+  var length = 16,
+    charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    retVal = "";
+  for (var i = 0, n = charset.length; i < length; ++i) {
+    retVal += charset.charAt(Math.floor(Math.random() * n));
+  }
+  return retVal;
+}
 
 exports.forgotPassword = errorHandling.catchAsync(
   async (request, response, next) => {
