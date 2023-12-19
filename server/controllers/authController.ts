@@ -1,9 +1,13 @@
+import { Op } from "sequelize";
+
 const jwt = require("jsonwebtoken");
 const util = require("util");
+const crypto = require("crypto");
 
 const { User } = require("../models/userModel");
 const errorHandling = require("../utils/errorHandling");
 const { Applicant } = require("../models/applicantModel");
+const Email = require("../utils/email");
 
 /*
   We sign the token according to the user's username. Since
@@ -73,6 +77,10 @@ exports.signUpUser = errorHandling.catchAsync(async (request, response) => {
     Username: request.body.Username,
   });
 
+  await new Email(
+    newUser,
+    "http://localhost:3001/applicants/applicant/profile"
+  ).sendWelcome();
   createSendToken(newUser, 201, request, response);
 });
 
@@ -99,6 +107,13 @@ exports.loginUser = errorHandling.catchAsync(async (request, response) => {
     !(await user.isPasswordCorrect(request.body.Password, user.Password))
   ) {
     throw new errorHandling.AppError("Incorrect username or password", 401);
+  }
+
+  if (!user.IsActive) {
+    throw new errorHandling.AppError(
+      "Your account has been deactivated. Please contact an administrator to reactivate.",
+      401
+    );
   }
 
   createSendToken(user, 200, request, response);
@@ -138,12 +153,19 @@ exports.checkIfLoggedIn = errorHandling.catchAsync(
       able to interact with our database.
     */
     const user = await User.findByPk(decodedPayload.id);
-    if (!user || !user.IsActive)
+    if (!user || !user.IsActive) {
       throw new errorHandling.AppError(
         "The user belonging to this token no longer exists or has deactivated their account",
         401
       );
+    }
 
+    if (user.hasPasswordChanged(decodedPayload.iat)) {
+      throw new errorHandling.AppError(
+        "You've recently changed your password; please login again!",
+        401
+      );
+    }
     /*
         Add the user onto the request object. This allows anything afterwards in the middleware
         stack to access the user (by doing request.body.user). For example, if you need to create
@@ -300,5 +322,77 @@ exports.resetPassword = errorHandling.catchAsync(
 
     // 4) Send new JWT token with updated password
     createSendToken(userWithPassword, 200, request, response);
+  }
+);
+
+exports.forgotPassword = errorHandling.catchAsync(
+  async (request, response, next) => {
+    // get user using email, generate reset token, send email containing token
+    const user = await User.findByPk(request.body.Username);
+
+    if (!user)
+      throw new errorHandling.AppError(
+        "There is no user with that email address.",
+        404
+      );
+
+    const resetToken = user.createPasswordResetToken();
+    const resetURL = `http://localhost:3001/auth/reset-password/${request.body.Username}/${resetToken}`;
+
+    // ensure we save the new reset token to the DB
+    await user.save();
+
+    try {
+      await new Email(user, resetURL).sendPasswordReset();
+
+      response.status(200).json({
+        status: "success",
+        message: "Token sent to email!",
+      });
+    } catch (error) {
+      user.PasswordResetToken = undefined;
+      user.PasswordResetExpires = undefined;
+
+      await user.save();
+      throw new errorHandling.AppError(
+        "There was an error sending the email. Try again later!",
+        500
+      );
+    }
+  }
+);
+
+exports.emailResetPassword = errorHandling.catchAsync(
+  async (request, response, next) => {
+    // 1) get token
+    const resetToken = request.params.Token;
+    const encryptedResetToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    // 2) get user
+    const user = await User.findOne({
+      where: {
+        PasswordResetToken: encryptedResetToken,
+        PasswordResetExpires: { [Op.gt]: Date.now() },
+      },
+    });
+
+    if (!user)
+      throw new errorHandling.AppError(
+        "The password reset token is either invalid, or has expired.",
+        400
+      );
+
+    // 3) update user
+    user.Password = request.body.Password;
+    user.PasswordConfirm = request.body.PasswordConfirm;
+    user.PasswordResetToken = null;
+    user.PasswordResetExpires = null;
+    await user.save();
+
+    // 4) log user in
+    createSendToken(user, 200, request, response);
   }
 );

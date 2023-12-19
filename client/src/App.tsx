@@ -21,6 +21,8 @@ import Offers from "pages/Offers";
 import Documents from "pages/Documents";
 import Users from "pages/Users";
 import { Box, CircularProgress } from "@mui/joy";
+import ForgotPassword from "pages/auth/ForgotPassword";
+import ResetPassword from "pages/auth/ResetPassword";
 
 function App() {
   const { user, isLoading } = useAuthContext();
@@ -64,6 +66,26 @@ function App() {
           }
         />
         <Route
+          path="/auth/forgot-password"
+          element={
+            !user ? (
+              <ForgotPassword />
+            ) : (
+              <Navigate to="/applicants/applicant/profile" />
+            )
+          }
+        />
+        <Route
+          path="/auth/reset-password/:Username/:Token"
+          element={
+            !user ? (
+              <ResetPassword />
+            ) : (
+              <Navigate to="/applicants/applicant/profile" />
+            )
+          }
+        />
+        <Route
           path="/applicants/applicant/profile"
           element={user ? <Profile /> : <Navigate to="/auth/login" />}
         />
@@ -84,7 +106,13 @@ function App() {
         />
         <Route
           path="/users"
-          element={user && user.data.user.AdminFlag ? <Users /> : <Navigate to="/auth/login" />}
+          element={
+            user && user.data.user.AdminFlag ? (
+              <Users />
+            ) : (
+              <Navigate to="/auth/login" />
+            )
+          }
         />
       </Routes>
     </Router>
