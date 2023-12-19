@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -40,18 +40,13 @@ export default function UserSection({ applicantInfo }) {
     delete data["NewPassword"];
     delete data["ConfirmNewPassword"];
     if ((data.Fname || data.Lname) && data.Education) {
-      update(data, "http://localhost:3000/api/users/", {});
+      update(data, "http://localhost:3000/api/users", {});
       update(data, "http://localhost:3000/api/applicants/education", {}, false);
     } else if (data.Education) {
       update(data, "http://localhost:3000/api/applicants/education", {});
     } else if (data.Fname || data.Lname) {
-      update(data, "http://localhost:3000/api/users/", {});
+      update(data, "http://localhost:3000/api/users", {});
     }
-  }
-
-  async function updatePassword(data) {
-    update(data, "http://localhost:3000/api/auth/change-password");
-    setValue("Password");
   }
 
   return (
@@ -144,7 +139,7 @@ export default function UserSection({ applicantInfo }) {
             }}
           />
           <Button
-            onClick={handleSubmit(updatePassword)}
+            onClick={handleSubmit(updateUser)}
             type="submit"
             variant="outlined"
             sx={{ mt: 3, mb: 2 }}
