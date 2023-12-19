@@ -73,45 +73,49 @@ exports.addSearchCategory = errorHandling.catchAsync(
 );
 
 function getAllApplicationCategory() {
-  return errorHandling.catchAsync(async (request, response) => {
-    if (!request.body.filter) {
-      request.body.filter = {};
-    }
-    if (!request.body.order) {
-      request.body.order = [];
-    }
+  return errorHandling.catchAsync(async (request, response, next) => {
 
-    console.log(request.body.filter);
-
-    let documents2 = await Application.Application.findAll({
-      order: request.body.order,
-      attributes: { exclude: [] }, // Include all columns
-      include: [
-        {
-          model: Application.Appl_Category,
-          as: "Category",
-          where: Sequelize.literal(`
-            Application.ApplicantUsername LIKE '%${request.body.ApplicantUsername}%' AND
-            Category.ApplicationID = Application.ApplicationID
-          `), 
-        },
-    ],
-    });
-
-    let documents = documents2.filter((application) => {
-      if (request.query["Category"]) {
-        return application.dataValues.Category.some((category) => category.Category.toLowerCase().includes(request.query["Category"].toLowerCase()));
+    //console.log(request.body.filter);
+    if (request.query["Category"]) {
+      if (!request.body.filter) {
+        request.body.filter = {};
       }
-
-      return documents2;
-    });
-
-    response.status(200).json({
-      status: "success",
-      data: {
-        [Application.Application.name.toLowerCase()]: documents,
-      },
-    });
+      if (!request.body.order) {
+        request.body.order = [];
+      }
+      
+      let documents2 = await Application.Application.findAll({
+        order: request.body.order,
+        attributes: { exclude: [] }, // Include all columns
+        include: [
+          {
+            model: Application.Appl_Category,
+            as: "Category",
+            where: Sequelize.literal(`
+              Application.ApplicantUsername LIKE '%${request.body.ApplicantUsername}%' AND
+              Category.ApplicationID = Application.ApplicationID
+            `), 
+          },
+      ],
+      });
+  
+      let documents = documents2.filter((application) => {
+        if (request.query["Category"]) {
+          return application.dataValues.Category.some((category) => category.Category.toLowerCase().includes(request.query["Category"].toLowerCase()));
+        }
+  
+        return documents2;
+      });
+  
+      response.status(200).json({
+        status: "success",
+        data: {
+          [Application.Application.name.toLowerCase()]: documents,
+        },
+      });
+    }
+    
+    next();
   });
 }
 
