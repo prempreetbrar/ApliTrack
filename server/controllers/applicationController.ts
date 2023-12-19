@@ -82,7 +82,6 @@ function getAllApplicationCategory() {
     }
 
     console.log(request.body.filter);
-    console.log("TEST 2", request.body.ApplicantUsername);
 
     let documents2 = await Application.Application.findAll({
       order: request.body.order,
@@ -95,48 +94,17 @@ function getAllApplicationCategory() {
             Application.ApplicantUsername LIKE '%${request.body.ApplicantUsername}%' AND
             Category.ApplicationID = Application.ApplicationID
           `), 
-
-          // include: [
-          //   {
-          //     model: Application.Appl_Category, 
-          //     as: "NestedCategory",
-          //     where: Sequelize.literal(`
-          //       NestedCategory.ApplicationID = Application.ApplicationID
-          //     `),
-          //   },
-          // ]
         },
-        // {
-        //   model: Application.Appl_Category,
-        //   as: "Category",
-        //   where: [Sequelize.literal(`
-        //     Application.ApplicantUsername LIKE '%${request.body.ApplicantUsername}%' AND
-        //     Category.ApplicationID = Application.ApplicationID
-        //   `)],
-        // },
     ],
-
     });
 
-    // documents = await documents.findAll({
-    //   attributes: { exclude: ["Category"] },
-    // });
+    let documents = documents2.filter((application) => {
+      if (request.query["Category"]) {
+        return application.dataValues.Category.some((category) => category.Category.toLowerCase().includes(request.query["Category"].toLowerCase()));
+      }
 
-    // documents = await documents.findAll({
-    //   include: [
-    //     {
-    //       model: Application.Application.Appl_Category,
-    //       as: "Category",
-    //     },
-    //   ],
-    // });
-
-    console.log("BEFORE", documents2);
-
-    //let documents = documents2.filter((object) => object.dataValues.Category.includes("Submitted"));
-    let documents = documents2;
-
-    console.log("AFTER", documents);
+      return documents2;
+    });
 
     response.status(200).json({
       status: "success",
