@@ -18,7 +18,7 @@ export default function NameForm({
       <TextField
         InputLabelProps={{ shrink: true }}
         {...register("AName")}
-        label="AName"
+        label="Application Name"
         sx={{
           marginTop: { xs: "1rem", sm: "0rem" },
           marginRight: "1rem",

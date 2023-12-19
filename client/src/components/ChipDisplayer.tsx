@@ -8,6 +8,7 @@ export default function ChipDisplayer({
   secondAttributeName,
   thirdAttributeName,
   handleDelete,
+  isContact,
 }) {
   const { user } = useAuthContext();
 
@@ -18,7 +19,13 @@ export default function ChipDisplayer({
           key={index}
           title={`${entity[attributeName]}${
             secondAttributeName ? ` - ${entity[secondAttributeName]}` : ""
-          }${thirdAttributeName ? ` - [${entity[thirdAttributeName]}]` : ""}`}
+          }${
+            thirdAttributeName && !isContact
+              ? ` - [${entity[thirdAttributeName]}]`
+              : thirdAttributeName && isContact
+              ? ` ${entity[thirdAttributeName]}`
+              : ""
+          }`}
           arrow
           placement="top"
         >
@@ -27,7 +34,11 @@ export default function ChipDisplayer({
               <EllipsisText>
                 {entity[attributeName]}
                 {secondAttributeName && ` - ${entity[secondAttributeName]}`}
-                {thirdAttributeName && ` - [${entity[thirdAttributeName]}]`}
+                {thirdAttributeName && !isContact
+                  ? ` - [${entity[thirdAttributeName]}]`
+                  : thirdAttributeName && isContact
+                  ? ` ${entity[thirdAttributeName]}`
+                  : ""}
               </EllipsisText>
             }
             onDelete={user && (() => handleDelete(index))}
