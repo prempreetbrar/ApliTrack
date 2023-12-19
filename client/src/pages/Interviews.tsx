@@ -542,7 +542,7 @@ function InfoSection({
   }, [sectionArray]);
 
   async function handleCreate() {
-    executeHandle(
+    const success = await executeHandle(
       "create",
       create,
       {
@@ -559,6 +559,10 @@ function InfoSection({
       false,
       { ...dropdownValue }
     );
+
+    if (success) {
+      setDropdownValue("");
+    }
   }
 
   async function handleDelete(index) {
@@ -636,9 +640,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { register, getValues, reset, handleSubmit, setValue } = useForm();
   const [Date, setDate] = React.useState(null);
-  const [dropdownValue, setDropdownValue] = React.useState(
-    interviewInfo.Application
-  );
+  const [dropdownValue, setDropdownValue] = React.useState(null);
   const { executeHandle } = useHandleOperation(
     reset,
     setInterviewInfo,
@@ -650,7 +652,13 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
       "create",
       create,
       { ...data, Date, ApplicationID: dropdownValue.ApplicationID },
-      "http://localhost:3000/api/interviews/details"
+      "http://localhost:3000/api/interviews/details",
+      null,
+      false,
+      null,
+      {},
+      false,
+      { Application: dropdownValue }
     );
 
     /*
@@ -659,8 +667,8 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
     */
     if (result) {
       setValue("Stage", "");
-      setValue("Date", "");
-      setValue("ApplicationID", "");
+      setDate(null);
+      setDropdownValue(null);
     }
   }
 
