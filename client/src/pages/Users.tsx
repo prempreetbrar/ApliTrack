@@ -38,13 +38,14 @@ import {
   GET_AND_DELETE_AND_CREATE_AND_UPDATE,
 } from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
+import SubBox from "components/SubBox";
 
 export default function Users() {
-  const { user:userAuth } = useAuthContext();
+  const { user: userAuth } = useAuthContext();
   const [usersInfo, setUsersInfo] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -115,8 +116,6 @@ export default function Users() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAuth]);
 
-  console.log(userAuth);
-
   return (
     <MainBox>
       <FormGroup
@@ -158,23 +157,23 @@ export default function Users() {
               allowUnauthenticated
             />
             <SingleForm
-                  register={register}
-                  handleSubmit={handleSubmit}
-                  additionalStyles={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: { xs: "0rem" },
-                    marginTop: { xs: "1rem", xl: "0rem" },
-                    flexShrink: 0,
-                  }}
-                  additionalFieldStyles={{
-                    width: "100%",
-                    marginRight: { xs: "1rem" },
-                  }}
-                  attributeName={"Username"}
-                  allowUnauthenticated
-                />
+              register={register}
+              handleSubmit={handleSubmit}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: { xs: "0rem" },
+                marginTop: { xs: "1rem", xl: "0rem" },
+                flexShrink: 0,
+              }}
+              additionalFieldStyles={{
+                width: "100%",
+                marginRight: { xs: "1rem" },
+              }}
+              attributeName={"Username"}
+              allowUnauthenticated
+            />
             <Box
               display="flex"
               alignItems="center"
@@ -187,37 +186,40 @@ export default function Users() {
           </Box>
         </form>
       </FormGroup>
-      {usersInfo &&
-        usersInfo.map((user, index) => {
-          return (
-            <User
-              key={index}
-              user={user}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
-            />
-          );
-        })}
 
-      {userAuth &&
-        userAuth.data.user.AdminFlag &&
-        userAuth.data.user.PermissionLevel >= GET_AND_DELETE_AND_CREATE && (
-          <AddNewUser setUsersInfo={setUsersInfo} usersInfo={usersInfo} />
+      <SubBox isLoading={getIsLoading}>
+        {usersInfo &&
+          usersInfo.map((user, index) => {
+            return (
+              <User
+                key={index}
+                user={user}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            );
+          })}
+
+        {userAuth &&
+          userAuth.data.user.AdminFlag &&
+          userAuth.data.user.PermissionLevel >= GET_AND_DELETE_AND_CREATE && (
+            <AddNewUser setUsersInfo={setUsersInfo} usersInfo={usersInfo} />
+          )}
+        {deleteConfirmationDialogOpen && ( //TODO: check
+          <DeleteConfirmationDialog
+            open={deleteConfirmationDialogOpen}
+            handleClose={handleCloseDeleteConfirmationDialog}
+            handleConfirm={() => handleDelete(selectedIndexToDelete)}
+            itemName={
+              usersInfo[selectedIndexToDelete]?.Fname +
+              " " +
+              usersInfo[selectedIndexToDelete]?.Lname
+            }
+          />
         )}
-      {deleteConfirmationDialogOpen && ( //TODO: check
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={
-            usersInfo[selectedIndexToDelete]?.Fname +
-            " " +
-            usersInfo[selectedIndexToDelete]?.Lname
-          }
-        />
-      )}
+      </SubBox>
     </MainBox>
   );
 }
@@ -231,7 +233,7 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
-  const { user:userAuth } = useAuthContext();
+  const { user: userAuth } = useAuthContext();
 
   React.useEffect(() => {
     /*

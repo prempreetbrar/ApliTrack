@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import MainBox from "components/MainBox";
+import SubBox from "components/SubBox";
 import SingleForm from "components/SingleForm";
 import useAuthContext from "hooks/useAuthContext";
 import useHandleOperation from "hooks/useHandleOperation";
@@ -112,7 +113,7 @@ export default function Documents() {
   return (
     <>
       {user && (
-        <MainBox isLoading={getIsLoading}>
+        <MainBox>
           <form
             onSubmit={handleSubmit(handleGet)}
             style={{ display: "flex", flexDirection: "column", width: "100%" }}
@@ -219,27 +220,33 @@ export default function Documents() {
               </Box>
             </FormControl>
           </form>
-          {documents?.map((document, index) => (
-            <Document
-              key={index}
-              document={document}
-              setDocuments={setDocuments}
+
+          <SubBox isLoading={getIsLoading}>
+            {documents?.map((document, index) => (
+              <Document
+                key={index}
+                document={document}
+                setDocuments={setDocuments}
+                documents={documents}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            ))}
+            <NewDocumentForm
               documents={documents}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
+              setDocuments={setDocuments}
             />
-          ))}
-          <NewDocumentForm documents={documents} setDocuments={setDocuments} />
-          {deleteConfirmationDialogOpen && (
-            <DeleteConfirmationDialog
-              open={deleteConfirmationDialogOpen}
-              handleClose={handleCloseDeleteConfirmationDialog}
-              handleConfirm={() => handleDelete(selectedIndexToDelete)}
-              itemName={documents[selectedIndexToDelete].DocFileName}
-            />
-          )}
+            {deleteConfirmationDialogOpen && (
+              <DeleteConfirmationDialog
+                open={deleteConfirmationDialogOpen}
+                handleClose={handleCloseDeleteConfirmationDialog}
+                handleConfirm={() => handleDelete(selectedIndexToDelete)}
+                itemName={documents[selectedIndexToDelete].DocFileName}
+              />
+            )}
+          </SubBox>
         </MainBox>
       )}
     </>

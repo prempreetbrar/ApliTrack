@@ -34,6 +34,7 @@ import ChipDisplayer from "components/ChipDisplayer";
 import NewEntryDropdownLabel from "components/NewEntryDropdownLabel";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
+import SubBox from "components/SubBox";
 
 export default function Interviews() {
   const { user } = useAuthContext();
@@ -134,7 +135,7 @@ export default function Interviews() {
   }, [user]);
 
   return (
-    <MainBox isLoading={getIsLoading}>
+    <MainBox>
       <form onSubmit={handleSubmit(handleGet)}>
         <FormGroup
           sx={{
@@ -261,37 +262,39 @@ export default function Interviews() {
         </FormGroup>
       </form>
 
-      {interviewInfo &&
-        interviewInfo.map((interview, index) => {
-          return (
-            <Interview
-              key={index}
-              interview={interview}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
-            />
-          );
-        })}
-      {user && (
-        <AddNewInterview
-          setInterviewInfo={setInterviewInfo}
-          interviewInfo={interviewInfo}
-        />
-      )}
-      {deleteConfirmationDialogOpen && (
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={
-            interviewInfo[selectedIndexToDelete]?.Stage +
-            " " +
-            interviewInfo[selectedIndexToDelete]?.Date
-          }
-        />
-      )}
+      <SubBox isLoading={getIsLoading}>
+        {interviewInfo &&
+          interviewInfo.map((interview, index) => {
+            return (
+              <Interview
+                key={index}
+                interview={interview}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            );
+          })}
+        {user && (
+          <AddNewInterview
+            setInterviewInfo={setInterviewInfo}
+            interviewInfo={interviewInfo}
+          />
+        )}
+        {deleteConfirmationDialogOpen && (
+          <DeleteConfirmationDialog
+            open={deleteConfirmationDialogOpen}
+            handleClose={handleCloseDeleteConfirmationDialog}
+            handleConfirm={() => handleDelete(selectedIndexToDelete)}
+            itemName={
+              interviewInfo[selectedIndexToDelete]?.Stage +
+              " " +
+              interviewInfo[selectedIndexToDelete]?.Date
+            }
+          />
+        )}
+      </SubBox>
     </MainBox>
   );
 }

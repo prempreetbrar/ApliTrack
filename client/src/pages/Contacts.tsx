@@ -23,6 +23,7 @@ import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
 
 import MainBox from "components/MainBox";
+import SubBox from "components/SubBox";
 import MainPaper from "components/MainPaper";
 import useHandleOperation from "hooks/useHandleOperation";
 import NewEntry from "components/NewEntry";
@@ -149,7 +150,7 @@ export default function Contacts() {
   }, [user, contactsInfo, onlyShowContactsIKnow]);
 
   return (
-    <MainBox isLoading={getIsLoading}>
+    <MainBox>
       <FormGroup
         sx={{
           display: "flex",
@@ -321,54 +322,57 @@ export default function Contacts() {
           </Box>
         </form>
       </FormGroup>
-      {contactsInfo &&
-        contactsInfo.map((contact, index) => {
-          if (
-            onlyShowContactsIKnow &&
-            !(contact.ContactID in knownContactsInfo)
-          ) {
-            return <></>;
-          } else {
-            return (
-              <Contact
-                key={index}
-                contact={contact}
-                isKnown={contact.ContactID in knownContactsInfo}
-                Relationship={
-                  knownContactsInfo[contact.ContactID]?.Relationship
-                }
-                Notes={knownContactsInfo[contact.ContactID]?.Notes}
-                LastContactDate={
-                  knownContactsInfo[contact.ContactID]?.LastContactDate
-                }
-                index={index}
-                handleOpenDeleteConfirmationDialog={
-                  handleOpenDeleteConfirmationDialog
-                }
-                setKnownContactsInfo={setKnownContactsInfo}
-                knownContactsInfo={knownContactsInfo}
-              />
-            );
-          }
-        })}
-      {user && (
-        <AddNewContact
-          setContactsInfo={setContactsInfo}
-          contactsInfo={contactsInfo}
-        />
-      )}
-      {deleteConfirmationDialogOpen && (
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={
-            contactsInfo[selectedIndexToDelete]?.Fname +
-            " " +
-            contactsInfo[selectedIndexToDelete]?.Lname
-          }
-        />
-      )}
+
+      <SubBox isLoading={getIsLoading}>
+        {contactsInfo &&
+          contactsInfo.map((contact, index) => {
+            if (
+              onlyShowContactsIKnow &&
+              !(contact.ContactID in knownContactsInfo)
+            ) {
+              return <></>;
+            } else {
+              return (
+                <Contact
+                  key={index}
+                  contact={contact}
+                  isKnown={contact.ContactID in knownContactsInfo}
+                  Relationship={
+                    knownContactsInfo[contact.ContactID]?.Relationship
+                  }
+                  Notes={knownContactsInfo[contact.ContactID]?.Notes}
+                  LastContactDate={
+                    knownContactsInfo[contact.ContactID]?.LastContactDate
+                  }
+                  index={index}
+                  handleOpenDeleteConfirmationDialog={
+                    handleOpenDeleteConfirmationDialog
+                  }
+                  setKnownContactsInfo={setKnownContactsInfo}
+                  knownContactsInfo={knownContactsInfo}
+                />
+              );
+            }
+          })}
+        {user && (
+          <AddNewContact
+            setContactsInfo={setContactsInfo}
+            contactsInfo={contactsInfo}
+          />
+        )}
+        {deleteConfirmationDialogOpen && (
+          <DeleteConfirmationDialog
+            open={deleteConfirmationDialogOpen}
+            handleClose={handleCloseDeleteConfirmationDialog}
+            handleConfirm={() => handleDelete(selectedIndexToDelete)}
+            itemName={
+              contactsInfo[selectedIndexToDelete]?.Fname +
+              " " +
+              contactsInfo[selectedIndexToDelete]?.Lname
+            }
+          />
+        )}
+      </SubBox>
     </MainBox>
   );
 }
