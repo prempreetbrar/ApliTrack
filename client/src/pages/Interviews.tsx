@@ -502,7 +502,7 @@ function Interview({
               sectionURL="http://localhost:3000/api/jobs/mentions"
               fetchAllOptionsURL="http://localhost:3000/api/jobs"
               maxCreateLength={64}
-              isContact
+              isJob
             />
           </Box>
         </Box>
@@ -525,6 +525,7 @@ function InfoSection({
   sectionURL,
   fetchAllOptionsURL,
   isContact,
+  isJob,
   additionalStyles,
 }) {
   const [onUpdateSectionArray, setOnUpdateSectionArray] = React.useState([]);
@@ -597,9 +598,11 @@ function InfoSection({
         secondAttributeName={entityAttribute2}
         thirdAttributeName={entityAttribute3}
         handleDelete={handleDelete}
+        isContact={isContact}
+        isJob={isJob}
       />
 
-      {!isContact && (
+      {!isContact && !isJob && (
         <NewEntry
           attributeName={entityTargetAttribute}
           maxCreateLength={maxCreateLength}
@@ -608,7 +611,7 @@ function InfoSection({
           register={register}
         />
       )}
-      {isContact && (
+      {(isContact || isJob) && (
         <Box display="flex" flexDirection="row" alignItems="flex-end">
           <NewEntryDropdown
             entityName={entityName}
@@ -625,6 +628,7 @@ function InfoSection({
             dropdownValue={dropdownValue}
             setDropdownValue={setDropdownValue}
             isDropdownObject
+            isContact={isContact}
           />
           <Button
             onClick={handleCreate}

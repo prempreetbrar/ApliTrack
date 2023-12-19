@@ -20,6 +20,7 @@ export default function NewEntryDropdown({
   isDropdownObject,
   additionalTextFieldStyles,
   additionalAutocompleteStyles,
+  isContact,
 }) {
   const { user } = useAuthContext();
   const { executeRequest, isLoading, error } = useGet();
@@ -39,8 +40,10 @@ export default function NewEntryDropdown({
             (entity[entityAttributeName2]
               ? " - " + entity[entityAttributeName2]
               : "") +
-            (entity[entityAttributeName3]
+            (entity[entityAttributeName3] && !isContact
               ? " - [" + entity[entityAttributeName3] + "]"
+              : entity[entityAttributeName3] && isContact
+              ? " " + entity[entityAttributeName3]
               : "");
 
           if (isDropdownObject) {
@@ -83,8 +86,10 @@ export default function NewEntryDropdown({
                   (dropdownValue[entityAttributeName2]
                     ? " - " + dropdownValue[entityAttributeName2]
                     : "") +
-                  (dropdownValue[entityAttributeName3]
+                  (dropdownValue[entityAttributeName3] && !isContact
                     ? " - " + `[${dropdownValue[entityAttributeName3]}]`
+                    : dropdownValue[entityAttributeName3] && isContact
+                    ? " " + `${dropdownValue[entityAttributeName3]}`
                     : "")
                 : dropdownValue
             }
