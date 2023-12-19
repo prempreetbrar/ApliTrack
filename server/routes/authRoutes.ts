@@ -11,10 +11,14 @@ router.patch(
 );
 router.patch(
   "/reset-password",
+  authController.checkIfLoggedIn,
   authController.restrictTo(
     authController.GET_AND_DELETE_AND_CREATE_AND_UPDATE
   ),
   authController.resetPassword
 );
+
+router.post("/forgot-password", authController.forgotPassword);
+router.patch("/reset-password/:Token", authController.emailResetPassword);
 
 module.exports = router;

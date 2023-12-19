@@ -24,6 +24,7 @@ import { Delete } from "@mui/icons-material";
 
 import { useCreate, useDelete, useGet, useUpdate } from "hooks/useHttpMethod";
 
+import SubBox from "components/SubBox";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import NewEntry from "components/NewEntry";
 import MainBox from "components/MainBox";
@@ -91,6 +92,7 @@ export default function Companies() {
       get,
       {
         Sort: "CompanyName-ASC",
+        SortNested: "ApplicationDeadline-ASC",
       },
       "http://localhost:3000/api/companies",
       null,
@@ -142,7 +144,7 @@ export default function Companies() {
 
   return (
     <>
-      <MainBox isLoading={getIsLoading}>
+      <MainBox>
         <form onSubmit={handleSubmit(handleGet)} style={{ width: "100%" }}>
           <Box
             display="flex"
@@ -187,21 +189,98 @@ export default function Companies() {
                   name="radio-buttons-group"
                   sx={{
                     display: "flex",
-                    flexDirection: { xs: "column", sm: "row" },
+                    flexDirection: { xs: "column", md: "row" },
+                    marginBottom: "1rem",
                   }}
                 >
-                  <FormControlLabel
-                    value="CompanyName-ASC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort Ascending"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value="CompanyName-DESC"
-                    control={<Radio {...register("Sort")} />}
-                    label="Sort Descending"
-                    labelPlacement="start"
-                  />
+                  <Box display="flex" width={{ xs: "100%", md: "50%" }}>
+                    <FormControlLabel
+                      value="CompanyName-ASC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Company Name Ascending"
+                      labelPlacement="start"
+                      sx={{ width: "100%", boxSizing: "border-box" }}
+                    />
+                  </Box>
+                  <Box display="flex" width={{ xs: "100%", md: "50%" }}>
+                    <FormControlLabel
+                      value="CompanyName-DESC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Company Name Descending"
+                      labelPlacement="start"
+                      sx={{ width: "100%", boxSizing: "border-box" }}
+                    />
+                  </Box>
+                </RadioGroup>
+
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="ApplicationDeadline-ASC"
+                  name="radio-buttons-group"
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column" },
+                  }}
+                >
+                  <Box
+                    display="flex"
+                    flexDirection={{ xs: "column", md: "row" }}
+                  >
+                    <FormControlLabel
+                      value="ApplicationDeadline-ASC"
+                      control={<Radio {...register("SortNested")} />}
+                      label="Sort by Application Deadline Ascending"
+                      labelPlacement="start"
+                      sx={{ width: { xs: "100%", md: "50%" } }}
+                    />
+                    <FormControlLabel
+                      value="ApplicationDeadline-DESC"
+                      control={<Radio {...register("SortNested")} />}
+                      label="Sort by Application Deadline Descending"
+                      labelPlacement="start"
+                      sx={{ width: { xs: "100%", md: "50%" } }}
+                    />
+                  </Box>
+
+                  <Box
+                    display="flex"
+                    flexDirection={{ xs: "column", md: "row" }}
+                  >
+                    <FormControlLabel
+                      value="Salary-ASC"
+                      control={<Radio {...register("SortNested")} />}
+                      label="Sort by Salary Ascending"
+                      labelPlacement="start"
+                      sx={{ width: { xs: "100%", md: "50%" } }}
+                    />
+                    <FormControlLabel
+                      value="Salary-DESC"
+                      control={<Radio {...register("SortNested")} />}
+                      label="Sort by Salary Descending"
+                      labelPlacement="start"
+                      sx={{ width: { xs: "100%", md: "50%" } }}
+                    />
+                  </Box>
+
+                  <Box
+                    display="flex"
+                    flexDirection={{ xs: "column", md: "row" }}
+                  >
+                    <FormControlLabel
+                      value="PositionName-ASC"
+                      control={<Radio {...register("SortNested")} />}
+                      label="Sort by Position Name Ascending"
+                      labelPlacement="start"
+                      sx={{ width: { xs: "100%", md: "50%" } }}
+                    />
+                    <FormControlLabel
+                      value="PositionName-DESC"
+                      control={<Radio {...register("SortNested")} />}
+                      label="Sort by Position Name Descending"
+                      labelPlacement="start"
+                      sx={{ width: { xs: "100%", md: "50%" } }}
+                    />
+                  </Box>
                 </RadioGroup>
               </FormControl>
             </Box>
@@ -212,7 +291,7 @@ export default function Companies() {
               justifyContent="center"
               marginTop="1rem"
               sx={{
-                flexDirection: { xs: "column", xl: "row" },
+                flexDirection: { xs: "column" },
               }}
             >
               <Typography
@@ -221,55 +300,121 @@ export default function Companies() {
               >
                 Search by:
               </Typography>
-              <SingleForm
-                register={register}
-                handleSubmit={handleSubmit}
-                additionalStyles={{
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                  marginRight: { xs: "1rem", md: "0rem" },
-                }}
-                attributeName={"CompanyName"}
-                allowUnauthenticated
-              />
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"EarliestApplicationDeadline"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-                date={mostRecentEarliestApplicationDeadline}
-                setDate={setMostRecentEarliestApplicationDeadline}
-                allowUnauthenticated
-              />
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"LatestApplicationDeadline"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-                date={mostRecentLatestApplicationDeadline}
-                setDate={setMostRecentLatestApplicationDeadline}
-                allowUnauthenticated
-              />
+              <Box flexDirection={{ xs: "column", lg: "row" }}>
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"CompanyName"}
+                  allowUnauthenticated
+                />
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"IndustryName"}
+                  allowUnauthenticated
+                />
+              </Box>
+
+              <Box flexDirection={{ xs: "column", lg: "row" }}>
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"LowestSalary"}
+                  allowUnauthenticated
+                />
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"HighestSalary"}
+                  allowUnauthenticated
+                />
+              </Box>
+
+              <Box flexDirection={{ xs: "column", lg: "row" }}>
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"PositionType"}
+                  allowUnauthenticated
+                />
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"PositionName"}
+                  allowUnauthenticated
+                />
+              </Box>
+
+              <Box display="flex" flexDirection={{ xs: "column", lg: "row" }}>
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"EarliestApplicationDeadline"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={mostRecentEarliestApplicationDeadline}
+                  setDate={setMostRecentEarliestApplicationDeadline}
+                  allowUnauthenticated
+                />
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"LatestApplicationDeadline"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={mostRecentLatestApplicationDeadline}
+                  setDate={setMostRecentLatestApplicationDeadline}
+                  allowUnauthenticated
+                />
+              </Box>
 
               {user && onlyShowJobsITrack && (
                 <SingleDate
@@ -318,31 +463,33 @@ export default function Companies() {
           </Box>
         </form>
 
-        {companies &&
-          companies.map((company, index) => (
-            <Company
-              key={index}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
-              company={company}
-              onlyShowJobsITrack={onlyShowJobsITrack}
-              mostRecentEarliestDateToApply={mostRecentEarliestDateToApply}
-              mostRecentLatestDateToApply={mostRecentLatestDateToApply}
-              earliestApplicationDeadline={savedEarliestApplicationDeadline}
-              latestApplicationDeadline={savedLatestApplicationDeadline}
+        <SubBox isLoading={getIsLoading}>
+          {companies &&
+            companies.map((company, index) => (
+              <Company
+                key={index}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+                company={company}
+                onlyShowJobsITrack={onlyShowJobsITrack}
+                mostRecentEarliestDateToApply={mostRecentEarliestDateToApply}
+                mostRecentLatestDateToApply={mostRecentLatestDateToApply}
+                earliestApplicationDeadline={savedEarliestApplicationDeadline}
+                latestApplicationDeadline={savedLatestApplicationDeadline}
+              />
+            ))}
+          <NewCompanyForm companies={companies} setCompanies={setCompanies} />
+          {deleteConfirmationDialogOpen && (
+            <DeleteConfirmationDialog
+              open={deleteConfirmationDialogOpen}
+              handleClose={handleCloseDeleteConfirmationDialog}
+              handleConfirm={() => handleDelete(selectedIndexToDelete)}
+              itemName={companies[selectedIndexToDelete]?.CompanyName}
             />
-          ))}
-        <NewCompanyForm companies={companies} setCompanies={setCompanies} />
-        {deleteConfirmationDialogOpen && (
-          <DeleteConfirmationDialog
-            open={deleteConfirmationDialogOpen}
-            handleClose={handleCloseDeleteConfirmationDialog}
-            handleConfirm={() => handleDelete(selectedIndexToDelete)}
-            itemName={companies[selectedIndexToDelete]?.CompanyName}
-          />
-        )}
+          )}
+        </SubBox>
       </MainBox>
     </>
   );
@@ -1077,6 +1224,7 @@ function Job({
               gridArea: "Qualification",
               marginLeft: "2rem",
               marginTop: { sm: 0, md: "-1.5rem" },
+              justifySelf: { xs: "center", md: "flex-start" },
             }}
           >
             <Typography>Qualifications</Typography>

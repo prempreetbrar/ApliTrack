@@ -43,6 +43,7 @@ exports.createUser = factory.createOne(User);
 exports.deleteUser = factory.deleteInstance(User);
 
 exports.addFilterUser = factory.addFilter("Username");
+exports.addSortUser = factory.addSort();
 exports.addSearchUsernameName = factory.addSearch(
   ["Username", "String"],
   ["Fname", "String"],

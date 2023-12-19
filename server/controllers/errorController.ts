@@ -52,7 +52,7 @@ function sendError(error, request, response) {
 }
 
 function handleDBDuplicateError(error) {
-  const errorItem = error.errors[0];
+  const errorItem = error.errors.pop();
 
   //@ts-ignore
   const message = `DUPLICATE FIELD. ${errorItem.message}: ${errorItem.value}. Please use another ${errorItem.path}.`;

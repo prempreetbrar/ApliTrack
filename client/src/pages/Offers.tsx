@@ -9,6 +9,7 @@ import useHandleOperation from "hooks/useHandleOperation";
 import { useGet, useDelete, useCreate, useUpdate } from "hooks/useHttpMethod";
 
 import MainBox from "components/MainBox";
+import SubBox from "components/SubBox";
 import { Notes, Person, Delete } from "@mui/icons-material";
 import {
   Box,
@@ -127,7 +128,7 @@ export default function Offers() {
   return (
     <>
       {user && (
-        <MainBox isLoading={getIsLoading}>
+        <MainBox>
           <form
             onSubmit={handleSubmit(handleGet)}
             style={{ display: "flex", flexDirection: "column", width: "100%" }}
@@ -371,32 +372,35 @@ export default function Offers() {
               </IconButton>
             </Box>
           </form>
-          {offers?.map((offer, index) => (
-            <Offer
-              key={index}
-              offer={offer}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
-            />
-          ))}
-          <NewOfferForm offers={offers} setOffers={setOffers} />
-          {deleteConfirmationDialogOpen && (
-            <DeleteConfirmationDialog
-              open={deleteConfirmationDialogOpen}
-              handleClose={handleCloseDeleteConfirmationDialog}
-              handleConfirm={() => handleDelete(selectedIndexToDelete)}
-              itemName={
-                "your Offer from " +
-                offers[selectedIndexToDelete]?.Job.CompanyName +
-                " for the " +
-                offers[selectedIndexToDelete]?.Job.PositionName +
-                ` [${offers[selectedIndexToDelete]?.Job.PositionID}] ` +
-                " Position"
-              }
-            />
-          )}
+
+          <SubBox isLoading={getIsLoading}>
+            {offers?.map((offer, index) => (
+              <Offer
+                key={index}
+                offer={offer}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            ))}
+            <NewOfferForm offers={offers} setOffers={setOffers} />
+            {deleteConfirmationDialogOpen && (
+              <DeleteConfirmationDialog
+                open={deleteConfirmationDialogOpen}
+                handleClose={handleCloseDeleteConfirmationDialog}
+                handleConfirm={() => handleDelete(selectedIndexToDelete)}
+                itemName={
+                  "your Offer from " +
+                  offers[selectedIndexToDelete]?.Job.CompanyName +
+                  " for the " +
+                  offers[selectedIndexToDelete]?.Job.PositionName +
+                  ` [${offers[selectedIndexToDelete]?.Job.PositionID}] ` +
+                  " Position"
+                }
+              />
+            )}
+          </SubBox>
         </MainBox>
       )}
     </>

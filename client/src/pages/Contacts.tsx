@@ -12,6 +12,8 @@ import {
   IconButton,
   FormGroup,
   Switch,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,6 +23,7 @@ import useAuthContext from "hooks/useAuthContext";
 import { useGet, useCreate, useDelete, useUpdate } from "hooks/useHttpMethod";
 
 import MainBox from "components/MainBox";
+import SubBox from "components/SubBox";
 import MainPaper from "components/MainPaper";
 import useHandleOperation from "hooks/useHandleOperation";
 import NewEntry from "components/NewEntry";
@@ -108,13 +111,17 @@ export default function Contacts() {
     )
   */
   React.useEffect(() => {
-    const fetchContactsInfo = async () => {
-      const response = await get({}, "http://localhost:3000/api/contacts");
-
-      setContactsInfo(response.contact);
-    };
-
-    fetchContactsInfo();
+    executeHandle(
+      "get",
+      get,
+      { Sort: "Fname-ASC,Lname-ASC" },
+      "http://localhost:3000/api/contacts",
+      null,
+      false,
+      null,
+      {},
+      true
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -143,7 +150,7 @@ export default function Contacts() {
   }, [user, contactsInfo, onlyShowContactsIKnow]);
 
   return (
-    <MainBox isLoading={getIsLoading}>
+    <MainBox>
       <FormGroup
         sx={{
           display: "flex",
@@ -171,7 +178,73 @@ export default function Contacts() {
             label="Only Show Contacts I Know"
           />
         )}
-        <form onSubmit={handleSubmit(handleGet)}>
+        <form
+          onSubmit={handleSubmit(handleGet)}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <RadioGroup
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="Fname-ASC,Lname-ASC"
+            name="radio-buttons-group"
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              justifyContent: "center",
+              alignItems: "center",
+              width: { xs: "100%" },
+              marginBottom: "1rem",
+            }}
+          >
+            <Box
+              display="flex"
+              width="100%"
+              justifyContent="center"
+              alignItems="center"
+              flexDirection={{ xs: "column", md: "row" }}
+              paddingRight="2rem"
+            >
+              <FormControlLabel
+                value="Fname-ASC,Lname-ASC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by First Name Ascending"
+                labelPlacement="start"
+              />
+              <FormControlLabel
+                value="Fname-DESC,Lname-DESC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by First Name Descending"
+                labelPlacement="start"
+                sx={{
+                  marginLeft: { xs: "0.5rem", md: "1rem" },
+                  marginTop: { xs: "1rem", sm: "0rem" },
+                }}
+              />
+              <FormControlLabel
+                value="Lname-ASC,Fname-ASC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Last Name Ascending"
+                labelPlacement="start"
+                sx={{
+                  marginLeft: { xs: "1rem", md: "3rem" },
+                  marginTop: { xs: "1rem", sm: "0rem" },
+                }}
+              />
+              <FormControlLabel
+                value="Lname-DESC,Fname-DESC"
+                control={<Radio {...register("Sort")} />}
+                label="Sort by Last Name Descending"
+                labelPlacement="start"
+                sx={{
+                  marginLeft: { xs: "0.5rem", md: "0.5rem" },
+                }}
+              />
+            </Box>
+          </RadioGroup>
           <Box
             display="flex"
             sx={{
@@ -249,54 +322,57 @@ export default function Contacts() {
           </Box>
         </form>
       </FormGroup>
-      {contactsInfo &&
-        contactsInfo.map((contact, index) => {
-          if (
-            onlyShowContactsIKnow &&
-            !(contact.ContactID in knownContactsInfo)
-          ) {
-            return <></>;
-          } else {
-            return (
-              <Contact
-                key={index}
-                contact={contact}
-                isKnown={contact.ContactID in knownContactsInfo}
-                Relationship={
-                  knownContactsInfo[contact.ContactID]?.Relationship
-                }
-                Notes={knownContactsInfo[contact.ContactID]?.Notes}
-                LastContactDate={
-                  knownContactsInfo[contact.ContactID]?.LastContactDate
-                }
-                index={index}
-                handleOpenDeleteConfirmationDialog={
-                  handleOpenDeleteConfirmationDialog
-                }
-                setKnownContactsInfo={setKnownContactsInfo}
-                knownContactsInfo={knownContactsInfo}
-              />
-            );
-          }
-        })}
-      {user && (
-        <AddNewContact
-          setContactsInfo={setContactsInfo}
-          contactsInfo={contactsInfo}
-        />
-      )}
-      {deleteConfirmationDialogOpen && (
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={
-            contactsInfo[selectedIndexToDelete]?.Fname +
-            " " +
-            contactsInfo[selectedIndexToDelete]?.Lname
-          }
-        />
-      )}
+
+      <SubBox isLoading={getIsLoading}>
+        {contactsInfo &&
+          contactsInfo.map((contact, index) => {
+            if (
+              onlyShowContactsIKnow &&
+              !(contact.ContactID in knownContactsInfo)
+            ) {
+              return <></>;
+            } else {
+              return (
+                <Contact
+                  key={index}
+                  contact={contact}
+                  isKnown={contact.ContactID in knownContactsInfo}
+                  Relationship={
+                    knownContactsInfo[contact.ContactID]?.Relationship
+                  }
+                  Notes={knownContactsInfo[contact.ContactID]?.Notes}
+                  LastContactDate={
+                    knownContactsInfo[contact.ContactID]?.LastContactDate
+                  }
+                  index={index}
+                  handleOpenDeleteConfirmationDialog={
+                    handleOpenDeleteConfirmationDialog
+                  }
+                  setKnownContactsInfo={setKnownContactsInfo}
+                  knownContactsInfo={knownContactsInfo}
+                />
+              );
+            }
+          })}
+        {user && (
+          <AddNewContact
+            setContactsInfo={setContactsInfo}
+            contactsInfo={contactsInfo}
+          />
+        )}
+        {deleteConfirmationDialogOpen && (
+          <DeleteConfirmationDialog
+            open={deleteConfirmationDialogOpen}
+            handleClose={handleCloseDeleteConfirmationDialog}
+            handleConfirm={() => handleDelete(selectedIndexToDelete)}
+            itemName={
+              contactsInfo[selectedIndexToDelete]?.Fname +
+              " " +
+              contactsInfo[selectedIndexToDelete]?.Lname
+            }
+          />
+        )}
+      </SubBox>
     </MainBox>
   );
 }
@@ -737,7 +813,7 @@ function InfoSection({
   const [dropdownValue, setDropdownValue] = React.useState("");
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeRequest: deleteInstance } = useDelete();
-  const { register, getValues, reset, control } = useForm();
+  const { register, getValues, reset, control, setValue } = useForm();
   const { executeHandle } = useHandleOperation(
     reset,
     setOnUpdateSectionArray,
@@ -751,7 +827,7 @@ function InfoSection({
   }, [sectionArray]);
 
   async function handleCreate() {
-    executeHandle(
+    const success = await executeHandle(
       "create",
       create,
       {
@@ -767,6 +843,10 @@ function InfoSection({
       {},
       false
     );
+    if (success) {
+      setDropdownValue(null);
+      setValue(entitySecondTargetAttribute, "");
+    }
   }
 
   async function handleDelete(index) {
@@ -1096,7 +1176,8 @@ function NewReferralForm({
       false,
       undefined,
       {},
-      false
+      false,
+      { Job: referralJob }
     );
 
     /*
@@ -1106,7 +1187,8 @@ function NewReferralForm({
     if (result) {
       setValue("Date", "");
       setValue("Notes", "");
-      setValue("Job", null);
+      setReferralJob(null);
+      setReferralDate(null);
     }
   }
 

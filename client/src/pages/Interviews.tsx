@@ -34,6 +34,7 @@ import ChipDisplayer from "components/ChipDisplayer";
 import NewEntryDropdownLabel from "components/NewEntryDropdownLabel";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
+import SubBox from "components/SubBox";
 
 export default function Interviews() {
   const { user } = useAuthContext();
@@ -134,7 +135,7 @@ export default function Interviews() {
   }, [user]);
 
   return (
-    <MainBox isLoading={getIsLoading}>
+    <MainBox>
       <form onSubmit={handleSubmit(handleGet)}>
         <FormGroup
           sx={{
@@ -261,37 +262,39 @@ export default function Interviews() {
         </FormGroup>
       </form>
 
-      {interviewInfo &&
-        interviewInfo.map((interview, index) => {
-          return (
-            <Interview
-              key={index}
-              interview={interview}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
-            />
-          );
-        })}
-      {user && (
-        <AddNewInterview
-          setInterviewInfo={setInterviewInfo}
-          interviewInfo={interviewInfo}
-        />
-      )}
-      {deleteConfirmationDialogOpen && (
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={
-            interviewInfo[selectedIndexToDelete]?.Stage +
-            " " +
-            interviewInfo[selectedIndexToDelete]?.Date
-          }
-        />
-      )}
+      <SubBox isLoading={getIsLoading}>
+        {interviewInfo &&
+          interviewInfo.map((interview, index) => {
+            return (
+              <Interview
+                key={index}
+                interview={interview}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            );
+          })}
+        {user && (
+          <AddNewInterview
+            setInterviewInfo={setInterviewInfo}
+            interviewInfo={interviewInfo}
+          />
+        )}
+        {deleteConfirmationDialogOpen && (
+          <DeleteConfirmationDialog
+            open={deleteConfirmationDialogOpen}
+            handleClose={handleCloseDeleteConfirmationDialog}
+            handleConfirm={() => handleDelete(selectedIndexToDelete)}
+            itemName={
+              interviewInfo[selectedIndexToDelete]?.Stage +
+              " " +
+              interviewInfo[selectedIndexToDelete]?.Date
+            }
+          />
+        )}
+      </SubBox>
     </MainBox>
   );
 }
@@ -542,7 +545,7 @@ function InfoSection({
   }, [sectionArray]);
 
   async function handleCreate() {
-    executeHandle(
+    const success = await executeHandle(
       "create",
       create,
       {
@@ -559,6 +562,10 @@ function InfoSection({
       false,
       { ...dropdownValue }
     );
+
+    if (success) {
+      setDropdownValue("");
+    }
   }
 
   async function handleDelete(index) {
@@ -636,9 +643,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { register, getValues, reset, handleSubmit, setValue } = useForm();
   const [Date, setDate] = React.useState(null);
-  const [dropdownValue, setDropdownValue] = React.useState(
-    interviewInfo.Application
-  );
+  const [dropdownValue, setDropdownValue] = React.useState(null);
   const { executeHandle } = useHandleOperation(
     reset,
     setInterviewInfo,
@@ -650,7 +655,13 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
       "create",
       create,
       { ...data, Date, ApplicationID: dropdownValue.ApplicationID },
-      "http://localhost:3000/api/interviews/details"
+      "http://localhost:3000/api/interviews/details",
+      null,
+      false,
+      null,
+      {},
+      false,
+      { Application: dropdownValue }
     );
 
     /*
@@ -659,8 +670,8 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
     */
     if (result) {
       setValue("Stage", "");
-      setValue("Date", "");
-      setValue("ApplicationID", "");
+      setDate(null);
+      setDropdownValue(null);
     }
   }
 

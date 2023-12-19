@@ -18,6 +18,7 @@ import Copyright from "components/Copyright";
 import { useLogin } from "../../hooks/useAuthAction";
 import useAuthSucceeded from "hooks/useAuthSucceeded";
 import { authErrorHandler } from "./authUtils";
+import { useCreate } from "hooks/useHttpMethod";
 
 /**
  * Login component
@@ -40,10 +41,16 @@ export default function Login() {
       message: "Entered value does not match email format",
     },
   });
-  const password = register("Password", { required: "Password is required." });
 
-  const { authAction: login, error, isLoading } = useLogin();
-  const onSubmit = useAuthSucceeded(login, "Login");
+  const { executeRequest: create, isLoading, error } = useCreate();
+  function onSubmit(data) {
+    create(
+      { Username: data.Username },
+      "http://localhost:3000/api/auth/forgot-password",
+      {},
+      true
+    );
+  }
 
   React.useEffect(() => {
     authErrorHandler(error, errors);
@@ -64,11 +71,13 @@ export default function Login() {
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h2">
-          ApliTrack
-        </Typography>
+
         <Typography component="h1" variant="h5">
-          Log in
+          Forgot Password
+        </Typography>
+        <Typography component="p" marginTop="1rem">
+          Enter your email/username and we'll send you a link to reset your
+          password.
         </Typography>
         <Box
           component="form"
@@ -88,30 +97,6 @@ export default function Login() {
                 inputProps={{ maxLength: 32 }}
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                name={password.name}
-                fullWidth
-                required
-                label="Password"
-                type="password"
-                autoComplete="new-password"
-                inputRef={password.ref}
-                onChange={password.onChange}
-                inputProps={{ maxLength: 64 }}
-              />
-            </Grid>
-          </Grid>
-
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link
-                href="http://localhost:3001/auth/forgot-password"
-                variant="body2"
-              >
-                Forgot your password?
-              </Link>
-            </Grid>
           </Grid>
 
           <Button
@@ -121,15 +106,8 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Log in
+            Submit
           </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link href="http://localhost:3001/auth/signup" variant="body2">
-                Don't have an account? Sign up
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
       <Copyright sx={{ mt: 5 }} />

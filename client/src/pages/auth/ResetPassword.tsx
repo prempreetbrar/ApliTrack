@@ -18,6 +18,8 @@ import Copyright from "components/Copyright";
 import { useLogin } from "../../hooks/useAuthAction";
 import useAuthSucceeded from "hooks/useAuthSucceeded";
 import { authErrorHandler } from "./authUtils";
+import { useUpdate } from "hooks/useHttpMethod";
+import { useParams, useSearchParams } from "react-router-dom";
 
 /**
  * Login component
@@ -33,17 +35,22 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const username = register("Username", {
-    required: "You must enter an email for your username.",
-    pattern: {
-      value: /\S+@\S+\.\S+/,
-      message: "Entered value does not match email format",
-    },
+  const { Token } = useParams();
+  const passwordConfirm = register("PasswordConfirm", {
+    required: "Password is required.",
   });
   const password = register("Password", { required: "Password is required." });
 
   const { authAction: login, error, isLoading } = useLogin();
-  const onSubmit = useAuthSucceeded(login, "Login");
+  const { executeRequest: update } = useUpdate();
+  function onSubmit(data) {
+    update(
+      data,
+      `http://localhost:3000/api/auth/reset-password/${Token}`,
+      {},
+      true
+    );
+  }
 
   React.useEffect(() => {
     authErrorHandler(error, errors);
@@ -64,11 +71,12 @@ export default function Login() {
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h2">
-          ApliTrack
-        </Typography>
+
         <Typography component="h1" variant="h5">
-          Log in
+          Reset Password
+        </Typography>
+        <Typography component="p" marginTop="1rem">
+          Enter and confirm your new password.
         </Typography>
         <Box
           component="form"
@@ -79,21 +87,10 @@ export default function Login() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                name={username.name}
-                fullWidth
-                label="Username"
-                inputRef={username.ref}
-                onChange={username.onChange}
-                autoComplete="email"
-                inputProps={{ maxLength: 32 }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
                 name={password.name}
                 fullWidth
                 required
-                label="Password"
+                label="New Password"
                 type="password"
                 autoComplete="new-password"
                 inputRef={password.ref}
@@ -101,16 +98,18 @@ export default function Login() {
                 inputProps={{ maxLength: 64 }}
               />
             </Grid>
-          </Grid>
-
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link
-                href="http://localhost:3001/auth/forgot-password"
-                variant="body2"
-              >
-                Forgot your password?
-              </Link>
+            <Grid item xs={12}>
+              <TextField
+                name={passwordConfirm.name}
+                fullWidth
+                required
+                type="password"
+                label="Confirm New Password"
+                inputRef={passwordConfirm.ref}
+                onChange={passwordConfirm.onChange}
+                autoComplete="password"
+                inputProps={{ maxLength: 64 }}
+              />
             </Grid>
           </Grid>
 
@@ -121,15 +120,8 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Log in
+            Submit
           </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link href="http://localhost:3001/auth/signup" variant="body2">
-                Don't have an account? Sign up
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
       <Copyright sx={{ mt: 5 }} />

@@ -1,0 +1,17 @@
+extends base
+
+block content 
+  p Hi #{firstName} #{lastName},
+  p Welcome to ApliTrack, we're glad to have you!
+  p We're all a big family here; there's tons of you working together in the job search!
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+                  a(href=`${url}`, target='_blank') Get Started
+  p If you need any help with the platform, don't hesitate to contact us!
+  p - Jayden Yeo, Fedor Prokopchuk, Prempreet Brar, Co-Founders

@@ -8,8 +8,7 @@ const Interview = sequelize.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
-      //autoIncrement: true,
-      defaultValue: 0,
+      autoIncrement: true,
     },
     ApplicantUsername: {
       type: DataTypes.STRING(32),
@@ -34,20 +33,6 @@ const Interview = sequelize.define(
     timestamps: false,
   }
 );
-
-// Implementing a beforeCreate hook to manually increment the InterviewID
-Interview.beforeCreate(async (instance, options) => {
-  try {
-    const maxInterviewID = await Interview.max("InterviewID", {
-      where: { ApplicantUsername: instance.ApplicantUsername },
-    });
-
-    instance.InterviewID = maxInterviewID ? maxInterviewID + 1 : 1;
-  } catch (error) {
-    // Handle any potential errors
-    console.error("Error during beforeCreate hook:", error);
-  }
-});
 
 sequelize.sync();
 exports.Interview = Interview;

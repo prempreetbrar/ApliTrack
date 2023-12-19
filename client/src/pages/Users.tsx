@@ -1,5 +1,4 @@
-// @ts-nocheck
-
+//@ts-nocheck
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -12,6 +11,9 @@ import {
   IconButton,
   FormGroup,
   Switch,
+  Radio,
+  FormControl,
+  RadioGroup,
 } from "@mui/material";
 import Delete from "@mui/icons-material/Delete";
 import SearchIcon from "@mui/icons-material/Search";
@@ -38,13 +40,14 @@ import {
   GET_AND_DELETE_AND_CREATE_AND_UPDATE,
 } from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
+import SubBox from "components/SubBox";
 
 export default function Users() {
-  const { user:userAuth } = useAuthContext();
+  const { user: userAuth } = useAuthContext();
   const [usersInfo, setUsersInfo] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -115,8 +118,6 @@ export default function Users() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAuth]);
 
-  console.log(userAuth);
-
   return (
     <MainBox>
       <FormGroup
@@ -130,6 +131,106 @@ export default function Users() {
         }}
       >
         <form onSubmit={handleSubmit(handleGet)}>
+          <Box
+            display="flex"
+            sx={{
+              flexDirection: { xs: "column", xl: "row" },
+            }}
+            alignItems="center"
+            marginRight="2.5rem"
+            width="100%"
+          >
+            <FormControl sx={{ width: "100%" }}>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="Compensation-ASC"
+                name="radio-buttons-group"
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+                row
+              >
+                <Box
+                  display="flex"
+                  maxWidth={{ xs: "100%", sm: "50%" }}
+                  flexDirection="column"
+                  paddingRight="2rem"
+                >
+                  <FormControlLabel
+                    value="Username-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Username Ascending"
+                    labelPlacement="start"
+                    sx={{ width: "100%" }}
+                  />
+                  <FormControlLabel
+                    value="Fname-ASC,Lname-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by First Name Ascending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+                  <FormControlLabel
+                    value="Lname-ASC,Fname-ASC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Last Name Ascending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+                </Box>
+
+                <Box
+                  display="flex"
+                  maxWidth={{ xs: "100%", sm: "50%" }}
+                  flexDirection="column"
+                  paddingRight="2rem"
+                >
+                  <FormControlLabel
+                    value="Username-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Username Descending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+                  <FormControlLabel
+                    value="Fname-DESC,Lname-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by First Name Descending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+
+                  <FormControlLabel
+                    value="Lname-DESC,Fname-DESC"
+                    control={<Radio {...register("Sort")} />}
+                    label="Sort by Last Name Descending"
+                    labelPlacement="start"
+                    sx={{
+                      marginTop: { xs: "1rem", sm: "0" },
+                      width: "100%",
+                    }}
+                  />
+                </Box>
+              </RadioGroup>
+            </FormControl>
+          </Box>
+
           <Box
             display="flex"
             sx={{
@@ -158,23 +259,23 @@ export default function Users() {
               allowUnauthenticated
             />
             <SingleForm
-                  register={register}
-                  handleSubmit={handleSubmit}
-                  additionalStyles={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: { xs: "0rem" },
-                    marginTop: { xs: "1rem", xl: "0rem" },
-                    flexShrink: 0,
-                  }}
-                  additionalFieldStyles={{
-                    width: "100%",
-                    marginRight: { xs: "1rem" },
-                  }}
-                  attributeName={"Username"}
-                  allowUnauthenticated
-                />
+              register={register}
+              handleSubmit={handleSubmit}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: { xs: "0rem" },
+                marginTop: { xs: "1rem", sm: "0rem" },
+                flexShrink: 0,
+              }}
+              additionalFieldStyles={{
+                width: "100%",
+                marginRight: { xs: "1rem" },
+              }}
+              attributeName={"Username"}
+              allowUnauthenticated
+            />
             <Box
               display="flex"
               alignItems="center"
@@ -187,37 +288,40 @@ export default function Users() {
           </Box>
         </form>
       </FormGroup>
-      {usersInfo &&
-        usersInfo.map((user, index) => {
-          return (
-            <User
-              key={index}
-              user={user}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
-            />
-          );
-        })}
 
-      {userAuth &&
-        userAuth.data.user.AdminFlag &&
-        userAuth.data.user.PermissionLevel >= GET_AND_DELETE_AND_CREATE && (
-          <AddNewUser setUsersInfo={setUsersInfo} usersInfo={usersInfo} />
+      <SubBox isLoading={getIsLoading}>
+        {usersInfo &&
+          usersInfo.map((user, index) => {
+            return (
+              <User
+                key={index}
+                user={user}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            );
+          })}
+
+        {userAuth &&
+          userAuth.data.user.AdminFlag &&
+          userAuth.data.user.PermissionLevel >= GET_AND_DELETE_AND_CREATE && (
+            <AddNewUser setUsersInfo={setUsersInfo} usersInfo={usersInfo} />
+          )}
+        {deleteConfirmationDialogOpen && ( //TODO: check
+          <DeleteConfirmationDialog
+            open={deleteConfirmationDialogOpen}
+            handleClose={handleCloseDeleteConfirmationDialog}
+            handleConfirm={() => handleDelete(selectedIndexToDelete)}
+            itemName={
+              usersInfo[selectedIndexToDelete]?.Fname +
+              " " +
+              usersInfo[selectedIndexToDelete]?.Lname
+            }
+          />
         )}
-      {deleteConfirmationDialogOpen && ( //TODO: check
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={
-            usersInfo[selectedIndexToDelete]?.Fname +
-            " " +
-            usersInfo[selectedIndexToDelete]?.Lname
-          }
-        />
-      )}
+      </SubBox>
     </MainBox>
   );
 }
@@ -231,7 +335,7 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
   const { executeRequest: update, isLoading: updateIsLoading } = useUpdate();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
-  const { user:userAuth } = useAuthContext();
+  const { user: userAuth } = useAuthContext();
 
   React.useEffect(() => {
     /*
@@ -318,7 +422,6 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
         <SingleForm
           register={register}
           handleSubmit={handleSubmit}
-          actionOnAttribute={updateNameOrLinkedInURL}
           attributeName={"Username"}
           maxLength={64}
           isLoading={updateIsLoading}
@@ -344,10 +447,9 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
               : undefined
           }
           isLoading={updateIsLoading}
-          additionalStyles={{ flexDirection: { xs: "column", sm: "row" } }}
-          additionalLnameStyles={{
-            marginTop: { xs: "1rem", sm: 0 },
-            marginRight: { xs: "1rem" },
+          additionalStyles={{
+            flexDirection: { xs: "column", sm: "row" },
+            marginTop: "1rem",
           }}
           buttonName={"Update"}
         />
@@ -396,10 +498,9 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
               : undefined
           }
           isLoading={updateIsLoading}
-          additionalStyles={{ flexDirection: { xs: "column", sm: "row" } }}
-          additionalLnameStyles={{
-            marginTop: { xs: "1rem", sm: 0 },
-            marginRight: { xs: "1rem" },
+          additionalStyles={{
+            flexDirection: { xs: "column", sm: "row" },
+            marginTop: "1rem",
           }}
           buttonName={"Update"}
         />
