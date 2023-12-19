@@ -399,11 +399,21 @@ exports.addSort = () => {
     if (!request.body.order) {
       request.body.order = [];
     }
+    if (!request.body.nestedOrder) {
+      request.body.nestedOrder = [];
+    }
 
     if (request.query.Sort) {
       const allSorts = request.query.Sort.split(",");
       for (const sort of allSorts) {
         request.body.order.push(sort.split("-"));
+      }
+    }
+
+    if (request.query.SortNested) {
+      const allSorts = request.query.SortNested.split(",");
+      for (const sort of allSorts) {
+        request.body.nestedOrder.push(sort.split("-"));
       }
     }
 
