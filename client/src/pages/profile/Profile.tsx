@@ -12,7 +12,7 @@ import MainBox from "components/MainBox";
 export default function Profile() {
   const { user } = useAuthContext();
   const [applicantInfo, setApplicantInfo] = React.useState(null);
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading } = useGet();
 
   /*
     Get the applicant's info upon loading the page (and anytime
@@ -36,7 +36,7 @@ export default function Profile() {
   }, [user]);
 
   return (
-    <MainBox>
+    <MainBox isLoading={isLoading}>
       {/* YOU */}
       <UserSection applicantInfo={applicantInfo} />
       {/* EXPERIENCES */}

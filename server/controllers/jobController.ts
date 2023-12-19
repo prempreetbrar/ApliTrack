@@ -1,12 +1,10 @@
-const fs = require("fs");
-const path = require("path");
 const factory = require("./controllerFactory");
 const Job = require("../models/jobModel");
-const errorHandling = require("../utils/errorHandling");
 
 exports.createJob = factory.createOne(Job.Job);
 exports.createJobQual = factory.createOne(Job.JobQualification);
 exports.createJobResp = factory.createOne(Job.JobResponsibility);
+exports.uploadJobPostStorage = factory.uploadStorage("./uploads/jobPosts");
 exports.uploadJobPostFile = factory.uploadFile(
   "./uploads/jobPosts",
   "JobPostFile"
@@ -29,26 +27,4 @@ exports.updateJob = factory.updateInstance(Job.Job);
 exports.getJob = factory.getOne(Job.Job);
 exports.getAllJobs = factory.getAll(Job.Job);
 exports.getAllCompanyJobs = factory.getAll(Job.Job);
-
-exports.addFilterID = errorHandling.catchAsync(
-  async (request, response, next) => {
-    if (!request.body.filter) {
-      request.body.filter = {};
-    }
-
-    request.body.filter.PositionID =
-      request.body.PositionID || request.params.PositionID;
-    next();
-  }
-);
-
-exports.addFilterCompany = errorHandling.catchAsync(
-  async (request, response, next) => {
-    if (!request.body.filter) {
-      request.body.filter = {};
-    }
-
-    request.body.filter.CompName = request.body.CompName;
-    next();
-  }
-);
+exports.addFilterPositionID = factory.addFilter("PositionID");

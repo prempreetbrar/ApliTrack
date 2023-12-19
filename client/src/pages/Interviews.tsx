@@ -34,21 +34,22 @@ import ChipDisplayer from "components/ChipDisplayer";
 import NewEntryDropdownLabel from "components/NewEntryDropdownLabel";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
+import SubBox from "components/SubBox";
 
 export default function Interviews() {
   const { user } = useAuthContext();
   const [interviewInfo, setInterviewInfo] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
     React.useState(false);
   const [selectedIndexToDelete, setSelectedIndexToDelete] =
     React.useState(null);
-  const [fromDate, setFromDate] = React.useState(null);
-  const [toDate, setToDate] = React.useState(null);
+  const [EarliestDate, setEarliestDate] = React.useState(null);
+  const [LatestDate, setToDate] = React.useState(null);
 
   const handleOpenDeleteConfirmationDialog = (index) => {
     setSelectedIndexToDelete(index);
@@ -84,7 +85,7 @@ export default function Interviews() {
     executeHandle(
       "get",
       get,
-      { ...data, fromDate, toDate },
+      { ...data, EarliestDate, LatestDate },
       "http://localhost:3000/api/interviews/my-interviews",
       null,
       false,
@@ -221,7 +222,7 @@ export default function Interviews() {
             <SingleDate
               register={register}
               handleSubmit={handleSubmit}
-              attributeName={"From-Date"}
+              attributeName={"EarliestDate"}
               maxLength={64}
               additionalStyles={{
                 display: "flex",
@@ -233,13 +234,13 @@ export default function Interviews() {
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
               }}
-              date={fromDate}
-              setDate={setFromDate}
+              date={EarliestDate}
+              setDate={setEarliestDate}
             />
             <SingleDate
               register={register}
               handleSubmit={handleSubmit}
-              attributeName={"To-Date"}
+              attributeName={"LatestDate"}
               maxLength={64}
               additionalStyles={{
                 display: "flex",
@@ -251,7 +252,7 @@ export default function Interviews() {
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
               }}
-              date={toDate}
+              date={LatestDate}
               setDate={setToDate}
             />
             <IconButton type="submit">
@@ -261,37 +262,39 @@ export default function Interviews() {
         </FormGroup>
       </form>
 
-      {interviewInfo &&
-        interviewInfo.map((interview, index) => {
-          return (
-            <Interview
-              key={index}
-              interview={interview}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
-            />
-          );
-        })}
-      {user && (
-        <AddNewInterview
-          setInterviewInfo={setInterviewInfo}
-          interviewInfo={interviewInfo}
-        />
-      )}
-      {deleteConfirmationDialogOpen && (
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={
-            interviewInfo[selectedIndexToDelete]?.Stage +
-            " " +
-            interviewInfo[selectedIndexToDelete]?.Date
-          }
-        />
-      )}
+      <SubBox isLoading={getIsLoading}>
+        {interviewInfo &&
+          interviewInfo.map((interview, index) => {
+            return (
+              <Interview
+                key={index}
+                interview={interview}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            );
+          })}
+        {user && (
+          <AddNewInterview
+            setInterviewInfo={setInterviewInfo}
+            interviewInfo={interviewInfo}
+          />
+        )}
+        {deleteConfirmationDialogOpen && (
+          <DeleteConfirmationDialog
+            open={deleteConfirmationDialogOpen}
+            handleClose={handleCloseDeleteConfirmationDialog}
+            handleConfirm={() => handleDelete(selectedIndexToDelete)}
+            itemName={
+              interviewInfo[selectedIndexToDelete]?.Stage +
+              " " +
+              interviewInfo[selectedIndexToDelete]?.Date
+            }
+          />
+        )}
+      </SubBox>
     </MainBox>
   );
 }
@@ -438,11 +441,12 @@ function Interview({
             setDropdownValue={setDropdownValue}
             additionalStyles={{
               marginTop: { xs: "1rem", md: "0rem" },
-              flexGrow: 0.5,
-              width: { xs: "50%", md: "auto" },
+              flexGrow: 1,
+              width: { xs: "100%", sm: "50%" },
             }}
             isDropdownObject
             doNotShowButton
+            additionalAutocompleteStyles={{ width: "100%" }}
           />
           <Button
             onClick={handleSubmit(updateStageorDateorAID)}
@@ -455,8 +459,12 @@ function Interview({
           </Button>
         </Box>
 
-        <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
-          <Box>
+        <Box
+          display="flex"
+          flexDirection={{ xs: "column", sm: "row" }}
+          width="100%"
+        >
+          <Box width={{ xs: "100%", md: "50%" }}>
             <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
               Contacts Attending
             </Typography>
@@ -478,7 +486,7 @@ function Interview({
             />
           </Box>
 
-          <Box>
+          <Box width={{ xs: "100%", md: "50%" }}>
             <Typography sx={{ paddingTop: "2rem" }} fontWeight="bold">
               Jobs Mentioned
             </Typography>
@@ -537,7 +545,7 @@ function InfoSection({
   }, [sectionArray]);
 
   async function handleCreate() {
-    executeHandle(
+    const success = await executeHandle(
       "create",
       create,
       {
@@ -554,6 +562,10 @@ function InfoSection({
       false,
       { ...dropdownValue }
     );
+
+    if (success) {
+      setDropdownValue("");
+    }
   }
 
   async function handleDelete(index) {
@@ -597,12 +609,7 @@ function InfoSection({
         />
       )}
       {isContact && (
-        <Box
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="flex-end"
-        >
+        <Box display="flex" flexDirection="row" alignItems="flex-end">
           <NewEntryDropdown
             entityName={entityName}
             entityAttributeName={entityTargetAttribute}
@@ -613,7 +620,7 @@ function InfoSection({
             createIsLoading={createIsLoading}
             register={register}
             fetchAllOptionsURL={fetchAllOptionsURL}
-            additionalStyles={{ width: "50%" }}
+            additionalStyles={{ width: "100%" }}
             doNotShowButton
             dropdownValue={dropdownValue}
             setDropdownValue={setDropdownValue}
@@ -636,9 +643,7 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { register, getValues, reset, handleSubmit, setValue } = useForm();
   const [Date, setDate] = React.useState(null);
-  const [dropdownValue, setDropdownValue] = React.useState(
-    interviewInfo.Application
-  );
+  const [dropdownValue, setDropdownValue] = React.useState(null);
   const { executeHandle } = useHandleOperation(
     reset,
     setInterviewInfo,
@@ -650,7 +655,13 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
       "create",
       create,
       { ...data, Date, ApplicationID: dropdownValue.ApplicationID },
-      "http://localhost:3000/api/interviews/details"
+      "http://localhost:3000/api/interviews/details",
+      null,
+      false,
+      null,
+      {},
+      false,
+      { Application: dropdownValue }
     );
 
     /*
@@ -659,8 +670,8 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
     */
     if (result) {
       setValue("Stage", "");
-      setValue("Date", "");
-      setValue("ApplicationID", "");
+      setDate(null);
+      setDropdownValue(null);
     }
   }
 
@@ -710,14 +721,18 @@ function AddNewInterview({ setInterviewInfo, interviewInfo }) {
           entityAttributeName2="AName"
           maxCreateLength={64}
           handleSubmit={handleSubmit}
-          actionOnAttribute={null}
           register={register}
           fetchAllOptionsURL="http://localhost:3000/api/applications/my-applications"
-          additionalStyles={{ width: "50%", marginTop: "1rem" }}
-          doNotShowButton
           dropdownValue={dropdownValue}
           setDropdownValue={setDropdownValue}
+          additionalStyles={{
+            marginTop: { xs: "1rem" },
+            flexGrow: 1,
+            width: { xs: "100%", md: "50%" },
+          }}
           isDropdownObject
+          doNotShowButton
+          additionalAutocompleteStyles={{ width: "100%" }}
         />
 
         <Button

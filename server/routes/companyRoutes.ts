@@ -7,18 +7,22 @@ const router = express.Router();
 
 router
   .route("")
-  .get(companyController.addSearch, companyController.getAllCompanies)
+  .get(
+    companyController.addSearchCompanyName,
+    companyController.addSortCompanyName,
+    companyController.getAllCompanies
+  )
   .post(authController.checkIfLoggedIn, companyController.createCompany)
   .patch(authController.checkIfLoggedIn, companyController.updateCompany)
   .delete(
     authController.checkIfLoggedIn,
-    authController.restrictTo(authController.DELETE_ONLY),
+    authController.restrictTo(authController.GET_AND_DELETE),
     companyController.deleteCompany
   );
 
 router
   .route("/company")
-  .get(companyController.addFilter, companyController.getCompany);
+  .get(companyController.addFilterCompanyName, companyController.getCompany);
 
 router.use("/company/jobs", jobRouter);
 

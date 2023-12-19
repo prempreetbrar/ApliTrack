@@ -3,19 +3,14 @@ import React from "react";
 import { Box } from "@mui/material";
 import { CircularProgress } from "@mui/joy";
 
-export default function MainBox({ isLoading, children }) {
+export default function SubBox({ isLoading, children }) {
   return (
     <Box
+      width="100%"
       display="flex"
       flexDirection="column"
       alignItems="center"
-      sx={{
-        minHeight: "100vh",
-        height: "100%",
-        padding: "2rem",
-        backgroundColor: "rgb(249, 250, 251)",
-        width: "100%",
-      }}
+      justifyContent="center"
     >
       {isLoading && <CircularProgress />}
       {!isLoading && children}

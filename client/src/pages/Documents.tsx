@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import MainBox from "components/MainBox";
+import SubBox from "components/SubBox";
 import SingleForm from "components/SingleForm";
 import useAuthContext from "hooks/useAuthContext";
 import useHandleOperation from "hooks/useHandleOperation";
@@ -30,7 +31,7 @@ export default function Documents() {
   const [documents, setDocuments] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -121,7 +122,7 @@ export default function Documents() {
               <Box
                 display="flex"
                 sx={{
-                  flexDirection: { xs: "column", md: "row" },
+                  flexDirection: { xs: "column", lg: "row" },
                 }}
                 justifyContent="center"
                 alignItems="center"
@@ -136,7 +137,7 @@ export default function Documents() {
                     flexDirection: { xs: "column", md: "row" },
                     justifyContent: "center",
                     alignItems: "center",
-                    width: { xs: "100%", md: "50%" },
+                    width: { xs: "100%", lg: "50%" },
                   }}
                 >
                   <Box
@@ -168,9 +169,10 @@ export default function Documents() {
 
                 <Box
                   display="flex"
-                  flexDirection="row"
+                  flexDirection={{ xs: "column", sm: "row" }}
                   alignItems="center"
                   justifyContent="center"
+                  marginTop={{ xs: "1rem", lg: "0rem" }}
                 >
                   <Typography
                     variant="h3"
@@ -189,12 +191,27 @@ export default function Documents() {
                       display: "flex",
                       flexDirection: "row",
                       alignItems: "center",
-                      marginBottom: { xs: "0rem" },
-                      marginTop: { xs: "1rem", xl: "0rem" },
+                      marginBottom: { xs: "1rem", sm: "0rem" },
+                      marginTop: { xs: "1rem", sm: "0rem" },
                       flexShrink: 0,
                     }}
+                    additionalFieldStyles={{
+                      marginRight: { xs: "0rem", sm: "1rem" },
+                    }}
                     attributeName={"DocFileName"}
-                    allowUnauthenticated
+                  />
+                  <SingleForm
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: { xs: "0rem" },
+                      marginTop: { xl: "0rem" },
+                      flexShrink: 0,
+                    }}
+                    attributeName={"DocType"}
                   />
                   <IconButton type="submit">
                     <SearchIcon color="primary" />
@@ -203,27 +220,33 @@ export default function Documents() {
               </Box>
             </FormControl>
           </form>
-          {documents?.map((document, index) => (
-            <Document
-              key={index}
-              document={document}
-              setDocuments={setDocuments}
+
+          <SubBox isLoading={getIsLoading}>
+            {documents?.map((document, index) => (
+              <Document
+                key={index}
+                document={document}
+                setDocuments={setDocuments}
+                documents={documents}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            ))}
+            <NewDocumentForm
               documents={documents}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
+              setDocuments={setDocuments}
             />
-          ))}
-          <NewDocumentForm documents={documents} setDocuments={setDocuments} />
-          {deleteConfirmationDialogOpen && (
-            <DeleteConfirmationDialog
-              open={deleteConfirmationDialogOpen}
-              handleClose={handleCloseDeleteConfirmationDialog}
-              handleConfirm={() => handleDelete(selectedIndexToDelete)}
-              itemName={documents[selectedIndexToDelete].DocFileName}
-            />
-          )}
+            {deleteConfirmationDialogOpen && (
+              <DeleteConfirmationDialog
+                open={deleteConfirmationDialogOpen}
+                handleClose={handleCloseDeleteConfirmationDialog}
+                handleConfirm={() => handleDelete(selectedIndexToDelete)}
+                itemName={documents[selectedIndexToDelete].DocFileName}
+              />
+            )}
+          </SubBox>
         </MainBox>
       )}
     </>
@@ -358,10 +381,15 @@ function Document({
           width="100%"
           sx={{ flexDirection: { xs: "column", md: "row" } }}
         >
-          <Box display="flex" flexDirection="column">
+          <Box
+            display="flex"
+            flexDirection="column"
+            width={{ xs: "100%", md: "50%" }}
+          >
             <Box
               display="flex"
-              sx={{ flexDirection: { xs: "column", md: "row" } }}
+              sx={{ flexDirection: { xs: "column" } }}
+              width="100%"
             >
               <SingleForm
                 register={register}
@@ -402,6 +430,8 @@ function Document({
                   width: "100%",
                 }}
                 isTextArea
+                textAreaStyles={{ width: "100%" }}
+                formControlStyles={{ width: "100%" }}
               />
             </Box>
           </Box>
@@ -599,6 +629,7 @@ function NewDocumentForm({ documents, setDocuments }) {
                         width: "100%",
                       }}
                       isTextArea
+                      formControlStyles={{ width: "100%" }}
                     />
                   </Box>
                 </Box>

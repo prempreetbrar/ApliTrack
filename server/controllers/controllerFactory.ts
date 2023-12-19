@@ -1,11 +1,11 @@
-const path = require("path");
+import { Op } from "sequelize";
+
 const multer = require("multer");
 const fs = require("fs");
 const util = require("util");
 const readdir = util.promisify(fs.readdir);
 
 const errorHandling = require("../utils/errorHandling");
-const APIFeatures = require("../utils/apiFeatures");
 
 /*
   We realize that a lot of the time, creation involves
@@ -243,7 +243,7 @@ function getUniqueAttributes(Model) {
 }
 
 exports.uploadStorage = (destination) => {
-  return multer.diskStorage({
+  const storage = multer.diskStorage({
     destination,
     filename: function (req, file, cb) {
       fs.readdir(destination, (err, files) => {
@@ -256,6 +256,10 @@ exports.uploadStorage = (destination) => {
         cb(null, fileName);
       });
     },
+  });
+
+  return multer({
+    storage,
   });
 };
 
@@ -287,4 +291,186 @@ exports.uploadFile = (directoryWhereFilesStored, nameOfFileColumn) => {
     }
   );
   return controllerFunction;
+};
+
+exports.addFilter = (...AttributeNames) => {
+  return errorHandling.catchAsync(async (request, response, next) => {
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    for (const AttributeName of AttributeNames) {
+      if (request.body[AttributeName]) {
+        request.body.filter[AttributeName] = request.body[AttributeName];
+      } else if (request.query[AttributeName]) {
+        request.body.filter[AttributeName] = request.query[AttributeName];
+      } else if (request.params[AttributeName]) {
+        request.body.filter[AttributeName] = request.params[AttributeName];
+      }
+    }
+
+    next();
+  });
+};
+
+exports.addSearch = (...AttributeNamesAndTypes) => {
+  return errorHandling.catchAsync(async (request, response, next) => {
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    if (!request.body.nestedFilter) {
+      request.body.nestedFilter = {};
+    }
+
+    for (const AttributeNameAndType of AttributeNamesAndTypes) {
+      const [Name, Type, Table] = AttributeNameAndType;
+      if (Type == "Range") {
+        if (
+          request.query["Lowest" + Name] &&
+          request.query["Highest" + Name] &&
+          request.query["Lowest" + Name] !== "" &&
+          request.query["Highest" + Name] !== ""
+        ) {
+          const filter = {
+            [Op.between]: [
+              request.query["Lowest" + Name],
+              request.query["Highest" + Name],
+            ],
+          };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
+        } else if (
+          request.query["Lowest" + Name] &&
+          request.query["Lowest" + Name] !== ""
+        ) {
+          const filter = {
+            [Op.gte]: request.query["Lowest" + Name],
+          };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
+        } else if (
+          request.query["Highest" + Name] &&
+          request.query["Highest" + Name] !== ""
+        ) {
+          const filter = {
+            [Op.lte]: request.query["Highest" + Name],
+          };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
+        }
+      }
+
+      if (Type == "DateRange") {
+        if (
+          request.query["Earliest" + Name] &&
+          request.query["Latest" + Name] &&
+          request.query["Earliest" + Name] !== "" &&
+          request.query["Latest" + Name] !== ""
+        ) {
+          const filter = {
+            [Op.between]: [
+              request.query["Earliest" + Name],
+              request.query["Latest" + Name],
+            ],
+          };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
+        } else if (
+          request.query["Earliest" + Name] &&
+          request.query["Earliest" + Name] !== ""
+        ) {
+          const filter = {
+            [Op.gte]: request.query["Earliest" + Name],
+          };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
+        } else if (
+          request.query["Latest" + Name] &&
+          request.query["Latest" + Name] !== ""
+        ) {
+          const filter = {
+            [Op.lte]: request.query["Latest" + Name],
+          };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
+        }
+      }
+
+      if (Type === "String") {
+        if (request.body[Name] || request.query[Name]) {
+          const filter = {
+            [Op.like]: `%${request.body[Name] || request.query[Name]}%`,
+          };
+
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
+        }
+      }
+    }
+
+    next();
+  });
+};
+
+exports.addSort = () => {
+  return errorHandling.catchAsync(async (request, response, next) => {
+    if (!request.body.order) {
+      request.body.order = [];
+    }
+    if (!request.body.nestedOrder) {
+      request.body.nestedOrder = [];
+    }
+
+    if (request.query.Sort) {
+      const allSorts = request.query.Sort.split(",");
+      for (const sort of allSorts) {
+        request.body.order.push(sort.split("-"));
+      }
+    }
+
+    if (request.query.SortNested) {
+      const allSorts = request.query.SortNested.split(",");
+      for (const sort of allSorts) {
+        request.body.nestedOrder.push(sort.split("-"));
+      }
+    }
+
+    next();
+  });
 };

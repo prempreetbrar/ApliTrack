@@ -1,8 +1,5 @@
-import { Op } from "sequelize";
-
 const factory = require("./controllerFactory");
 const Applicant = require("../models/applicantModel");
-const errorHandling = require("../utils/errorHandling");
 
 exports.createApplicant = factory.createOne(Applicant.Applicant);
 exports.createCertification = factory.createOne(
@@ -75,48 +72,5 @@ exports.updateApplicantTracksJob = factory.updateInstance(
   THAT is why we invoke next. We say "hey Express, I'm adding this filter. Now, go to the next function after me
   (which we'll make exports.getApplicant in our routes)." The next function will then have access to the filter.
 */
-exports.addFilter = errorHandling.catchAsync(
-  async (request, response, next) => {
-    if (!request.body.filter) {
-      request.body.filter = {};
-    }
-    request.body.filter.Username = request.body.Username;
-    next();
-  }
-);
-
-exports.addTracksFilter = errorHandling.catchAsync(
-  async (request, response, next) => {
-    if (!request.body.filter) {
-      request.body.filter = {};
-    }
-    if (
-      request.query.EarliestDateToApply &&
-      request.query.LatestDateToApply &&
-      request.query.EarliestDateToApply !== "MM/DD/YYYY" &&
-      request.query.LatestDateToApply !== "MM/DD/YYYY"
-    ) {
-      request.body.filter.DateToApply = {
-        [Op.between]: [
-          request.query.EarliestDateToApply,
-          request.query.LatestDateToApply,
-        ],
-      };
-    } else if (
-      request.query.EarliestDateToApply &&
-      request.query.EarliestDateToApply !== "MM/DD/YYYY"
-    ) {
-      request.body.filter.DateToApply = {
-        [Op.gte]: request.query.EarliestDateToApply,
-      };
-    } else if (
-      request.query.LatestDateToApply &&
-      request.query.LatestDateToApply !== "MM/DD/YYYY"
-    ) {
-      request.body.filter.DateToApply = {
-        [Op.lte]: request.query.LatestDateToApply,
-      };
-    }
-    next();
-  }
-);
+exports.addFilterUsername = factory.addFilter("Username");
+exports.addSearchDateToApply = factory.addSearch(["DateToApply", "DateRange"]);

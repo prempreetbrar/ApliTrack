@@ -20,7 +20,7 @@ router.use(authController.checkIfLoggedIn);
 router.delete("/delete-applicant", applicantController.deleteApplicant);
 router.get(
   "/profile",
-  applicantController.addFilter,
+  applicantController.addFilterUsername,
   applicantController.getApplicant
 );
 
@@ -56,8 +56,9 @@ router
 router
   .route("/known-contacts")
   .get(
-    applicantController.addFilter,
-    contactController.addFilter,
+    applicantController.addFilterUsername,
+    contactController.addFilterContactID,
+    contactController.addSearchNameContactDate,
     applicantController.getApplicantKnowsContact
   )
   .post(applicantController.createApplicantKnowsContact)
@@ -67,8 +68,8 @@ router
 router
   .route("/tracks-job")
   .get(
-    applicantController.addFilter,
-    applicantController.addTracksFilter,
+    applicantController.addFilterUsername,
+    applicantController.addSearchDateToApply,
     applicantController.getApplicantTracksJob
   )
   .post(applicantController.createApplicantTracksJob)

@@ -3,40 +3,29 @@ const referralController = require("../controllers/referralController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
+router.use(authController.checkIfLoggedIn);
 
 router
   .route("/details")
-  .get(referralController.filterID, referralController.getReferral);
+  .get(referralController.addFilterID, referralController.getReferral);
 
 router
   .route("")
   .get(
-    authController.checkIfLoggedIn,
-    referralController.addFilter,
+    referralController.addFilterApplicantAndContact,
     referralController.getAllReferrals
   )
   .post(
-    authController.checkIfLoggedIn,
-    referralController.addFilter,
+    referralController.addFilterApplicantAndContact,
     referralController.createReferral
   )
   .patch(
-    authController.checkIfLoggedIn,
-    referralController.addFilter,
+    referralController.addFilterApplicantAndContact,
     referralController.updateReferral
   )
   .delete(
-    authController.checkIfLoggedIn,
-    referralController.addFilter,
+    referralController.addFilterApplicantAndContact,
     referralController.deleteReferral
   );
-
-// router
-//   .route("/my-referrals")
-//   .get(
-//     authController.checkIfLoggedIn,
-//     referralController.filterApplicant,
-//     referralController.getAllApplicantReferrals
-//   );
 
 module.exports = router;

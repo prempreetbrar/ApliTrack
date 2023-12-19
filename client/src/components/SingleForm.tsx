@@ -1,6 +1,7 @@
 import { FormControl, FormLabel, Textarea } from "@mui/joy";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Button, Box, TextareaAutosize } from "@mui/material";
 import useAuthContext from "hooks/useAuthContext";
+import throttle from "lodash/throttle";
 import React from "react";
 
 export default function SingleForm({
@@ -15,13 +16,15 @@ export default function SingleForm({
   isTextArea,
   allowUnauthenticated,
   attributeLabel,
+  textAreaStyles,
+  formControlStyles,
 }) {
   const { user } = useAuthContext();
 
   return (
     <Box sx={{ ...additionalStyles }}>
       {isTextArea && (
-        <FormControl>
+        <FormControl sx={{ ...formControlStyles }}>
           <FormLabel>{attributeLabel || attributeName}</FormLabel>
           <Textarea
             {...register(attributeName)}
@@ -32,6 +35,7 @@ export default function SingleForm({
             }}
             minRows={3}
             disabled={!user && !allowUnauthenticated}
+            style={{ ...textAreaStyles }}
           />
         </FormControl>
       )}

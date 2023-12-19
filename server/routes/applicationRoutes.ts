@@ -10,13 +10,16 @@ router
   .route("")
   .get(
     applicationController.addFilterApplicant,
-    applicationController.addFilter,
+    applicationController.addSearchNameStatusCategory,
     applicationController.getAllApplications
   );
 
 router
   .route("/details")
-  .get(applicationController.addFilterID, applicationController.getApplication)
+  .get(
+    applicationController.addFilterApplication,
+    applicationController.getApplication
+  )
   .post(applicationController.createApplication)
   .delete(applicationController.deleteApplication)
   .patch(applicationController.updateApplication);
@@ -31,7 +34,7 @@ router
 router
   .route("/URL")
   .get(
-    applicationController.addFilterID,
+    applicationController.addFilterApplication,
     applicationController.getAllApplicationURL
   )
   .post(applicationController.createApplicationURL)
@@ -40,7 +43,7 @@ router
 router
   .route("/category")
   .get(
-    applicationController.addFilter,
+    applicationController.addSearchNameStatusCategory,
     applicationController.getAllApplicationCategories
   )
   .post(applicationController.createApplicationCategory)

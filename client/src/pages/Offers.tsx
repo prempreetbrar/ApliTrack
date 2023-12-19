@@ -9,6 +9,7 @@ import useHandleOperation from "hooks/useHandleOperation";
 import { useGet, useDelete, useCreate, useUpdate } from "hooks/useHttpMethod";
 
 import MainBox from "components/MainBox";
+import SubBox from "components/SubBox";
 import { Notes, Person, Delete } from "@mui/icons-material";
 import {
   Box,
@@ -26,7 +27,7 @@ import {
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import SearchIcon from "@mui/icons-material/Search";
 
-import { DELETE_ONLY } from "Constants";
+import { GET_AND_DELETE } from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import MainPaper from "components/MainPaper";
 import NameForm from "components/NameForm";
@@ -39,7 +40,7 @@ export default function Offers() {
   const [offers, setOffers] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -124,8 +125,6 @@ export default function Offers() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  console.log(offers);
-
   return (
     <>
       {user && (
@@ -199,6 +198,16 @@ export default function Offers() {
                     paddingRight="2rem"
                   >
                     <FormControlLabel
+                      value="Compensation-DESC"
+                      control={<Radio {...register("Sort")} />}
+                      label="Sort by Compensation Descending"
+                      labelPlacement="start"
+                      sx={{
+                        marginTop: { xs: "1rem", sm: "0" },
+                        width: "100%",
+                      }}
+                    />
+                    <FormControlLabel
                       value="ResponseDeadline-DESC"
                       control={<Radio {...register("Sort")} />}
                       label="Sort by Response Deadline Descending"
@@ -213,16 +222,6 @@ export default function Offers() {
                       value="StartDate-DESC"
                       control={<Radio {...register("Sort")} />}
                       label="Sort by Start Date Descending"
-                      labelPlacement="start"
-                      sx={{
-                        marginTop: { xs: "1rem", sm: "0" },
-                        width: "100%",
-                      }}
-                    />
-                    <FormControlLabel
-                      value="Compensation-DESC"
-                      control={<Radio {...register("Sort")} />}
-                      label="Sort by Compensation Descending"
                       labelPlacement="start"
                       sx={{
                         marginTop: { xs: "1rem", sm: "0" },
@@ -373,32 +372,35 @@ export default function Offers() {
               </IconButton>
             </Box>
           </form>
-          {offers?.map((offer, index) => (
-            <Offer
-              key={index}
-              offer={offer}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
-            />
-          ))}
-          <NewOfferForm offers={offers} setOffers={setOffers} />
-          {deleteConfirmationDialogOpen && (
-            <DeleteConfirmationDialog
-              open={deleteConfirmationDialogOpen}
-              handleClose={handleCloseDeleteConfirmationDialog}
-              handleConfirm={() => handleDelete(selectedIndexToDelete)}
-              itemName={
-                "your Offer from " +
-                offers[selectedIndexToDelete]?.Job.CompanyName +
-                " for the " +
-                offers[selectedIndexToDelete]?.Job.PositionName +
-                ` [${offers[selectedIndexToDelete]?.Job.PositionID}] ` +
-                " Position"
-              }
-            />
-          )}
+
+          <SubBox isLoading={getIsLoading}>
+            {offers?.map((offer, index) => (
+              <Offer
+                key={index}
+                offer={offer}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            ))}
+            <NewOfferForm offers={offers} setOffers={setOffers} />
+            {deleteConfirmationDialogOpen && (
+              <DeleteConfirmationDialog
+                open={deleteConfirmationDialogOpen}
+                handleClose={handleCloseDeleteConfirmationDialog}
+                handleConfirm={() => handleDelete(selectedIndexToDelete)}
+                itemName={
+                  "your Offer from " +
+                  offers[selectedIndexToDelete]?.Job.CompanyName +
+                  " for the " +
+                  offers[selectedIndexToDelete]?.Job.PositionName +
+                  ` [${offers[selectedIndexToDelete]?.Job.PositionID}] ` +
+                  " Position"
+                }
+              />
+            )}
+          </SubBox>
         </MainBox>
       )}
     </>
@@ -632,6 +634,7 @@ function Offer({
                 width: "100%",
               }}
               isTextArea
+              formControlStyles={{ width: "100%" }}
             />
           </Box>
 
@@ -645,7 +648,7 @@ function Offer({
             }}
             flexGrow="1"
           >
-            <Typography>Job Posting</Typography>
+            <Typography>Offer Letter</Typography>
             {currentlyUploadedFileName && (
               <iframe
                 src={`http://localhost:3000/uploads/offers/${currentlyUploadedFileName}`}
@@ -917,6 +920,7 @@ function NewOfferForm({ offers, setOffers }) {
                       width: "100%",
                     }}
                     isTextArea
+                    formControlStyles={{ width: "100%" }}
                   />
                 </Box>
 
@@ -930,7 +934,7 @@ function NewOfferForm({ offers, setOffers }) {
                   }}
                   flexGrow="1"
                 >
-                  <Typography>Job Posting</Typography>
+                  <Typography>Offer Letter</Typography>
 
                   <Input
                     sx={{ marginTop: "1rem" }}

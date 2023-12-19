@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const sequelize = require("../server");
 
@@ -26,6 +27,15 @@ const User = sequelize.define(
         },
       },
       comment: "Ensuring that the entered password equals the confirmed one.",
+    },
+    PasswordLastChangedAt: {
+      type: DataTypes.DATE,
+    },
+    PasswordResetToken: {
+      type: DataTypes.STRING,
+    },
+    PasswordResetExpires: {
+      type: DataTypes.DATE,
     },
     Fname: {
       type: DataTypes.STRING(16),
@@ -88,6 +98,7 @@ User.beforeSave(async (user, options) => {
   if (user.Password && user.PasswordConfirm) {
     user.Password = await bcrypt.hash(user.Password, 12);
     user.PasswordConfirm = undefined;
+    user.PasswordLastChangedAt = (new Date() as any) - 2000;
   }
 });
 
@@ -96,6 +107,27 @@ User.prototype.isPasswordCorrect = async function (
   actualPassword
 ) {
   return await bcrypt.compare(candidatePassword, actualPassword);
+};
+
+User.prototype.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  this.PasswordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.PasswordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
+};
+
+User.prototype.hasPasswordChanged = function (JWTTimeStamp) {
+  if (!this.PasswordLastChangedAt) return false;
+
+  const passwordChangedAtSeconds = parseInt(
+    (Date.parse(this.PasswordLastChangedAt) / 1000) as any
+  );
+
+  return JWTTimeStamp < passwordChangedAtSeconds;
 };
 
 exports.User = User;
@@ -110,11 +142,12 @@ async function createAdminUser() {
       AdminFlag: true,
     });
 
-    adminUser.PermissionLevel = authController.DELETE_ONLY;
+    adminUser.PermissionLevel =
+      authController.GET_AND_DELETE_AND_CREATE_AND_UPDATE;
     await adminUser.save();
 
     const newApplicant = await Applicant.create({
-      Username: "admin@admin.com",
+      Username: process.env.ADMIN_USERNAME,
     });
 
     console.log("Admin user created:", adminUser);

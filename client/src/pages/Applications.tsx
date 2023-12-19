@@ -30,10 +30,11 @@ import SingleForm from "components/SingleForm";
 import Person from "components/Person";
 import NewEntryDropdown from "components/NewEntryDropdown";
 import SingleDate from "components/SingleDate";
-import { DELETE_ONLY } from "Constants";
+import { GET_AND_DELETE } from "Constants";
 import DeleteConfirmationDialog from "components/DeleteConfirmationDialog";
 import MainBox from "components/MainBox";
 import ApplicationForm from "components/ApplicationForm";
+import SubBox from "components/SubBox";
 
 export default function Applications() {
   const { user } = useAuthContext();
@@ -44,7 +45,7 @@ export default function Applications() {
   const [applicationsInfo, setApplicationsInfo] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
-  const { executeRequest: get } = useGet();
+  const { executeRequest: get, isLoading: getIsLoading } = useGet();
   const { executeRequest: deleteInstance, isLoading: deleteIsLoading } =
     useDelete();
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
@@ -111,6 +112,7 @@ export default function Applications() {
     const fetchApplicationsInfo = async () => {
       const response = await get({}, "http://localhost:3000/api/applications");
 
+      console.log(response.application);
       setApplicationsInfo(response.application);
     };
 
@@ -161,34 +163,36 @@ export default function Applications() {
           </IconButton>
         </Box>
       </form>
-      {applicationsInfo &&
-        applicationsInfo.map((application, index) => {
-          return (
-            <Application
-              key={index}
-              application={application}
-              index={index}
-              handleOpenDeleteConfirmationDialog={
-                handleOpenDeleteConfirmationDialog
-              }
-            />
-          );
-        })}
-      {user && (
-        <AddNewApplication
-          setApplicationsInfo={setApplicationsInfo}
-          applicationsInfo={applicationsInfo}
-          ApplicantUsername={user?.Username}
-        />
-      )}
-      {deleteConfirmationDialogOpen && (
-        <DeleteConfirmationDialog
-          open={deleteConfirmationDialogOpen}
-          handleClose={handleCloseDeleteConfirmationDialog}
-          handleConfirm={() => handleDelete(selectedIndexToDelete)}
-          itemName={applicationsInfo[selectedIndexToDelete]?.ApplicationID}
-        />
-      )}
+      <SubBox isLoading={getIsLoading}>
+        {applicationsInfo &&
+          applicationsInfo.map((application, index) => {
+            return (
+              <Application
+                key={index}
+                application={application}
+                index={index}
+                handleOpenDeleteConfirmationDialog={
+                  handleOpenDeleteConfirmationDialog
+                }
+              />
+            );
+          })}
+        {user && (
+          <AddNewApplication
+            setApplicationsInfo={setApplicationsInfo}
+            applicationsInfo={applicationsInfo}
+            ApplicantUsername={user?.Username}
+          />
+        )}
+        {deleteConfirmationDialogOpen && (
+          <DeleteConfirmationDialog
+            open={deleteConfirmationDialogOpen}
+            handleClose={handleCloseDeleteConfirmationDialog}
+            handleConfirm={() => handleDelete(selectedIndexToDelete)}
+            itemName={applicationsInfo[selectedIndexToDelete]?.ApplicationID}
+          />
+        )}
+      </SubBox>
     </MainBox>
   );
 }

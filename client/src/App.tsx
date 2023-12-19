@@ -19,7 +19,10 @@ import Companies from "pages/Companies";
 import Applications from "pages/Applications";
 import Offers from "pages/Offers";
 import Documents from "pages/Documents";
+import Users from "pages/Users";
 import { Box, CircularProgress } from "@mui/joy";
+import ForgotPassword from "pages/auth/ForgotPassword";
+import ResetPassword from "pages/auth/ResetPassword";
 
 function App() {
   const { user, isLoading } = useAuthContext();
@@ -31,6 +34,7 @@ function App() {
     );
   }
 
+  console.log(user);
   /*
     If the user isn't logged in, then navigate them to the login page on a protected route.
     Otherwise, if they are logged in, let them see the protected route.
@@ -62,6 +66,26 @@ function App() {
           }
         />
         <Route
+          path="/auth/forgot-password"
+          element={
+            !user ? (
+              <ForgotPassword />
+            ) : (
+              <Navigate to="/applicants/applicant/profile" />
+            )
+          }
+        />
+        <Route
+          path="/auth/reset-password/:Username/:Token"
+          element={
+            !user ? (
+              <ResetPassword />
+            ) : (
+              <Navigate to="/applicants/applicant/profile" />
+            )
+          }
+        />
+        <Route
           path="/applicants/applicant/profile"
           element={user ? <Profile /> : <Navigate to="/auth/login" />}
         />
@@ -79,6 +103,16 @@ function App() {
         <Route
           path="/applicants/applicant/applications"
           element={user ? <Applications /> : <Navigate to="/auth/login" />}
+        />
+        <Route
+          path="/users"
+          element={
+            user && user.data.user.AdminFlag ? (
+              <Users />
+            ) : (
+              <Navigate to="/auth/login" />
+            )
+          }
         />
       </Routes>
     </Router>

@@ -21,7 +21,13 @@ export default function Navbar() {
   const [currentPage, setCurrentPage] = React.useState("");
 
   React.useEffect(() => {
-    setCurrentPage(location.pathname.split("/").pop().toUpperCase());
+    if (location.pathname.split("/")[2] === "reset-password") {
+      setCurrentPage("RESET PASSWORD");
+    } else {
+      setCurrentPage(
+        location.pathname.split("/").pop().split("-").join(" ").toUpperCase()
+      );
+    }
   }, [location]);
 
   const handleMenuClick = (event) => {
@@ -197,6 +203,11 @@ export default function Navbar() {
         <MenuItem onClick={() => handleMenuItemClick("/companies")}>
           Companies
         </MenuItem>
+        {user && user.data.user.AdminFlag && (
+          <MenuItem onClick={() => handleMenuItemClick("/users")}>
+            Users
+          </MenuItem>
+        )}
       </Menu>
     </Box>
   );

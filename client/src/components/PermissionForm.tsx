@@ -2,12 +2,13 @@ import { Box, TextField, Button } from "@mui/material";
 import useAuthContext from "hooks/useAuthContext";
 import React from "react";
 
-export default function NameForm({
+export default function PermissionForm({
   register,
   handleSubmit,
   actionOnAttribute,
   isLoading,
   additionalStyles,
+  additionalLnameStyles,
   buttonName,
   allowUnauthenticated,
 }) {
@@ -17,30 +18,9 @@ export default function NameForm({
     <Box display="flex" alignItems="center" sx={{ ...additionalStyles }}>
       <TextField
         InputLabelProps={{ shrink: true }}
-        {...register("AName")}
-        label="AName"
+        {...register("PermissionLevel")}
+        label="Permission Level"
         sx={{
-          marginTop: { xs: "1rem", sm: "0rem" },
-          marginRight: "1rem",
-        }}
-        disabled={!user && !allowUnauthenticated}
-      />
-      <TextField
-        InputLabelProps={{ shrink: true }}
-        {...register("Status")}
-        label="Status"
-        sx={{
-          marginRight: "1rem",
-          marginTop: { xs: "1rem", sm: "0rem" },
-        }}
-        disabled={!user && !allowUnauthenticated}
-      />
-      <TextField
-        InputLabelProps={{ shrink: true }}
-        {...register("Category")}
-        label="Category"
-        sx={{
-          marginTop: { xs: "1rem", sm: "0rem" },
           marginRight: "1rem",
         }}
         disabled={!user && !allowUnauthenticated}

@@ -38,10 +38,14 @@ exports.preventPasswordOrAdminChange = errorHandling.catchAsync(
   }
 );
 exports.updateUser = factory.updateInstance(User);
+exports.getAllUsers = factory.getAll(User);
+exports.createUser = factory.createOne(User);
+exports.deleteUser = factory.deleteInstance(User);
 
-exports.addFilter = errorHandling.catchAsync(
-  async (request, response, next) => {
-    request.body.filter = { Username: request.body.Username };
-    next();
-  }
+exports.addFilterUser = factory.addFilter("Username");
+exports.addSortUser = factory.addSort();
+exports.addSearchUsernameName = factory.addSearch(
+  ["Username", "String"],
+  ["Fname", "String"],
+  ["Lname", "String"]
 );
