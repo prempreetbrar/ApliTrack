@@ -11,6 +11,7 @@ router
   .get(
     applicationController.addFilterApplicant,
     applicationController.addSearchNameStatusCategory,
+    applicationController.addSort,
     applicationController.getAllApplications
   );
 

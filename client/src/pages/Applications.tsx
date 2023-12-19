@@ -11,6 +11,8 @@ import {
   FormControlLabel,
   IconButton,
   FormGroup,
+  Radio,
+  RadioGroup,
   Switch,
 } from "@mui/material";
 
@@ -42,6 +44,7 @@ export default function Applications() {
     /* declare state variables */
   }
   const [applicationsInfo, setApplicationsInfo] = React.useState([]);
+  const [categoriesInfo, setCategoriesInfo] = React.useState([]);
   const { register, handleSubmit, setValue } = useForm();
 
   const { executeRequest: get, isLoading: getIsLoading } = useGet();
@@ -51,6 +54,8 @@ export default function Applications() {
     React.useState(false);
   const [selectedIndexToDelete, setSelectedIndexToDelete] =
     React.useState(null);
+  const [EarliestDateSubmitted, setEarliestDate] = React.useState(null);
+  const [LatestDateSubmitted, setToDate] = React.useState(null);
 
   const handleOpenDeleteConfirmationDialog = (index) => {
     setSelectedIndexToDelete(index);
@@ -91,8 +96,26 @@ export default function Applications() {
       get,
       {
         ...data,
+        EarliestDateSubmitted,
+        LatestDateSubmitted,
       },
       "http://localhost:3000/api/applications",
+      null,
+      false,
+      null,
+      {},
+      false
+    );
+  }
+
+  async function handleGetCategories(data) {
+    executeHandle(
+      "get",
+      get,
+      {
+        ...data,
+      },
+      "http://localhost:3000/api/applications/category",
       null,
       false,
       null,
@@ -122,6 +145,52 @@ export default function Applications() {
   return (
     <MainBox isLoading={getIsLoading}>
       <form onSubmit={handleSubmit(handleGet)}>
+        <Box
+          display="flex"
+          sx={{
+            flexDirection: { xs: "column", sm: "row", xl: "column" },
+          }}
+          alignItems="center"
+          justifyContent="center"
+          marginBottom="1rem"
+        >
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="CompanyName-ASC"
+              name="radio-buttons-group"
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+              }}
+            >
+              <FormControlLabel
+                  value="AName-ASC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort by Application Name Ascending"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value="AName-DESC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort by Application Name Descending"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value="DateSubmitted-ASC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort by Earliest Submitted Date"
+                  labelPlacement="start"
+                />
+                <FormControlLabel
+                  value="DateSubmitted-DESC"
+                  control={<Radio {...register("Sort")} />}
+                  label="Sort by Latest Submitted Date"
+                  labelPlacement="start"
+                />
+            </RadioGroup>
+          </FormControl>
+        </Box>
         <Box
           display="flex"
           sx={{
@@ -155,6 +224,42 @@ export default function Applications() {
                 marginTop: { xs: "1rem", sm: "0" },
               }}
               allowUnauthenticated
+            />
+            <SingleDate
+              register={register}
+              handleSubmit={handleSubmit}
+              attributeName={"EarliestDateSubmitted"}
+              maxLength={64}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: { xs: "0rem" },
+                marginTop: { xs: "1rem", sm: "0rem" },
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+              date={EarliestDateSubmitted}
+              setDate={setEarliestDate}
+            />
+            <SingleDate
+              register={register}
+              handleSubmit={handleSubmit}
+              attributeName={"LatestDateSubmitted"}
+              maxLength={64}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: { xs: "0rem" },
+                marginTop: { xs: "1rem", sm: "0rem" },
+              }}
+              additionalFieldStyles={{
+                marginRight: { xs: "1rem" },
+              }}
+              date={LatestDateSubmitted}
+              setDate={setToDate}
             />
           </Box>
           <IconButton type="submit">
