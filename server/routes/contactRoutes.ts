@@ -6,7 +6,10 @@ const router = express.Router();
 
 router
   .route("")
-  .get(contactController.addFilter, contactController.getAllContacts)
+  .get(
+    contactController.addSearchNameContactDate,
+    contactController.getAllContacts
+  )
   .post(authController.checkIfLoggedIn, contactController.createContact)
   .delete(
     authController.checkIfLoggedIn,
@@ -14,10 +17,6 @@ router
     contactController.deleteContact
   )
   .patch(authController.checkIfLoggedIn, contactController.updateContact);
-
-router
-  .route("/contact")
-  .get(contactController.addFilter, contactController.getContact);
 
 router
   .route("/phones")
@@ -45,8 +44,15 @@ router
   );
 
 //TODO: CHECK
-router.route("/attends")
-.post(authController.checkIfLoggedIn, contactController.createContactAttendsInterview)
-.delete(authController.checkIfLoggedIn, contactController.deleteContactAttendsInterview);
+router
+  .route("/attends")
+  .post(
+    authController.checkIfLoggedIn,
+    contactController.createContactAttendsInterview
+  )
+  .delete(
+    authController.checkIfLoggedIn,
+    contactController.deleteContactAttendsInterview
+  );
 
 module.exports = router;

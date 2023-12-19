@@ -47,8 +47,8 @@ export default function Interviews() {
     React.useState(false);
   const [selectedIndexToDelete, setSelectedIndexToDelete] =
     React.useState(null);
-  const [fromDate, setFromDate] = React.useState(null);
-  const [toDate, setToDate] = React.useState(null);
+  const [EarliestDate, setEarliestDate] = React.useState(null);
+  const [LatestDate, setToDate] = React.useState(null);
 
   const handleOpenDeleteConfirmationDialog = (index) => {
     setSelectedIndexToDelete(index);
@@ -84,7 +84,7 @@ export default function Interviews() {
     executeHandle(
       "get",
       get,
-      { ...data, fromDate, toDate },
+      { ...data, EarliestDate, LatestDate },
       "http://localhost:3000/api/interviews/my-interviews",
       null,
       false,
@@ -221,7 +221,7 @@ export default function Interviews() {
             <SingleDate
               register={register}
               handleSubmit={handleSubmit}
-              attributeName={"From-Date"}
+              attributeName={"EarliestDate"}
               maxLength={64}
               additionalStyles={{
                 display: "flex",
@@ -233,13 +233,13 @@ export default function Interviews() {
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
               }}
-              date={fromDate}
-              setDate={setFromDate}
+              date={EarliestDate}
+              setDate={setEarliestDate}
             />
             <SingleDate
               register={register}
               handleSubmit={handleSubmit}
-              attributeName={"To-Date"}
+              attributeName={"LatestDate"}
               maxLength={64}
               additionalStyles={{
                 display: "flex",
@@ -251,7 +251,7 @@ export default function Interviews() {
               additionalFieldStyles={{
                 marginRight: { xs: "1rem" },
               }}
-              date={toDate}
+              date={LatestDate}
               setDate={setToDate}
             />
             <IconButton type="submit">

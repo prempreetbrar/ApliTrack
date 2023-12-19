@@ -644,7 +644,7 @@ function Offer({
             }}
             flexGrow="1"
           >
-            <Typography>Job Posting</Typography>
+            <Typography>Offer Letter</Typography>
             {currentlyUploadedFileName && (
               <iframe
                 src={`http://localhost:3000/uploads/offers/${currentlyUploadedFileName}`}
@@ -930,7 +930,7 @@ function NewOfferForm({ offers, setOffers }) {
                   }}
                   flexGrow="1"
                 >
-                  <Typography>Job Posting</Typography>
+                  <Typography>Offer Letter</Typography>
 
                   <Input
                     sx={{ marginTop: "1rem" }}

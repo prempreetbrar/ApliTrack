@@ -1,11 +1,11 @@
-const path = require("path");
+import { Op } from "sequelize";
+
 const multer = require("multer");
 const fs = require("fs");
 const util = require("util");
 const readdir = util.promisify(fs.readdir);
 
 const errorHandling = require("../utils/errorHandling");
-const APIFeatures = require("../utils/apiFeatures");
 
 /*
   We realize that a lot of the time, creation involves
@@ -243,7 +243,7 @@ function getUniqueAttributes(Model) {
 }
 
 exports.uploadStorage = (destination) => {
-  return multer.diskStorage({
+  const storage = multer.diskStorage({
     destination,
     filename: function (req, file, cb) {
       fs.readdir(destination, (err, files) => {
@@ -256,6 +256,10 @@ exports.uploadStorage = (destination) => {
         cb(null, fileName);
       });
     },
+  });
+
+  return multer({
+    storage,
   });
 };
 
@@ -287,4 +291,119 @@ exports.uploadFile = (directoryWhereFilesStored, nameOfFileColumn) => {
     }
   );
   return controllerFunction;
+};
+
+exports.addFilter = (...AttributeNames) => {
+  return errorHandling.catchAsync(async (request, response, next) => {
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    for (const AttributeName of AttributeNames) {
+      if (request.body[AttributeName]) {
+        request.body.filter[AttributeName] = request.body[AttributeName];
+      } else if (request.query[AttributeName]) {
+        request.body.filter[AttributeName] = request.query[AttributeName];
+      } else if (request.params[AttributeName]) {
+        request.body.filter[AttributeName] = request.params[AttributeName];
+      }
+    }
+
+    next();
+  });
+};
+
+exports.addSearch = (...AttributeNamesAndTypes) => {
+  return errorHandling.catchAsync(async (request, response, next) => {
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    for (const AttributeNameAndType of AttributeNamesAndTypes) {
+      const [Name, Type] = AttributeNameAndType;
+      if (Type == "Range") {
+        if (
+          request.query["Lowest" + Name] &&
+          request.query["Highest" + Name] &&
+          request.query["Lowest" + Name] !== "" &&
+          request.query["Highest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.between]: [
+              request.query["Lowest" + Name],
+              request.query["Highest" + Name],
+            ],
+          };
+        } else if (
+          request.query["Lowest" + Name] &&
+          request.query["Lowest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.gte]: request.query["Lowest" + Name],
+          };
+        } else if (
+          request.query["Highest" + Name] &&
+          request.query["Highest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.lte]: request.query["Highest" + Name],
+          };
+        }
+      }
+
+      if (Type == "DateRange") {
+        if (
+          request.query["Earliest" + Name] &&
+          request.query["Latest" + Name] &&
+          request.query["Earliest" + Name] !== "" &&
+          request.query["Latest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.between]: [
+              request.query["Earliest" + Name],
+              request.query["Latest" + Name],
+            ],
+          };
+        } else if (
+          request.query["Earliest" + Name] &&
+          request.query["Earliest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.gte]: request.query["Earliest" + Name],
+          };
+        } else if (
+          request.query["Latest" + Name] &&
+          request.query["Latest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.lte]: request.query["Latest" + Name],
+          };
+        }
+      }
+
+      if (Type === "String") {
+        if (request.body[Name] || request.query[Name]) {
+          request.body.filter[Name] = {
+            [Op.like]: `%${request.body[Name] || request.query[Name]}%`,
+          };
+        }
+      }
+    }
+
+    next();
+  });
+};
+
+exports.addSort = () => {
+  return errorHandling.catchAsync(async (request, response, next) => {
+    if (!request.body.order) {
+      request.body.order = [];
+    }
+
+    if (request.query.Sort) {
+      request.body.order.push(request.query.Sort.split("-"));
+    }
+
+    next();
+  });
 };
