@@ -121,7 +121,7 @@ export default function Documents() {
               <Box
                 display="flex"
                 sx={{
-                  flexDirection: { xs: "column", md: "row" },
+                  flexDirection: { xs: "column", lg: "row" },
                 }}
                 justifyContent="center"
                 alignItems="center"
@@ -136,7 +136,7 @@ export default function Documents() {
                     flexDirection: { xs: "column", md: "row" },
                     justifyContent: "center",
                     alignItems: "center",
-                    width: { xs: "100%", md: "50%" },
+                    width: { xs: "100%", lg: "50%" },
                   }}
                 >
                   <Box
@@ -168,10 +168,10 @@ export default function Documents() {
 
                 <Box
                   display="flex"
-                  flexDirection="row"
+                  flexDirection={{ xs: "column", sm: "row" }}
                   alignItems="center"
                   justifyContent="center"
-                  marginTop={{ xs: "1rem", md: "0rem" }}
+                  marginTop={{ xs: "1rem", lg: "0rem" }}
                 >
                   <Typography
                     variant="h3"
@@ -190,12 +190,27 @@ export default function Documents() {
                       display: "flex",
                       flexDirection: "row",
                       alignItems: "center",
+                      marginBottom: { xs: "1rem", sm: "0rem" },
+                      marginTop: { xs: "1rem", sm: "0rem" },
+                      flexShrink: 0,
+                    }}
+                    additionalFieldStyles={{
+                      marginRight: { xs: "0rem", sm: "1rem" },
+                    }}
+                    attributeName={"DocFileName"}
+                  />
+                  <SingleForm
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    additionalStyles={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
                       marginBottom: { xs: "0rem" },
                       marginTop: { xl: "0rem" },
                       flexShrink: 0,
                     }}
-                    attributeName={"DocFileName"}
-                    allowUnauthenticated
+                    attributeName={"DocType"}
                   />
                   <IconButton type="submit">
                     <SearchIcon color="primary" />
