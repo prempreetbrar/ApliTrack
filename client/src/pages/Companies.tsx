@@ -1077,6 +1077,7 @@ function Job({
               gridArea: "Qualification",
               marginLeft: "2rem",
               marginTop: { sm: 0, md: "-1.5rem" },
+              justifySelf: { xs: "center", md: "flex-start" },
             }}
           >
             <Typography>Qualifications</Typography>
