@@ -16,6 +16,9 @@ exports.getAllCompanies = errorHandling.catchAsync(
     if (!request.body.order) {
       request.body.order = [];
     }
+    if (!request.body.nestedFilter) {
+      request.body.nestedFilter = {};
+    }
     if (!request.body.nestedOrder) {
       request.body.nestedOrder = [];
     }
@@ -28,6 +31,7 @@ exports.getAllCompanies = errorHandling.catchAsync(
           model: Job.Job,
           as: "Jobs",
           separate: true,
+          where: request.body.nestedFilter,
           order: request.body.nestedOrder,
         },
       ],
@@ -42,5 +46,12 @@ exports.getAllCompanies = errorHandling.catchAsync(
   }
 );
 exports.addFilterCompanyName = factory.addFilter("CompanyName");
-exports.addSearchCompanyName = factory.addSearch(["CompanyName", "String"]);
+exports.addSearchCompanyName = factory.addSearch(
+  ["CompanyName", "String"],
+  ["IndustryName", "String", "Nested"],
+  ["Salary", "Range", "Nested"],
+  ["PositionType", "String", "Nested"],
+  ["PositionName", "String", "Nested"],
+  ["ApplicationDeadline", "DateRange", "Nested"]
+);
 exports.addSortCompanyName = factory.addSort();

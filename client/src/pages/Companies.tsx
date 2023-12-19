@@ -120,8 +120,6 @@ export default function Companies() {
       false,
       null
     );
-    console.log(data);
-    console.log(companies);
 
     setSavedEarliestApplicationDeadline(mostRecentEarliestApplicationDeadline);
     setSavedLatestApplicationDeadline(mostRecentLatestApplicationDeadline);
@@ -293,7 +291,7 @@ export default function Companies() {
               justifyContent="center"
               marginTop="1rem"
               sx={{
-                flexDirection: { xs: "column", xl: "row" },
+                flexDirection: { xs: "column" },
               }}
             >
               <Typography
@@ -302,55 +300,121 @@ export default function Companies() {
               >
                 Search by:
               </Typography>
-              <SingleForm
-                register={register}
-                handleSubmit={handleSubmit}
-                additionalStyles={{
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                  marginRight: { xs: "1rem", md: "0rem" },
-                }}
-                attributeName={"CompanyName"}
-                allowUnauthenticated
-              />
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"EarliestApplicationDeadline"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-                date={mostRecentEarliestApplicationDeadline}
-                setDate={setMostRecentEarliestApplicationDeadline}
-                allowUnauthenticated
-              />
-              <SingleDate
-                handleSubmit={handleSubmit}
-                attributeName={"LatestApplicationDeadline"}
-                maxLength={64}
-                additionalStyles={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: { xs: "0rem" },
-                  marginTop: { xs: "1rem", xl: "0rem" },
-                  flexShrink: 0,
-                }}
-                additionalFieldStyles={{
-                  marginRight: { xs: "1rem" },
-                }}
-                date={mostRecentLatestApplicationDeadline}
-                setDate={setMostRecentLatestApplicationDeadline}
-                allowUnauthenticated
-              />
+              <Box flexDirection={{ xs: "column", lg: "row" }}>
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"CompanyName"}
+                  allowUnauthenticated
+                />
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"IndustryName"}
+                  allowUnauthenticated
+                />
+              </Box>
+
+              <Box flexDirection={{ xs: "column", lg: "row" }}>
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"LowestSalary"}
+                  allowUnauthenticated
+                />
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"HighestSalary"}
+                  allowUnauthenticated
+                />
+              </Box>
+
+              <Box flexDirection={{ xs: "column", lg: "row" }}>
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"PositionType"}
+                  allowUnauthenticated
+                />
+                <SingleForm
+                  register={register}
+                  handleSubmit={handleSubmit}
+                  additionalStyles={{
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                    marginRight: { xs: "1rem", md: "0rem" },
+                  }}
+                  attributeName={"PositionName"}
+                  allowUnauthenticated
+                />
+              </Box>
+
+              <Box display="flex" flexDirection={{ xs: "column", lg: "row" }}>
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"EarliestApplicationDeadline"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={mostRecentEarliestApplicationDeadline}
+                  setDate={setMostRecentEarliestApplicationDeadline}
+                  allowUnauthenticated
+                />
+                <SingleDate
+                  handleSubmit={handleSubmit}
+                  attributeName={"LatestApplicationDeadline"}
+                  maxLength={64}
+                  additionalStyles={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: { xs: "0rem" },
+                    marginTop: { xs: "1rem" },
+                    flexShrink: 0,
+                  }}
+                  additionalFieldStyles={{
+                    marginRight: { xs: "1rem" },
+                  }}
+                  date={mostRecentLatestApplicationDeadline}
+                  setDate={setMostRecentLatestApplicationDeadline}
+                  allowUnauthenticated
+                />
+              </Box>
 
               {user && onlyShowJobsITrack && (
                 <SingleDate

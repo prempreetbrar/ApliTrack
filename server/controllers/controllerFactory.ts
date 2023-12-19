@@ -319,8 +319,12 @@ exports.addSearch = (...AttributeNamesAndTypes) => {
       request.body.filter = {};
     }
 
+    if (!request.body.nestedFilter) {
+      request.body.nestedFilter = {};
+    }
+
     for (const AttributeNameAndType of AttributeNamesAndTypes) {
-      const [Name, Type] = AttributeNameAndType;
+      const [Name, Type, Table] = AttributeNameAndType;
       if (Type == "Range") {
         if (
           request.query["Lowest" + Name] &&
@@ -328,26 +332,47 @@ exports.addSearch = (...AttributeNamesAndTypes) => {
           request.query["Lowest" + Name] !== "" &&
           request.query["Highest" + Name] !== ""
         ) {
-          request.body.filter[Name] = {
+          const filter = {
             [Op.between]: [
               request.query["Lowest" + Name],
               request.query["Highest" + Name],
             ],
           };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
         } else if (
           request.query["Lowest" + Name] &&
           request.query["Lowest" + Name] !== ""
         ) {
-          request.body.filter[Name] = {
+          const filter = {
             [Op.gte]: request.query["Lowest" + Name],
           };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
         } else if (
           request.query["Highest" + Name] &&
           request.query["Highest" + Name] !== ""
         ) {
-          request.body.filter[Name] = {
+          const filter = {
             [Op.lte]: request.query["Highest" + Name],
           };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
         }
       }
 
@@ -358,34 +383,63 @@ exports.addSearch = (...AttributeNamesAndTypes) => {
           request.query["Earliest" + Name] !== "" &&
           request.query["Latest" + Name] !== ""
         ) {
-          request.body.filter[Name] = {
+          const filter = {
             [Op.between]: [
               request.query["Earliest" + Name],
               request.query["Latest" + Name],
             ],
           };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
         } else if (
           request.query["Earliest" + Name] &&
           request.query["Earliest" + Name] !== ""
         ) {
-          request.body.filter[Name] = {
+          const filter = {
             [Op.gte]: request.query["Earliest" + Name],
           };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
         } else if (
           request.query["Latest" + Name] &&
           request.query["Latest" + Name] !== ""
         ) {
-          request.body.filter[Name] = {
+          const filter = {
             [Op.lte]: request.query["Latest" + Name],
           };
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
         }
       }
 
       if (Type === "String") {
         if (request.body[Name] || request.query[Name]) {
-          request.body.filter[Name] = {
+          const filter = {
             [Op.like]: `%${request.body[Name] || request.query[Name]}%`,
           };
+
+          if (Table === "Nested") {
+            request.body.nestedFilter[Name] = { ...filter };
+          } else {
+            request.body.filter[Name] = {
+              ...filter,
+            };
+          }
         }
       }
     }
