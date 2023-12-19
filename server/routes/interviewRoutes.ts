@@ -13,13 +13,21 @@ router.use(authController.checkIfLoggedIn);
 
 router
   .route("/details")
-  .get(interviewController.filterID, interviewController.getInterview)
+  .get(
+    interviewController.addFilterInterviewID,
+    interviewController.getInterview
+  )
   .post(interviewController.createInterview)
   .delete(interviewController.deleteInterview)
   .patch(interviewController.updateInterview);
 
-  router
+router
   .route("/my-interviews")
-  .get(interviewController.addFilter, interviewController.getAllApplicantInterviews);
+  .get(
+    interviewController.addFilterApplicant,
+    interviewController.addSearchStageDate,
+    interviewController.addSortStageDate,
+    interviewController.getAllApplicantInterviews
+  );
 
 module.exports = router;

@@ -90,7 +90,7 @@ export default function Companies() {
       "get",
       get,
       {
-        Sort: "ASC",
+        Sort: "CompanyName-ASC",
       },
       "http://localhost:3000/api/companies",
       null,
@@ -183,7 +183,7 @@ export default function Companies() {
               <FormControl>
                 <RadioGroup
                   aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="ASC"
+                  defaultValue="CompanyName-ASC"
                   name="radio-buttons-group"
                   sx={{
                     display: "flex",
@@ -191,13 +191,13 @@ export default function Companies() {
                   }}
                 >
                   <FormControlLabel
-                    value="ASC"
+                    value="CompanyName-ASC"
                     control={<Radio {...register("Sort")} />}
                     label="Sort Ascending"
                     labelPlacement="start"
                   />
                   <FormControlLabel
-                    value="DESC"
+                    value="CompanyName-DESC"
                     control={<Radio {...register("Sort")} />}
                     label="Sort Descending"
                     labelPlacement="start"

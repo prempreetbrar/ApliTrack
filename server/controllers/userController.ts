@@ -1,4 +1,3 @@
-const { Op } = require("sequelize");
 const factory = require("./controllerFactory");
 const errorHandling = require("../utils/errorHandling");
 const { User } = require("../models/userModel");
@@ -39,40 +38,13 @@ exports.preventPasswordOrAdminChange = errorHandling.catchAsync(
   }
 );
 exports.updateUser = factory.updateInstance(User);
-
 exports.getAllUsers = factory.getAll(User);
 exports.createUser = factory.createOne(User);
 exports.deleteUser = factory.deleteInstance(User);
 
-exports.addFilter = errorHandling.catchAsync(
-  async (request, response, next) => {
-    request.body.filter = { Username: request.body.Username };
-    next();
-  }
-);
-
-exports.addSearchFilter = errorHandling.catchAsync(
-  async (request, response, next) => {
-    if (!request.body.filter) {
-      request.body.filter = {};
-    }
-
-    if (request.body.Username || request.query.Username) {
-      request.body.filter.Username = {
-        [Op.like]: `%${request.body.Username || request.query.Username}%`,
-      };
-    }
-    if (request.body.Fname || request.query.Fname) {
-      request.body.filter.Fname = {
-        [Op.like]: `%${request.body.Fname || request.query.Fname}%`,
-      };
-    }
-    if (request.body.Lname || request.query.Lname) {
-      request.body.filter.Lname = {
-        [Op.like]: `%${request.body.Lname || request.query.Lname}%`,
-      };
-    }
-
-    next();
-  }
+exports.addFilterUser = factory.addFilter("Username");
+exports.addSearchUsernameName = factory.addSearch(
+  ["Username", "String"],
+  ["Fname", "String"],
+  ["Lname", "String"]
 );
