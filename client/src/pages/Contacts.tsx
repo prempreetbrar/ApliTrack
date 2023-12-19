@@ -737,7 +737,7 @@ function InfoSection({
   const [dropdownValue, setDropdownValue] = React.useState("");
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeRequest: deleteInstance } = useDelete();
-  const { register, getValues, reset, control } = useForm();
+  const { register, getValues, reset, control, setValue } = useForm();
   const { executeHandle } = useHandleOperation(
     reset,
     setOnUpdateSectionArray,
@@ -751,7 +751,7 @@ function InfoSection({
   }, [sectionArray]);
 
   async function handleCreate() {
-    executeHandle(
+    const success = await executeHandle(
       "create",
       create,
       {
@@ -767,6 +767,10 @@ function InfoSection({
       {},
       false
     );
+    if (success) {
+      setDropdownValue(null);
+      setValue(entitySecondTargetAttribute, "");
+    }
   }
 
   async function handleDelete(index) {
@@ -1096,7 +1100,8 @@ function NewReferralForm({
       false,
       undefined,
       {},
-      false
+      false,
+      { Job: referralJob }
     );
 
     /*
@@ -1106,7 +1111,8 @@ function NewReferralForm({
     if (result) {
       setValue("Date", "");
       setValue("Notes", "");
-      setValue("Job", null);
+      setReferralJob(null);
+      setReferralDate(null);
     }
   }
 
