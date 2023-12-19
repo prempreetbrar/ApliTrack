@@ -422,7 +422,6 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
         <SingleForm
           register={register}
           handleSubmit={handleSubmit}
-          actionOnAttribute={updateNameOrLinkedInURL}
           attributeName={"Username"}
           maxLength={64}
           isLoading={updateIsLoading}
@@ -448,10 +447,9 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
               : undefined
           }
           isLoading={updateIsLoading}
-          additionalStyles={{ flexDirection: { xs: "column", sm: "row" } }}
-          additionalLnameStyles={{
-            marginTop: { xs: "1rem", sm: 0 },
-            marginRight: { xs: "1rem" },
+          additionalStyles={{
+            flexDirection: { xs: "column", sm: "row" },
+            marginTop: "1rem",
           }}
           buttonName={"Update"}
         />
@@ -500,10 +498,9 @@ function User({ user, index, handleOpenDeleteConfirmationDialog }) {
               : undefined
           }
           isLoading={updateIsLoading}
-          additionalStyles={{ flexDirection: { xs: "column", sm: "row" } }}
-          additionalLnameStyles={{
-            marginTop: { xs: "1rem", sm: 0 },
-            marginRight: { xs: "1rem" },
+          additionalStyles={{
+            flexDirection: { xs: "column", sm: "row" },
+            marginTop: "1rem",
           }}
           buttonName={"Update"}
         />
