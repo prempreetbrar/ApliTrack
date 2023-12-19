@@ -66,6 +66,8 @@ exports.getAll = (Model) => {
       request.body.order = [];
     }
 
+    console.log( request.body.filter);
+
     const documents = await Model.findAll({
       where: request.body.filter,
       order: request.body.order,
@@ -75,6 +77,8 @@ exports.getAll = (Model) => {
         nested: false,
       },
     });
+
+    //console.log(documents);
 
     response.status(200).json({
       status: "success",
@@ -386,6 +390,153 @@ exports.addSearch = (...AttributeNamesAndTypes) => {
           request.body.filter[Name] = {
             [Op.like]: `%${request.body[Name] || request.query[Name]}%`,
           };
+        }
+      }
+
+      if (Type === "Array") {
+        // if (request.body[Name] || request.query[Name]) {
+        //   const categoryValue = [
+        //     request.body.Category || request.query.Category,
+        //   ];
+        //   request.body.filter[Name] = {
+        //     where: {
+        //       Category: { [Op.in]: categoryValue },
+        //     },
+        //   };
+        // }
+
+        if (request.body[Name] || request.query[Name]) {
+          const categoryValue = Array.isArray(request.body[Name] || request.query[Name])
+            ? request.body[Name] || request.query[Name]
+            : [request.body[Name] || request.query[Name]];
+      
+            console.log("TESTING LOG");
+            console.log(categoryValue);
+
+            //TODO: How can I link this back to application table with ID?
+          request.body.filter[Name] = {
+            // where: {
+            //   Category: { [Op.in]: categoryValue },
+            // },
+
+            [Op.in]: categoryValue,
+          };
+
+          console.log(request.body.filter);
+        }
+      }
+    }
+
+    next();
+  });
+};
+
+exports.addMultivalueSearch = (multiValueModel, ...AttributeNamesAndTypes: any[]) => {
+  return errorHandling.catchAsync(async (request, response, next) => {
+    if (!request.body.filter) {
+      request.body.filter = {};
+    }
+
+    for (const AttributeNameAndType of AttributeNamesAndTypes) {
+      const [Name, Type] = AttributeNameAndType;
+      if (Type == "Range") {
+        if (
+          request.query["Lowest" + Name] &&
+          request.query["Highest" + Name] &&
+          request.query["Lowest" + Name] !== "" &&
+          request.query["Highest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.between]: [
+              request.query["Lowest" + Name],
+              request.query["Highest" + Name],
+            ],
+          };
+        } else if (
+          request.query["Lowest" + Name] &&
+          request.query["Lowest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.gte]: request.query["Lowest" + Name],
+          };
+        } else if (
+          request.query["Highest" + Name] &&
+          request.query["Highest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.lte]: request.query["Highest" + Name],
+          };
+        }
+      }
+
+      if (Type == "DateRange") {
+        if (
+          request.query["Earliest" + Name] &&
+          request.query["Latest" + Name] &&
+          request.query["Earliest" + Name] !== "" &&
+          request.query["Latest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.between]: [
+              request.query["Earliest" + Name],
+              request.query["Latest" + Name],
+            ],
+          };
+        } else if (
+          request.query["Earliest" + Name] &&
+          request.query["Earliest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.gte]: request.query["Earliest" + Name],
+          };
+        } else if (
+          request.query["Latest" + Name] &&
+          request.query["Latest" + Name] !== ""
+        ) {
+          request.body.filter[Name] = {
+            [Op.lte]: request.query["Latest" + Name],
+          };
+        }
+      }
+
+      if (Type === "String") {
+        if (request.body[Name] || request.query[Name]) {
+          request.body.filter[Name] = {
+            [Op.like]: `%${request.body[Name] || request.query[Name]}%`,
+          };
+        }
+      }
+
+      if (Type === "Array") {
+        // if (request.body[Name] || request.query[Name]) {
+        //   const categoryValue = [
+        //     request.body.Category || request.query.Category,
+        //   ];
+        //   request.body.filter[Name] = {
+        //     where: {
+        //       Category: { [Op.in]: categoryValue },
+        //     },
+        //   };
+        // }
+
+        if (request.body[Name] || request.query[Name]) {
+          const categoryValue = Array.isArray(request.body[Name] || request.query[Name])
+            ? request.body[Name] || request.query[Name]
+            : [request.body[Name] || request.query[Name]];
+      
+            console.log("TESTING LOG");
+            console.log(categoryValue);
+
+            //TODO: How can I link this back to application table with ID?
+          request.body.filter[Name] = {
+            // where: {
+            //   Category: { [Op.in]: categoryValue },
+            // },
+
+            [Op.in]: categoryValue,
+          };
+
+          console.log(request.body.filter);
         }
       }
     }

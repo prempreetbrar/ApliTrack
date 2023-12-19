@@ -84,7 +84,7 @@ function getAllApplicationCategory() {
     console.log(request.body.filter);
     console.log("TEST 2", request.body.ApplicantUsername);
 
-    let documents = await Application.Application.findAll({
+    let documents2 = await Application.Application.findAll({
       order: request.body.order,
       attributes: { exclude: [] }, // Include all columns
       include: [
@@ -94,10 +94,6 @@ function getAllApplicationCategory() {
           where: Sequelize.literal(`
             Application.ApplicantUsername LIKE '%${request.body.ApplicantUsername}%' AND
             Category.ApplicationID = Application.ApplicationID
-            AND Category.Category LIKE '%${"Submitted"}%'
-            AND (SELECT *
-              FROM Category as NestedCategory
-              WHERE NestedCategory.ApplicationID = Application.ApplicationID)
           `), 
 
           // include: [
@@ -135,7 +131,12 @@ function getAllApplicationCategory() {
     //   ],
     // });
 
-    console.log(documents);
+    console.log("BEFORE", documents2);
+
+    //let documents = documents2.filter((object) => object.dataValues.Category.includes("Submitted"));
+    let documents = documents2;
+
+    console.log("AFTER", documents);
 
     response.status(200).json({
       status: "success",

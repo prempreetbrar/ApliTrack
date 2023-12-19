@@ -10,7 +10,8 @@ router
   .route("")
   .get(
     applicationController.addFilterApplicant,
-    applicationController.addSearchNameStatusCategory,
+    applicationController.addSearchNameStatusDate,
+    applicationController.addSearchCategory,
     applicationController.addSort,
     applicationController.getAllApplications
   );
@@ -44,7 +45,6 @@ router
 router
   .route("/category")
   .get(
-    applicationController.addSearchNameStatusCategory,
     applicationController.getAllApplicationCategories
   )
   .post(applicationController.createApplicationCategory)
