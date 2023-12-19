@@ -95,14 +95,13 @@ exports.addFilter = errorHandling.catchAsync(
         [Op.like]: `%${request.body.Status || request.query.Status}%`,
       };
     }
-    // if (request.body.Notes || request.query.Notes) {
-    //   request.body.filter.Notes = {
-    //     [Op.like]: `%${request.body.Notes || request.query.Notes}%`,
-    //   };
-    // }
+    console.log("TESTING");
+    console.log(request.body, request.body.Status);
     if (request.body.Category || request.query.Category) {
+      //console.log(request);
+
       request.body.filter.Category = {
-        [Op.like]: `%${request.body.Category || request.query.Category}%`,
+        [Op.contains]: `%${request.body.Category || request.query.Category}%`,
       };
     }
     if (
