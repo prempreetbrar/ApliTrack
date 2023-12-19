@@ -33,7 +33,7 @@ export default function SingleForm({
               marginRight: { xs: "0", md: "1rem" },
               ...additionalFieldStyles,
             }}
-            minRows={3}
+            minRows={4}
             disabled={!user && !allowUnauthenticated}
             style={{ ...textAreaStyles }}
           />

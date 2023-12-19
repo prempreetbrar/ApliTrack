@@ -163,6 +163,8 @@ export default function Applications() {
               sx={{
                 display: "flex",
                 flexDirection: { xs: "column", sm: "row" },
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <FormControlLabel
@@ -170,12 +172,14 @@ export default function Applications() {
                 control={<Radio {...register("Sort")} />}
                 label="Sort by Application Name Ascending"
                 labelPlacement="start"
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               />
               <FormControlLabel
                 value="AName-DESC"
                 control={<Radio {...register("Sort")} />}
                 label="Sort by Application Name Descending"
                 labelPlacement="start"
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               />
 
               <FormControlLabel
@@ -183,12 +187,14 @@ export default function Applications() {
                 control={<Radio {...register("Sort")} />}
                 label="Sort by Status Ascending"
                 labelPlacement="start"
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               />
               <FormControlLabel
                 value="Status-DESC"
                 control={<Radio {...register("Sort")} />}
                 label="Sort by Status Descending"
                 labelPlacement="start"
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               />
 
               <FormControlLabel
@@ -196,50 +202,46 @@ export default function Applications() {
                 control={<Radio {...register("Sort")} />}
                 label="Sort by Earliest Submitted Date"
                 labelPlacement="start"
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               />
               <FormControlLabel
                 value="DateSubmitted-DESC"
                 control={<Radio {...register("Sort")} />}
                 label="Sort by Latest Submitted Date"
                 labelPlacement="start"
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               />
             </RadioGroup>
           </FormControl>
         </Box>
+
         <Box
           display="flex"
-          sx={{
-            marginTop: { xs: "2rem", md: "0rem" },
-
-            alignItems: { xs: "center", sm: "center" },
-            justifyContent: "center",
-            marginBottom: "2rem",
-          }}
+          alignItems="center"
+          justifyContent="center"
+          sx={{ flexDirection: { xs: "column", sm: "row" } }}
+          marginBottom="2rem"
         >
-          <Box
-            display="flex"
-            alignItems="center"
-            sx={{ flexDirection: { xs: "column", sm: "row" } }}
+          <Typography
+            variant="h3"
+            sx={{ fontSize: "1rem", marginRight: "1rem" }}
           >
-            <Typography
-              variant="h3"
-              sx={{ fontSize: "1rem", marginRight: "1rem" }}
-            >
-              Search by:
-            </Typography>
-            <ApplicationForm
-              register={register}
-              handleSubmit={handleSubmit}
-              additionalStyles={{
-                marginTop: { xs: "1rem", sm: "0rem" },
-                flexDirection: { xs: "column", sm: "row" },
-              }}
-              additionalLnameStyles={{
-                marginRight: { xs: "1rem" },
-                marginTop: { xs: "1rem", sm: "0" },
-              }}
-              allowUnauthenticated
-            />
+            Search by:
+          </Typography>
+          <ApplicationForm
+            register={register}
+            handleSubmit={handleSubmit}
+            additionalStyles={{
+              marginTop: { xs: "1rem", md: "0rem" },
+              flexDirection: { xs: "column", md: "row" },
+            }}
+            additionalLnameStyles={{
+              marginRight: { xs: "1rem" },
+              marginTop: { xs: "1rem", md: "0" },
+            }}
+            allowUnauthenticated
+          />
+          <Box display="flex" flexDirection={{ xs: "column", sm: "row" }}>
             <SingleDate
               register={register}
               handleSubmit={handleSubmit}
@@ -282,6 +284,7 @@ export default function Applications() {
           </IconButton>
         </Box>
       </form>
+
       <SubBox isLoading={getIsLoading}>
         {applicationsInfo &&
           applicationsInfo.map((application, index) => {
@@ -387,39 +390,78 @@ function Application({
         </IconButton>
       </Box>
 
-      <form onSubmit={handleSubmit(updateApplication)}>
+      <form
+        onSubmit={handleSubmit(updateApplication)}
+        style={{ width: "100%" }}
+      >
         <FormControl
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", sm: "row", md: "column" },
-            alignItems: { xs: "center", sm: "flex-start", md: "center" },
-            justifyContent: "center",
-            width: { xs: "100%", md: "fit-content" },
+            flexDirection: { xs: "column" },
+            alignItems: { xs: "center", md: "flex-start" },
             marginTop: { xs: "2rem" },
           }}
         >
           <Box
             display="flex"
             flexDirection={{ xs: "column", md: "row" }}
-            marginTop={{ xs: "2rem", md: "0" }}
-            alignItems="center"
+            alignItems={{ xs: "center", md: "flex-start" }}
+            justifyContent={{ xs: "center", md: "flex-start" }}
+            width="100%"
           >
-            <SingleForm
-              register={register}
-              handleSubmit={handleSubmit}
-              attributeName={"AName"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "1rem" },
-              }}
-              attributeLabel={"Application Name"}
-            />
+            <Box>
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                attributeName={"AName"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+                attributeLabel={"Application Name"}
+              />
+              <SingleForm
+                register={register}
+                handleSubmit={handleSubmit}
+                attributeName={"Status"}
+                maxLength={64}
+                isLoading={updateIsLoading}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+
+                  marginTop: { xs: "1rem" },
+                }}
+                additionalFieldStyles={{
+                  marginRight: { xs: "1rem" },
+                }}
+              />
+              <SingleDate
+                handleSubmit={handleSubmit}
+                attributeName={"DateSubmitted"}
+                maxLength={64}
+                additionalStyles={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: { xs: "1rem" },
+                  marginBottom: { xs: "0rem" },
+                  gridArea: "Deadline",
+                }}
+                additionalFieldStyles={{
+                  paddingRight: "1rem",
+                }}
+                date={dateSubmitted}
+                setDate={setDateSubmitted}
+              />
+            </Box>
             <SingleForm
               register={register}
               handleSubmit={handleSubmit}
@@ -430,45 +472,16 @@ function Application({
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
+                flexGrow: 1,
+                marginTop: { xs: "1rem", md: "-1.7rem" },
+                marginRight: { xs: "0rem", md: "2rem" },
+                width: { xs: "100%", md: "auto" },
               }}
               additionalFieldStyles={{
-                marginTop: { xs: "1.5rem", md: 0 },
-                marginRight: { xs: "1rem" },
+                width: "100%",
               }}
-            />
-            <SingleForm
-              register={register}
-              handleSubmit={handleSubmit}
-              attributeName={"Status"}
-              maxLength={64}
-              isLoading={updateIsLoading}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: { xs: "1.5rem", md: 0 },
-              }}
-              additionalFieldStyles={{
-                marginRight: { xs: "1rem" },
-              }}
-            />
-            <SingleDate
-              handleSubmit={handleSubmit}
-              attributeName={"DateSubmitted"}
-              maxLength={64}
-              additionalStyles={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: { xs: "1.5rem", md: "0rem" },
-                marginBottom: { xs: "0rem" },
-                gridArea: "Deadline",
-              }}
-              additionalFieldStyles={{
-                paddingRight: "1rem",
-              }}
-              date={dateSubmitted}
-              setDate={setDateSubmitted}
+              formControlStyles={{ width: "100%" }}
+              isTextArea
             />
             {user && (
               <Button
@@ -483,14 +496,15 @@ function Application({
 
           <Box
             display="flex"
-            marginTop={{ xs: "2rem", sm: "-2rem", md: "2rem" }}
-            marginLeft={{ xs: "1rem", md: "0rem" }}
-            flexDirection={{ xs: "column", md: "row" }}
+            marginTop={{ xs: "1rem", lg: "2rem" }}
+            flexDirection={{ xs: "column", lg: "row" }}
+            width="100%"
           >
             <Box
               display="flex"
               flexDirection={{ xs: "column", sm: "row" }}
               marginTop={{ xs: "0rem", md: "1.5rem" }}
+              flexGrow="1"
             >
               <InfoSection
                 entityIDName="ApplicationID"
@@ -504,6 +518,7 @@ function Application({
                 maxCreateLength={16}
                 additionalStyles={{
                   marginRight: { xs: "0" },
+                  width: { xs: "100%", md: "50%" },
                 }}
               />
               <InfoSection
@@ -518,6 +533,7 @@ function Application({
                 maxCreateLength={16}
                 additionalStyles={{
                   marginRight: { xs: "0" },
+                  width: { xs: "100%", md: "50%" },
                 }}
               />
             </Box>
@@ -525,7 +541,8 @@ function Application({
             <Box
               display="flex"
               flexDirection="column"
-              sx={{ marginTop: { xs: "2rem", md: "0rem" } }}
+              sx={{ marginTop: { xs: "2rem", lg: "0rem" } }}
+              flexGrow="1"
             >
               <Typography fontWeight="bold">Submit With</Typography>
               <InfoSection
@@ -542,13 +559,15 @@ function Application({
                 fetchAllOptionsURL="http://localhost:3000/api/documents"
                 maxCreateLength={64}
                 isDocument
+                additionalStyles={{ width: "100%" }}
               />
             </Box>
 
             <Box
               display="flex"
               flexDirection="column"
-              sx={{ marginTop: { xs: "2rem", md: "0rem" } }}
+              sx={{ marginTop: { xs: "2rem", lg: "0rem" } }}
+              flexGrow="1"
             >
               <Typography fontWeight="bold">Corresponds To</Typography>
               <InfoSection
@@ -714,7 +733,7 @@ function InfoSection({
             createIsLoading={createIsLoading}
             register={register}
             fetchAllOptionsURL={fetchAllOptionsURL}
-            additionalStyles={{ width: "50%" }}
+            additionalStyles={{ width: "100%" }}
             dropdownValue={dropdownValue}
             setDropdownValue={setDropdownValue}
           />
@@ -739,9 +758,13 @@ function InfoSection({
             doNotShowButton
             dropdownValue={dropdownValue}
             setDropdownValue={setDropdownValue}
+            additionalStyles={{ width: { xs: "100%", sm: "50%" } }}
           />
           <NewEntry
-            additionalStyles={{ marginLeft: "2rem" }}
+            additionalStyles={{
+              marginLeft: { xs: "0rem", sm: "2rem" },
+              width: { xs: "100%", sm: "50%" },
+            }}
             attributeName={entitySecondTargetAttribute}
             maxCreateLength={maxCreateLength}
             handleCreate={handleCreateJob}
@@ -793,6 +816,7 @@ function AddNewApplication({
           overrideStyles={{
             flexDirection: { xs: "column", md: "row" },
             justifyContent: "space-between",
+            alignItems: { xs: "center", md: "flex-start" },
           }}
         >
           <Typography
@@ -800,20 +824,70 @@ function AddNewApplication({
             sx={{
               fontSize: "1.5rem",
               fontWeight: "500",
+              alignSelf: "center",
             }}
           >
             Add New Application
           </Typography>
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            actionOnAttribute={null}
-            attributeName={"AName"}
-            isLoading={createIsLoading}
-            maxLength={64}
-            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-            attributeLabel={"Application Name"}
-          />
+          <Box
+            flexGrow="1"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            width={{ xs: "100%", md: "auto" }}
+          >
+            <SingleForm
+              register={register}
+              handleSubmit={handleSubmit}
+              actionOnAttribute={null}
+              attributeName={"AName"}
+              isLoading={createIsLoading}
+              maxLength={64}
+              additionalStyles={{
+                marginTop: { xs: "1.5rem" },
+                width: { xs: "100%", md: "auto" },
+              }}
+              additionalFieldStyles={{
+                width: "100%",
+              }}
+              attributeLabel={"Application Name"}
+            />
+            <SingleDate
+              handleSubmit={handleSubmit}
+              attributeName={"DateSubmitted"}
+              maxLength={64}
+              additionalStyles={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: { xs: "1.5rem" },
+                marginBottom: { xs: "0rem" },
+                gridArea: "Deadline",
+                width: { xs: "100%", md: "auto" },
+              }}
+              additionalFieldStyles={{
+                width: "100%",
+              }}
+              date={dateSubmitted}
+              setDate={setDateSubmitted}
+            />
+            <SingleForm
+              register={register}
+              handleSubmit={handleSubmit}
+              actionOnAttribute={null}
+              attributeName={"Status"}
+              isLoading={createIsLoading}
+              maxLength={64}
+              additionalStyles={{
+                marginTop: { xs: "1.5rem" },
+                width: { xs: "100%", md: "auto" },
+              }}
+              additionalFieldStyles={{
+                width: "100%",
+              }}
+            />
+          </Box>
+
           <SingleForm
             register={register}
             handleSubmit={handleSubmit}
@@ -822,31 +896,11 @@ function AddNewApplication({
             isLoading={createIsLoading}
             maxLength={64}
             isTextArea
-            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-          />
-          <SingleForm
-            register={register}
-            handleSubmit={handleSubmit}
-            actionOnAttribute={null}
-            attributeName={"Status"}
-            isLoading={createIsLoading}
-            maxLength={64}
-            additionalStyles={{ marginTop: { xs: "1.5rem" } }}
-          />
-          <SingleDate
-            handleSubmit={handleSubmit}
-            attributeName={"DateSubmitted"}
-            maxLength={64}
             additionalStyles={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: { xs: "1.5rem" },
-              marginBottom: { xs: "0rem" },
-              gridArea: "Deadline",
+              marginTop: { xs: "1.5rem", md: "-0.1rem" },
+              flexGrow: "1",
+              width: { xs: "100%", md: "auto" },
             }}
-            date={dateSubmitted}
-            setDate={setDateSubmitted}
           />
 
           <Button
@@ -854,7 +908,7 @@ function AddNewApplication({
             type="submit"
             variant="outlined"
             disabled={createIsLoading}
-            sx={{ marginTop: "1.5rem" }}
+            sx={{ marginTop: "1.5rem", alignSelf: "center" }}
           >
             Create
           </Button>

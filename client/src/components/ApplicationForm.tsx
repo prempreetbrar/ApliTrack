@@ -20,7 +20,7 @@ export default function NameForm({
         {...register("AName")}
         label="Application Name"
         sx={{
-          marginTop: { xs: "1rem", sm: "0rem" },
+          marginTop: { xs: "1rem", md: "0rem" },
           marginRight: "1rem",
         }}
         disabled={!user && !allowUnauthenticated}
@@ -31,7 +31,7 @@ export default function NameForm({
         label="Status"
         sx={{
           marginRight: "1rem",
-          marginTop: { xs: "1rem", sm: "0rem" },
+          marginTop: { xs: "1rem", md: "0rem" },
         }}
         disabled={!user && !allowUnauthenticated}
       />
@@ -40,7 +40,7 @@ export default function NameForm({
         {...register("Category")}
         label="Category"
         sx={{
-          marginTop: { xs: "1rem", sm: "0rem" },
+          marginTop: { xs: "1rem", md: "0rem" },
           marginRight: "1rem",
         }}
         disabled={!user && !allowUnauthenticated}
