@@ -574,12 +574,11 @@ function Application({
                 entityIDName="ApplicationID"
                 entityID={application.ApplicationID}
                 sectionTitle="Jobs"
-                sectionArray={application?.Jobs?.map(
-                  (job, index) => job.CORRESPONDS_TO
-                )}
+                sectionArray={application?.Jobs?.map((job, index) => job)}
                 entityName="Job"
                 entityTargetAttribute="PositionID"
-                entityTargetAttribute2="PositionName"
+                entityTargetAttribute2="CompanyName"
+                entityTargetAttribute3="PositionName"
                 entitySecondTargetAttribute="JobPostURL"
                 sectionURL="http://localhost:3000/api/applications/corresponding-jobs"
                 fetchAllOptionsURL="http://localhost:3000/api/jobs"
@@ -603,6 +602,7 @@ function InfoSection({
   entityName,
   entityTargetAttribute,
   entityTargetAttribute2,
+  entityTargetAttribute3,
   entitySecondTargetAttribute,
   isMarginRight,
   sectionURL,
@@ -615,7 +615,7 @@ function InfoSection({
   const [dropdownValue, setDropdownValue] = React.useState("");
   const { executeRequest: create, isLoading: createIsLoading } = useCreate();
   const { executeRequest: deleteInstance } = useDelete();
-  const { register, getValues, reset, control } = useForm();
+  const { register, getValues, reset, control, setValue } = useForm();
   const { executeHandle } = useHandleOperation(
     reset,
     setOnUpdateSectionArray,
@@ -646,10 +646,11 @@ function InfoSection({
       false,
       { ...dropdownValue }
     );
+    setDropdownValue(null);
   }
 
   async function handleCreateJob() {
-    executeHandle(
+    const success = await executeHandle(
       "create",
       create,
       {
@@ -664,12 +665,20 @@ function InfoSection({
       false,
       undefined,
       {},
-      false
+      false,
+      {
+        CompanyName: dropdownValue.CompanyName,
+        PositionName: dropdownValue.PositionName,
+      }
     );
+    if (success) {
+      setDropdownValue(null);
+      setValue(entitySecondTargetAttribute, "");
+    }
   }
 
   async function handleDelete(index) {
-    executeHandle(
+    const success = await executeHandle(
       "delete",
       deleteInstance,
       {
@@ -707,7 +716,10 @@ function InfoSection({
         <ChipDisplayer
           onUpdateSectionArray={onUpdateSectionArray}
           attributeName={entityTargetAttribute}
-          secondAttributeName={entitySecondTargetAttribute}
+          secondAttributeName={entityTargetAttribute2}
+          thirdAttributeName={entityTargetAttribute3}
+          forthAttributeTable={"CORRESPONDS_TO"}
+          forthAttributeName={entitySecondTargetAttribute}
           handleDelete={handleDelete}
         />
       )}
@@ -750,6 +762,7 @@ function InfoSection({
             entityName={entityName}
             entityAttributeName={entityTargetAttribute}
             entityAttributeName2={entityTargetAttribute2}
+            entityAttributeName3={entityTargetAttribute3}
             maxCreateLength={maxCreateLength}
             handleCreate={handleCreateJob}
             createIsLoading={createIsLoading}

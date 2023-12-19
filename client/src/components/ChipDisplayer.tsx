@@ -7,10 +7,13 @@ export default function ChipDisplayer({
   attributeName,
   secondAttributeName,
   thirdAttributeName,
+  forthAttributeTable,
+  forthAttributeName,
   handleDelete,
   isContact,
 }) {
   const { user } = useAuthContext();
+  console.log(onUpdateSectionArray);
 
   return (
     <>
@@ -25,6 +28,13 @@ export default function ChipDisplayer({
               : thirdAttributeName && isContact
               ? ` ${entity[thirdAttributeName]}`
               : ""
+          }${
+            forthAttributeName
+              ? ` - (${
+                  entity?.[forthAttributeTable]?.[forthAttributeName] ||
+                  entity?.[forthAttributeName]
+                })`
+              : ""
           }`}
           arrow
           placement="top"
@@ -38,6 +48,13 @@ export default function ChipDisplayer({
                   ? ` - [${entity[thirdAttributeName]}]`
                   : thirdAttributeName && isContact
                   ? ` ${entity[thirdAttributeName]}`
+                  : ""}
+                $
+                {forthAttributeName
+                  ? ` - (${
+                      entity?.[forthAttributeTable]?.[forthAttributeName] ||
+                      entity?.[forthAttributeName]
+                    })`
                   : ""}
               </EllipsisText>
             }
