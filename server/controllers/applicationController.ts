@@ -95,6 +95,11 @@ exports.addFilter = errorHandling.catchAsync(
         [Op.like]: `%${request.body.Status || request.query.Status}%`,
       };
     }
+    // if (request.body.Notes || request.query.Notes) {
+    //   request.body.filter.Notes = {
+    //     [Op.like]: `%${request.body.Notes || request.query.Notes}%`,
+    //   };
+    // }
     if (request.body.Category || request.query.Category) {
       request.body.filter.Category = {
         [Op.like]: `%${request.body.Category || request.query.Category}%`,

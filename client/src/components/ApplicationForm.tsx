@@ -37,7 +37,7 @@ export default function NameForm({
       />
       <TextField
         InputLabelProps={{ shrink: true }}
-        {...register("APPL_CATEGORY.Category")}
+        {...register("Category")}
         label="Category"
         sx={{
           marginTop: { xs: "1rem", sm: "0rem" },

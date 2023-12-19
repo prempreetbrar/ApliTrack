@@ -111,6 +111,7 @@ export default function Applications() {
     const fetchApplicationsInfo = async () => {
       const response = await get({}, "http://localhost:3000/api/applications");
 
+      console.log(response.application);
       setApplicationsInfo(response.application);
     };
 
