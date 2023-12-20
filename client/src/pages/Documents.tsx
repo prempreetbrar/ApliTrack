@@ -545,6 +545,7 @@ function NewDocumentForm({ documents, setDocuments }) {
     );
     if (success) {
       setValue("DocType", "");
+      setValue("DocFileName", "");
       setValue("Description", "");
     }
   }

@@ -49,7 +49,7 @@ export default function ChipDisplayer({
                   : thirdAttributeName && isContact
                   ? ` ${entity[thirdAttributeName]}`
                   : ""}
-                $
+
                 {forthAttributeName
                   ? ` - (${
                       entity?.[forthAttributeTable]?.[forthAttributeName] ||

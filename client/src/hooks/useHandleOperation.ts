@@ -64,6 +64,16 @@ export default function useHandleOperation(
       }
     }
 
+    if (operation === "update" && data) {
+      const tableName = Object.keys(data)[0];
+      console.log(data, data[tableName], tableName);
+      setStateObjectOrArray([
+        ...stateObjectOrArray.slice(0, indexOrKey),
+        data[tableName],
+        ...stateObjectOrArray.slice(indexOrKey + 1, stateObjectOrArray.length),
+      ]);
+    }
+
     if (data) {
       return true;
     }

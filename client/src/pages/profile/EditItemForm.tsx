@@ -12,6 +12,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useUpdate } from "../../hooks/useHttpMethod";
+import useHandleOperation from "hooks/useHandleOperation";
 
 export default function EditItemForm({
   open,
@@ -32,6 +33,11 @@ export default function EditItemForm({
     formState: { errors },
   } = useForm();
   const { executeRequest: update } = useUpdate();
+  const { executeHandle } = useHandleOperation(
+    undefined,
+    setOnUpdateSectionArray,
+    onUpdateSectionArray
+  );
 
   React.useEffect(() => {
     // Set initial form values when the item changes
@@ -42,19 +48,18 @@ export default function EditItemForm({
   }, [itemTitleName, itemDescName, itemTitle, itemDesc]);
 
   async function handleFormSubmit(data) {
-    const response = await update({ ...data }, `${sectionURL}/${itemTitle}`);
-
-    if (response) {
-      const tableName = Object.keys(response)[0];
-      setOnUpdateSectionArray([
-        ...onUpdateSectionArray.slice(0, currentItemIndex),
-        response[tableName],
-        ...onUpdateSectionArray.slice(
-          currentItemIndex + 1,
-          onUpdateSectionArray.length - 1
-        ),
-      ]);
-    }
+    executeHandle(
+      "update",
+      update,
+      { ...data },
+      `${sectionURL}/${itemTitle}`,
+      currentItemIndex,
+      false,
+      null,
+      {},
+      false,
+      null
+    );
 
     handleClose();
   }
