@@ -50,6 +50,8 @@ Applicant.hasMany(Interview, {
 Interview.belongsTo(Applicant, {
   as: "Applicant",
   foreignKey: "ApplicantUsername",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 //Application has a one-to-many relationship with Interview

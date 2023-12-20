@@ -1,7 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../server");
 
-
 const Contact = sequelize.define(
   "CONTACT",
   {
@@ -151,9 +150,7 @@ const ContactWorksAtCompany = sequelize.define(
 
 // definition of many-to-many relationship b/t Contact and Company
 
-
-
-const {Company} = require("./companyModel");
+const { Company } = require("./companyModel");
 const { Interview } = require("./interviewModel");
 
 Contact.belongsToMany(Company, {
@@ -161,39 +158,43 @@ Contact.belongsToMany(Company, {
   as: "Companies",
   foreignKey: "ContactID",
   otherKey: "CompanyName",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Company.belongsToMany(Contact, {
   as: "Contacts",
   through: ContactWorksAtCompany,
   foreignKey: "CompanyName",
   otherKey: "ContactID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 //contact has a many-to-many relationship with interview
 const ContactAttendsInterview = sequelize.define(
   "ATTENDS",
   {
-      ContactID: {
-          type: DataTypes.INTEGER,
-          primaryKey: true,
-          allowNull: false,
-          references: {
-              model: Contact,
-              key: "ContactID",
-          }
+    ContactID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      references: {
+        model: Contact,
+        key: "ContactID",
       },
-      InterviewID: {
-          type: DataTypes.INTEGER,
-          primaryKey: true,
-          allowNull: false,
-          references: {
-              model: Interview,
-              key: "InterviewID",
-          }
-      }
+    },
+    InterviewID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      references: {
+        model: Interview,
+        key: "InterviewID",
+      },
+    },
   },
   {
-      timestamps: false,
+    timestamps: false,
   }
 );
 
@@ -201,11 +202,15 @@ Contact.belongsToMany(Interview, {
   as: "Interviews",
   through: ContactAttendsInterview,
   foreignKey: "ContactID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Interview.belongsToMany(Contact, {
   as: "Contacts",
   through: ContactAttendsInterview,
   foreignKey: "InterviewID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 exports.Contact = Contact;
 exports.ContactEmail = ContactEmail;

@@ -283,12 +283,16 @@ Applicant.belongsToMany(Contact, {
   through: ApplicantKnowsContact,
   foreignKey: "Username",
   otherKey: "ContactID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Contact.belongsToMany(Applicant, {
   as: "Applicants",
   through: ApplicantKnowsContact,
   foreignKey: "ContactID",
   otherKey: "Username",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 Applicant.belongsToMany(Job, {
@@ -296,10 +300,14 @@ Applicant.belongsToMany(Job, {
   through: ApplicantTracksJob,
   foreignKey: "Username",
   otherKey: "PositionID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Job.belongsToMany(Applicant, {
   as: "Applicants",
   through: ApplicantTracksJob,
   foreignKey: "PositionID",
   otherKey: "Username",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });

@@ -51,6 +51,8 @@ Applicant.hasMany(Document, {
 Document.belongsTo(Applicant, {
   as: "Applicant",
   foreignKey: "ApplicantUsername",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 sequelize.sync();

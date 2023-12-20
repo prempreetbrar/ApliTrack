@@ -4,26 +4,26 @@ const { Applicant } = require("./applicantModel");
 const { Document } = require("./documentModel");
 
 //TODO: changes from main creating errors
-const {Job} = require("./jobModel");
+const { Job } = require("./jobModel");
 
 const Application = sequelize.define(
   "APPLICATION",
   {
     ApplicationID: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
     ApplicantUsername: {
       type: DataTypes.STRING(32),
       allowNull: false,
-      unique: 'uniqueTag',
+      unique: "uniqueTag",
     },
     AName: {
       type: DataTypes.STRING(32),
       allowNull: false,
-      unique: 'uniqueTag',
+      unique: "uniqueTag",
     },
     Notes: {
       type: DataTypes.TEXT,
@@ -46,116 +46,118 @@ const Application = sequelize.define(
 
 //Applicant has a one-to-many relationship with Application
 Applicant.hasMany(Application, {
-  as: "Applications",  
+  as: "Applications",
   foreignKey: "ApplicantUsername",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Application.belongsTo(Applicant, {
-  as: "Applicant",  
+  as: "Applicant",
   foreignKey: "ApplicantUsername",
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 const Appl_Relevant_URL = sequelize.define(
-    "APPL_RELEVANT_URL",
-    {
-        ApplicationID: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-          },
-      RelevantURL: {
-        type: DataTypes.STRING(512),
-        primaryKey: true,
-        allowNull: false,
-      },
+  "APPL_RELEVANT_URL",
+  {
+    ApplicationID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
     },
-    {
-      timestamps: false,
-    }
+    RelevantURL: {
+      type: DataTypes.STRING(512),
+      primaryKey: true,
+      allowNull: false,
+    },
+  },
+  {
+    timestamps: false,
+  }
 );
 
 //appl_relevant_URL is a multi-value attribute of application
 Application.hasMany(Appl_Relevant_URL, {
-    as: "RelevantURL",
-    foreignKey: 'ApplicationID',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+  as: "RelevantURL",
+  foreignKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Appl_Relevant_URL.belongsTo(Application, {
-    as: "Application",
-    foreignKey: "ApplicationID",
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+  as: "Application",
+  foreignKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 // Appl_Relevant_URL.belongsTo(Applicant, {
 //     foreignKey: 'ApplicantUsername',
 // });
 
 const Appl_Category = sequelize.define(
-    "APPL_CATEGORY",
-    {
-        ApplicationID: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-          },
-      Category: {
-        type: DataTypes.STRING(32),
-        primaryKey: true,
-        allowNull: false,
-      },
+  "APPL_CATEGORY",
+  {
+    ApplicationID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
     },
-    {
-      timestamps: false,
-    }
+    Category: {
+      type: DataTypes.STRING(32),
+      primaryKey: true,
+      allowNull: false,
+    },
+  },
+  {
+    timestamps: false,
+  }
 );
 
 //appl_category is a multivalue attribute of application
 Application.hasMany(Appl_Category, {
-    as: "Category",
-    foreignKey: 'ApplicationID',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+  as: "Category",
+  foreignKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Appl_Category.belongsTo(Application, {
-    as: "Application",
-    foreignKey: "ApplicationID",
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
+  as: "Application",
+  foreignKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 //TODO: changes from main creating errors
 // definition of many-to-many relationship b/t Application and Job
 const ApplicationCorrespondsToJob = sequelize.define(
-  'CORRESPONDS_TO', 
-{
-  ApplicationID: {
-    type: DataTypes.INTEGER,
+  "CORRESPONDS_TO",
+  {
+    ApplicationID: {
+      type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
       references: {
         model: Application,
         key: "ApplicationID",
       },
-  },
-  PositionID: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    allowNull: false,
-    references: {
-      model: Job,
-      key: "PositionID",
+    },
+    PositionID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      references: {
+        model: Job,
+        key: "PositionID",
+      },
+    },
+    JobPostURL: {
+      type: DataTypes.STRING(128),
     },
   },
-  JobPostURL: {
-    type: DataTypes.STRING(128),
-  },
-}, {
-  timestamps: false
-});
+  {
+    timestamps: false,
+  }
+);
 Application.belongsToMany(Job, {
   as: "Jobs",
   through: ApplicationCorrespondsToJob,
@@ -177,27 +179,27 @@ Job.belongsToMany(Application, {
 const ApplicationSubmitWithDoc = sequelize.define(
   "SUBMIT_WITH",
   {
-      ApplicationID: {
-          type: DataTypes.INTEGER,
-          primaryKey: true,
-          allowNull: false,
-          references: {
-              model: Application,
-              key: "ApplicationID",
-          }
+    ApplicationID: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      references: {
+        model: Application,
+        key: "ApplicationID",
       },
-      DocumentID: {
-          type: DataTypes.STRING(32),
-          primaryKey: true,
-          allowNull: false,
-          references: {
-              model: Document,
-              key: "DocumentID",
-          }
-      }
+    },
+    DocumentID: {
+      type: DataTypes.STRING(32),
+      primaryKey: true,
+      allowNull: false,
+      references: {
+        model: Document,
+        key: "DocumentID",
+      },
+    },
   },
   {
-      timestamps: false,
+    timestamps: false,
   }
 );
 
@@ -205,11 +207,15 @@ Document.belongsToMany(Application, {
   as: "Applications",
   through: ApplicationSubmitWithDoc,
   foreignKey: "DocumentID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 Application.belongsToMany(Document, {
   as: "Documents",
   through: ApplicationSubmitWithDoc,
   foreignKey: "ApplicationID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
 });
 
 sequelize.sync();
