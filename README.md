@@ -1,5 +1,29 @@
 # ApliTrack
 
+ApliTrack is a Job Application Tracking System (JATS) that aims to ease the burden of managing job applications for busy University students who find themselves applying to tens or hundreds of jobs, often due to limited professional experience and a highly competitive job market. With ApliTrack, applicants are able to manage the most relevant information pertaining
+to their job applications in one comprehensive solution, keeping track of components like the applications themselves, the jobs and companies they apply to, the documents they submit, the interviews and offers they receive, as well as any of their contacts who may be relevant to the jobs they apply to.
+
+To create ApliTrack, the group followed the database design and implementation process from start to finish. First, an initial proposal and set of broad requirements was created to establish the purpose and general functionality of the web application. Then, an enhanced entity relationship diagram with 13 entities (EERD) was created to convey all components of the application, more clearly illustrating the information that would be stored in the database and the resulting functionality that could be reasonably expected. Once the EERD was complete, it was mapped to a relational model (RM) that more closely resembled the underlying database structure that is used in the back-end of the application.
+
+## Enhanced Entity Relationship Diagram
+![image](https://github.com/prempreetbrar/ApliTrack/assets/89614923/104c5236-552f-47f1-ba79-6214abe5a62f)
+&nbsp;
+
+## Relational Model Diagram
+![image](https://github.com/prempreetbrar/ApliTrack/assets/89614923/86c2a388-fb31-4a9a-98c0-17d44000d2e9)
+&nbsp;
+
+## Use Case Diagram
+![image](https://github.com/prempreetbrar/ApliTrack/assets/89614923/ccde793f-20f9-4668-bb69-a2efffa2a276)
+
+## Sequence Diagram
+![image](https://github.com/prempreetbrar/ApliTrack/assets/89614923/6657150d-aa58-4111-8cff-20585be65d0c)
+
+
+
+
+
+
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
 - Note: once downloaded restart VSCode to apply changes
