@@ -14,7 +14,7 @@ To create ApliTrack, the group followed the database design and implementation p
 &nbsp;
 
 ## Use Case Diagram
-![image](https://github.com/prempreetbrar/ApliTrack/assets/89614923/ccde793f-20f9-4668-bb69-a2efffa2a276)
+![image](https://github.com/prempreetbrar/ApliTrack/assets/89614923/1bc138e1-3614-4303-9321-4f35952c3bcc)
 
 ## Sequence Diagram
 ![image](https://github.com/prempreetbrar/ApliTrack/assets/89614923/6657150d-aa58-4111-8cff-20585be65d0c)
