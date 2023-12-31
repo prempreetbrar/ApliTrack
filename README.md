@@ -43,7 +43,7 @@ Applicants can then add Experiences, Projects, Certifications, Skills, and Compe
 Applicants can then edit the Experiences and Projects entries as these have titles and descriptions. Entries can be edited by clicking the Pencil icon, 
 after which a pop-up will appear.
 &nbsp;
-&nbsp;
+<br><br>
 ![EditCareerInfo](https://github.com/prempreetbrar/ApliTrack/assets/89614923/d81c71ea-1a27-472a-94e2-74c85ce4b620)
 
 &nbsp;
