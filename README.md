@@ -260,6 +260,30 @@ Since our group spends considerable time on mobile or tablet devices, we had an 
 ### Users (Mobile and Tablet Views)
 ![MobileAndTablet3](https://github.com/prempreetbrar/ApliTrack/assets/89614923/5933ae7a-894b-45b5-8c5c-5d13c169d619)
 
+# Features (Languages/Technologies Used: TypeScript, React.js, Node.js, Express, SQLite, Sequelize, Pug.js)
+- Uses a REST API with an MVC backend architecture that supports filtering, sorting, PROPER authentication with JWT (token must be valid, not expired, the user's password has not changed, and the user is not inactive) and authorization
+- Has **INCREDIBLY** strong error handling with a generic "catch all" error handler that reduces code duplication and distinguishes between different types of errors
+- Deals with unhandled rejections and exceptions
+- Supports creation of new users by storing encrypted passwords in database; allows user to change password and reset it if it is forgotten via Brevo email handling
+- A proper data model derived from an Enhanced Entity Relationship Diagram which was then mapped to the Relational Model; the corresponding tables from the relational model were implemented in Sequelize using SQLite as the underlying DBMS.
+- Factory functions reduce code duplication in controllers and views
+- Email templating created Pug.js, with blocks used to reduce code duplication and HTML data sets used to transfer data. A snackbar is shown whenever there is ANY error, so the user is never left surprised as to what is happening. A success snackbar is shown to give feedback when an operation is successful.
+- Custom file uploading using Multer, with file names and paths stored in the database; the actual file is kept on the file system, and a special suffix is added to ensure we can distnguish between two files that otherwise have the same name.
+&nbsp;
+
+# Limitations/Design Choices
+
+- The backend has lots of code reuse and little duplication, however, the frontend has considerable duplication. The team was focused on completing the project before the deadline and decided to "jump in" to frontend development without planning beforehand. In the future, we would plan out the frontend design BEFORE we start coding. It may take a few extra hours upfront, but it would considerably speed up development time. 
+- TypeScript was used albeit sparingly; some group members were not familiar with TypeScript, so explicit annotations were not used to prevent confusion. **TypeScript was used _only_ for type inference (which still helped us catch tons of errors).**
+- The EERD models admins and applicants as being disjoint; however, the current system implementation allows admins to perform all actions allowed by applicants, therefore modeling them as overlapping. This change was made to simplify the backend while maintaining the desired functionality.
+- Sequelize was unable to correctly process and implement foreign keys that reference composite primary keys. This proved to be an issue only for weak entities that were previously defined with composite keys and which were then referenced by other relations in the database. To address this, weak entities that were affected by the issue were instead given a new primary key in the form of a unique auto-assigned and incremented integer ID, enabling them to have a single primary key that can be referenced. However, to ensure that the original functionality was preserved, attributes that previously comprised the composite key were assigned unique tags, ensuring that the combination of these attributes is unique for any instance in the relation, thereby mimicking the functionality of a composite primary key. This change was applied to the following entities in the database: `Interview`, `Document`, `Application`, `Job`
+- The developer table was deemed redundant because a developer’s and admin's permissions and abilities are normally managed in the GitHub repository, NOT in the application itself. This table was not created in the final application.
+- Some rest API routes are created in the backend (and fully functional), but have no corresponding frontend. Specifically, the routes relating to `AdminResponsibility` (which was deemed redundant as `PermissionLevel` could easily capture this info), `DeveloperType`, `Specialization`, and Admin `Abilities` (which is instead determined by the routes to which the admin has access, NOT the database itself).
+- Additional columns not present in the EERD or the Relational Model may be seen in the application; some of these are to deal with Sequelize constraints regarding referencing composite primary keys. Others are to aid with functionality from our Use Case diagram that was not originally conceived during the EERD phase. For example, the user has `PasswordLastChangedAt`, `PasswordResetToken`, and `PasswordResetExpires` columns (to help with authentication and password changing, forgetting, and resetting functionality in the application).
+- Initially, the group settled on using MySQL, but swapped to SQLite because connection to MySQL and synchronization (not to mention preventing race conditions) proved to be difficult.
+
+&nbsp;
+
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
 - Note: once downloaded restart VSCode to apply changes
