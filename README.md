@@ -284,28 +284,50 @@ Since our group spends considerable time on mobile or tablet devices, we had an 
 
 &nbsp;
 
-## Downloading node and npm
-Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
-- Note: once downloaded restart VSCode to apply changes
+# Running it Locally
 
-To confirm installation do:
+1. Install NVM: https://github.com/nvm-sh/nvm
+&nbsp;
+<br><br>
+![NVMInstallation](https://github.com/prempreetbrar/ApliTrack/assets/89614923/88014084-5485-457c-9faa-0799c0ac194a)
+
+2. Install Node and NPM: https://github.com/nvm-sh/nvm
+&nbsp;
+<br><br>
+![NodeANDNPMInstallation](https://github.com/prempreetbrar/ApliTrack/assets/89614923/ed1a1c11-bb63-42bf-89c0-621b2314902d)
+
+***If you performed the above downloads using VSCode's terminal, restart VSCode so that it can "know" about these installations.
+
+3. To Confirm Installation Do:
+
 ```
 node -v
 npm -v
 ```
+![ConfirmingInstallation](https://github.com/prempreetbrar/ApliTrack/assets/89614923/42e52237-8596-4f2e-b60a-472180941cfa)
 
-## Recommended VSCode extensions
-1. ESLint
-2. Prettier
-3. SQLite (explore and query SQLite databases). https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite
-4. SQLite Viewer
+4. Clone the GitHub Repo:
+![CloningRepo](https://github.com/prempreetbrar/ApliTrack/assets/89614923/5e2e6448-31c0-46e0-8293-9c5e7e856ea8)
 
-## Running the server:
+5. Run the Server:
 
-1. `cd` into the `Apli-Track/server` directory
-2. Run `npm install`
-3. Run `npm install morgan`
-4. Run `npm run start:dev` to start the server up. You're now able to send requests to localhost:3000/URL (where `URL`) is the URL of one of the endpoints in our application. For example, localhost:3000/api/auth.
+```
+cd ApliTrack/server
+npm install
+npm install morgan
+npm run start:dev
+```
+![RunServer](https://github.com/prempreetbrar/ApliTrack/assets/89614923/7649a0a6-ff5c-46d0-880c-1e3c4b2717a0)
+
+<br><br>
+You can view the database's contents in the server folder by clicking on the database `cpsc471.sqlite`. Ensure you have the
+`SQLite Viewer` extension installed in VSCode.
+&nbsp;
+<br><br>
+![ViewDatabase](https://github.com/prempreetbrar/ApliTrack/assets/89614923/8ad764dd-6dbc-4b92-80f1-81f82d262cb6)
+
+
+6. Run the Client:
 
 Note: we can view the database's contents in the server folder by clicking on the database "cpsc471.sqlite"
 - Ensure you have the SQLite Viewer extension installed on VSCode
