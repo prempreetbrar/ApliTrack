@@ -207,6 +207,20 @@ Note that if duplicate items are attempted to be added by the applicant, they wi
 ### Search and Sort Interviews
 ![SearchAndSortInterviews](https://github.com/prempreetbrar/ApliTrack/assets/89614923/1c39a581-f629-4d8a-af11-9595ee1e824c)
 
+## Offers
+
+An offer can be added by filling in the fields to the right of Create Offer. Note that the Job field is a dropdown that only allows for selection of jobs already in the system. Additionally, applicants are able to upload their job offer files to the system using the rightmost field.
+&nbsp;
+<br><br>
+![Offers](https://github.com/prempreetbrar/ApliTrack/assets/89614923/e8ab2625-7317-424a-8708-1233689355be)
+
+### Searching and Sorting Offers
+
+If applicants have multiple offers to decide between, they are able to easily search and compare offers by using the various search options provided, including searching by lowest and highest compensation, earliest and latest response deadline, and earliest and latest start date.
+&nbsp;
+<br><br>
+![SearchAndSortOffers](https://github.com/prempreetbrar/ApliTrack/assets/89614923/3d5a5e1b-8ac1-43cb-8b9d-4adb9e64108f)
+
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
 - Note: once downloaded restart VSCode to apply changes
