@@ -193,7 +193,19 @@ Finally, applicants are also able to specify whether the contacts they know have
 <br><br>
 ![Referrals](https://github.com/prempreetbrar/ApliTrack/assets/89614923/4562212c-18f7-4a75-80bc-d0ebf9597c88)
 
+## Interviews
 
+An interview can be added by filling in the fields under ‘Add New Interview’, then pressing Create. Note that while Stage and Date take any input from the user, the Application field is a dropdown menu that displays the applicant’s existing applications in the system. 
+
+Existing interviews can then be supplemented with additional information, like any Contacts who are stored in the system who are attending the interview, as well as the specific jobs that the interview is related to. These can be selected in their corresponding dropdown menus that display entries that already exist in the application. Once added, attending contacts and mentioned jobs appear. Note that each can be hovered over to display the full text.
+
+Note that if duplicate items are attempted to be added by the applicant, they will see an error pop up informing them of this.
+&nbsp;
+<br><br>
+![Interviews](https://github.com/prempreetbrar/ApliTrack/assets/89614923/edde9b2a-ef29-4199-acb2-e7d955c16bd9)
+
+### Search and Sort Interviews
+![SearchAndSortInterviews](https://github.com/prempreetbrar/ApliTrack/assets/89614923/1c39a581-f629-4d8a-af11-9595ee1e824c)
 
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
