@@ -146,6 +146,25 @@ Alternatively, can only display jobs that they are personally tracking in the sy
 <br><br>
 ![TrackingFilter](https://github.com/prempreetbrar/ApliTrack/assets/89614923/cf141544-2fac-4dc1-a469-00fe0fe277c8)
 
+## Applications
+
+Users can add, edit, or delete their own applications. For existing applications, applicants can add even more details by specifying categories for each application, relevant URLs, specific documents submitted for each application, and the job(s) that the application corresponds to. Categories and Relevant URLs are custom and can thus be entered into their fields as shown below. 
+
+&nbsp;
+<br><br>
+![Application](https://github.com/prempreetbrar/ApliTrack/assets/89614923/5756cae4-0427-4c35-8902-f136c8575664)
+&nbsp;
+<br><br>
+
+To add submitted documents and jobs to the application, the documents and jobs must already exist in the database, as the adding is done using dropdown menus that only show existing options! This is done to minimize keyboard input (providing for a better use experience) and preventing errors from users entering in documents and/or jobs that do not exist. For each job, applicants can also add specific URLs relevant to the job itself that may not appear in the Companies page. Once Documents and Corresponding jobs have been added, they will appear and can be hovered over to show the full text. These entries can also be deleted by simply pressing the X icon.
+
+### Search Applications
+
+With applicants needing to handle tens or even hundreds of applications, they can easily search for applications by name, status, and category using the search bar at the top of the page. For example, searching for Status “Submitted” will return applications where the searched text is included in the Status field, as shown below. Searching by Name and/or Category will yield results using those categories. 
+&nbsp;
+<br><br>
+![ApplicationSearch](https://github.com/prempreetbrar/ApliTrack/assets/89614923/8e5c0750-5a37-4998-8d8e-36cd1c658d68)
+
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
 - Note: once downloaded restart VSCode to apply changes
