@@ -235,6 +235,31 @@ If applicants have multiple offers to decide between, they are able to easily se
 <br><br>
 ![SearchAndSortOffers](https://github.com/prempreetbrar/ApliTrack/assets/89614923/3d5a5e1b-8ac1-43cb-8b9d-4adb9e64108f)
 
+## Users (Admin)
+
+Upon loading the user page (which admins can only access) the admins will be able to see a list of users that currently exist on the system/database. From here they are able to update user’s first and last names, activate and deactivate their accounts, change their permission levels and reset their passwords. They can even create or delete users from the database. Admins also have the option to search for users using their first or last names.
+&nbsp;
+<br><br>
+![Admin](https://github.com/prempreetbrar/ApliTrack/assets/89614923/52b41c98-8e82-421d-b436-ec7b65878a7b)
+
+## Logged Out Views (Contacts and Companies)
+Finally, users who are not logged in are able to view the Contacts and Companies pages, as these entries are public and not specific to any particular applicants. However, since the users are not logged in, they are unable to make any additions or updates to the data in the system, as these actions require users to be logged in. Below are the sample views for the Contacts and Companies pages, as seen by a logged-out user or a user with no existing account. 
+&nbsp;
+<br><br>
+![LoggedOutViews](https://github.com/prempreetbrar/ApliTrack/assets/89614923/047c0ab1-ab0a-4765-a0ec-f8f860618143)
+
+## Mobile and Tablet Views
+Since our group spends considerable time on mobile or tablet devices, we had an incentive to make our application compatible with both mobile and tablet screen sizes. See below both mobile and tablet views. 
+
+### Profile, Documents, Applications, Offers (Mobile and Tablet Views)
+![MobileAndTablet](https://github.com/prempreetbrar/ApliTrack/assets/89614923/002ef44a-57f0-4ebf-be49-5fd27addc7df)
+
+### Interviews, Contacts, Companies (Mobile and Tablet Views)
+![MobileAndTablet2](https://github.com/prempreetbrar/ApliTrack/assets/89614923/a1286b5a-6055-4eef-9850-d7ece6e598f3)
+
+### Users (Mobile and Tablet Views)
+![MobileAndTablet3](https://github.com/prempreetbrar/ApliTrack/assets/89614923/5933ae7a-894b-45b5-8c5c-5d13c169d619)
+
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
 - Note: once downloaded restart VSCode to apply changes
