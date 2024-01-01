@@ -85,6 +85,56 @@ Applicants can search for document file names. For example, an applicant may sea
 ![SortAndSearchDocuments](https://github.com/prempreetbrar/ApliTrack/assets/89614923/5170b8ed-be0d-495a-a55c-0352430bb586)
 &nbsp;
 
+## Companies and Jobs
+
+Upon first loading the Companies page, applicants will typically encounter previously populated Company entries, as these are shared across all applicants. If the Companies
+page is blank, that means no applicants have yet added any companies to the system. The idea is that applicants can "work together" by adding companies and jobs to assist
+each other in the job search.
+
+### Adding Company
+
+A new company can be added by filling in the fields, then pressing the Create button to the right. 
+&nbsp;
+<br><br>
+![AddCompany](https://github.com/prempreetbrar/ApliTrack/assets/89614923/56fda35f-43c1-4ddf-910e-45640b067f9b)
+&nbsp;
+
+### Updating Company
+
+Note that jobs can only be added to existing companies. If a company does not exist and an applicant wishes to add a job, they must add the company to the system first. Any fields for the Company can then be edited and updated with the Update button. 
+&nbsp;
+<br><br>
+![UpdatingCompany](https://github.com/prempreetbrar/ApliTrack/assets/89614923/41446f19-beb3-439c-9041-e67fc84ea54a)
+&nbsp;
+
+#### Adding Job
+![AddJob](https://github.com/prempreetbrar/ApliTrack/assets/89614923/1266e46b-32a4-4739-bf19-d06f87c3d09d)
+
+##### Adding Qualifications and Responsibilities
+With a job added, applicants have the option of adding multiple qualifications and responsibilities to the job, as shown towards the right of the screen. To add these, applicants can simply enter the new qualification and/or responsibility and press the corresponding + icon, as shown below. 
+&nbsp;
+<br><br>
+![AddQualificationsAndResponsibilities](https://github.com/prempreetbrar/ApliTrack/assets/89614923/661e3364-656c-4eb4-b500-b65976c6e6c8)
+
+##### Deleting Qualifications and Responsibilities
+![DeletingQualificationsAndResponsibilities](https://github.com/prempreetbrar/ApliTrack/assets/89614923/db2562ef-2156-47e4-bcac-9fb18a6b3edd)
+
+#### Editing Job
+![EditJob](https://github.com/prempreetbrar/ApliTrack/assets/89614923/88fca06f-5d7f-4805-9aef-c71eb1681d5f)
+
+#### Tracking Job
+Applicants that may wish to track certain jobs have the option to do so by simply ticking the Track This Job box on the screen. Once the job is being tracked, applicants can enter information specific to tracking, such as a target date to apply and any notes, and then press the Update button to save that information. 
+&nbsp;
+<br><br>
+![TrackingJob](https://github.com/prempreetbrar/ApliTrack/assets/89614923/a388326c-45a9-4ba1-92d5-b7e7c7770bf3)
+
+### Searching Companies and Jobs
+
+Applicants are able to search the Companies page by Company Names and/or the application deadlines, as shown below. For example, searching for Amazon will bring up the Amazon company and its corresponding jobs. Alternatively, applicants can enter just the application deadline dates to search by jobs that match the date(s) criteria. This is useful if you are looking for jobs by a certain company and/or want to see all jobs that fall within a certain deadline.
+
+Note that regular applicants cannot delete companies as these are shared across all users; only admins have the permission to delete companies. These routes are protected on the backend (by checking the permission flag on the user) and on the frontend (by not showing the delete button unless the user is an admin). 
+
+
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
 - Note: once downloaded restart VSCode to apply changes
