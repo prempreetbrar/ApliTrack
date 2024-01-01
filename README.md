@@ -32,8 +32,7 @@ Users will be warned if passwords do not match or if a user already exists with 
 Users will be warned if passwords do not match or if a user already exists with the provided username. Note that a welcome email is sent upon registration.
 &nbsp;
 <br><br>
-![Signup](https://github.com/prempreetbrar/ApliTrack/assets/89614923/e14a5168-e093-40a1-8291-d16f6f4b3017)
-
+![ForgotPassword](https://github.com/prempreetbrar/ApliTrack/assets/89614923/079de06e-26af-4f9d-ac85-feeb257d3ba5)
 
 ## Profile
 
