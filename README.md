@@ -172,6 +172,11 @@ Upon first loading the Contacts page, applicants will typically encounter previo
 <br><br>
 ![Contact](https://github.com/prempreetbrar/ApliTrack/assets/89614923/3b9e3b76-a839-4727-951b-f55c8175178c)
 
+### Delete Contact (Restricted to Admin With Delete Permission Only)
+&nbsp;
+<br><br>
+![DeleteContact](https://github.com/prempreetbrar/ApliTrack/assets/89614923/542262e7-7f84-4c8d-99d7-4081d41274ab)
+
 ### Contact Works At
 
 Next, applicants can also specify which companies each contact works at using the Works At field, which contains a dropdown showing existing companies in the database. Applicants are able to choose a company and specify the specific role that the contact holds at that company, as shown below, and then add the entry by pressing the + icon on the right. 
