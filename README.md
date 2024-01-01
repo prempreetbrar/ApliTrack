@@ -286,19 +286,19 @@ Since our group spends considerable time on mobile or tablet devices, we had an 
 
 # Running it Locally
 
-1. Install NVM: https://github.com/nvm-sh/nvm
+**1. Install NVM: https://github.com/nvm-sh/nvm**
 &nbsp;
 <br><br>
 ![NVMInstallation](https://github.com/prempreetbrar/ApliTrack/assets/89614923/88014084-5485-457c-9faa-0799c0ac194a)
 
-2. Install Node and NPM: https://github.com/nvm-sh/nvm
+**2. Install Node and NPM: https://github.com/nvm-sh/nvm**
 &nbsp;
 <br><br>
 ![NodeANDNPMInstallation](https://github.com/prempreetbrar/ApliTrack/assets/89614923/ed1a1c11-bb63-42bf-89c0-621b2314902d)
 
 ***If you performed the above downloads using VSCode's terminal, restart VSCode so that it can "know" about these installations.
 
-3. To Confirm Installation Do:
+**3. To Confirm Installation Do:**
 
 ```
 node -v
@@ -306,15 +306,14 @@ npm -v
 ```
 ![ConfirmingInstallation](https://github.com/prempreetbrar/ApliTrack/assets/89614923/42e52237-8596-4f2e-b60a-472180941cfa)
 
-4. Clone the GitHub Repo:
+**4. Clone the GitHub Repo:**
 ![CloningRepo](https://github.com/prempreetbrar/ApliTrack/assets/89614923/5e2e6448-31c0-46e0-8293-9c5e7e856ea8)
 
-5. Run the Server:
+**5. Run the Server:**
 
 ```
 cd ApliTrack/server
 npm install
-npm install morgan
 npm run start:dev
 ```
 ![RunServer](https://github.com/prempreetbrar/ApliTrack/assets/89614923/7649a0a6-ff5c-46d0-880c-1e3c4b2717a0)
@@ -327,16 +326,20 @@ You can view the database's contents in the server folder by clicking on the dat
 ![ViewDatabase](https://github.com/prempreetbrar/ApliTrack/assets/89614923/8ad764dd-6dbc-4b92-80f1-81f82d262cb6)
 
 
-6. Run the Client:
+**6. Run the Client:**
 
-Note: we can view the database's contents in the server folder by clicking on the database "cpsc471.sqlite"
-- Ensure you have the SQLite Viewer extension installed on VSCode
+*IMPORTANT: You must run the client in a new terminal, so that the server and client can run simultaneously.
 
-## Running the client:
+```
+cd ApliTrack/client
+npm install
+npm run start:dev
+```
 
-1. `cd` into the `Apli-Track/client` directory
-2. Run `npm install`
-3. Run `npm install react-scripts`
-4. Run `npm install @mui/material @emotion/react @emotion/styled`
-5. Run `npm install notistack`
-6. Run `npm run start:dev` to start the client.
+When prompted with `Would you like to run the app on another port instead? › (Y/n)` type in `y`.
+&nbsp;
+<br><br>
+![Client](https://github.com/prempreetbrar/ApliTrack/assets/89614923/ec831349-65da-4324-939b-1c03145aaab8)
+
+**7. Interact with the Application in Your Browser!**
+![Interact](https://github.com/prempreetbrar/ApliTrack/assets/89614923/c0ea74b6-d83f-4223-9252-600fa8b30d7f)
