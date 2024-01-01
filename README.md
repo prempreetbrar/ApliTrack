@@ -107,6 +107,13 @@ Note that jobs can only be added to existing companies. If a company does not ex
 ![UpdatingCompany](https://github.com/prempreetbrar/ApliTrack/assets/89614923/41446f19-beb3-439c-9041-e67fc84ea54a)
 &nbsp;
 
+### Deleting Company (Admin with Delete Permissions Only)
+
+Note that regular applicants cannot delete companies as these are shared across all users; only admins have the permission to delete companies. These routes are protected on the backend (by checking the permission flag on the user) and on the frontend (by not showing the delete button unless the user is an admin). 
+&nbsp;
+<br><br>
+![DeleteJobAndCompany](https://github.com/prempreetbrar/ApliTrack/assets/89614923/c4a44444-3df3-460e-b2a9-0508bb9706c8)
+
 #### Adding Job
 ![AddJob](https://github.com/prempreetbrar/ApliTrack/assets/89614923/1266e46b-32a4-4739-bf19-d06f87c3d09d)
 
@@ -132,8 +139,12 @@ Applicants that may wish to track certain jobs have the option to do so by simpl
 
 Applicants are able to search the Companies page by Company Names and/or the application deadlines, as shown below. For example, searching for Amazon will bring up the Amazon company and its corresponding jobs. Alternatively, applicants can enter just the application deadline dates to search by jobs that match the date(s) criteria. This is useful if you are looking for jobs by a certain company and/or want to see all jobs that fall within a certain deadline.
 
-Note that regular applicants cannot delete companies as these are shared across all users; only admins have the permission to delete companies. These routes are protected on the backend (by checking the permission flag on the user) and on the frontend (by not showing the delete button unless the user is an admin). 
+### Tracking Filter
 
+Alternatively, can only display jobs that they are personally tracking in the system. The Tracking filter will apply automatically, while sorting will only be applied once the search Icon is pressed, like it was for regular searching above. Note that if the Tracking filter is selected, all companies will still be displayed (if there is no company search applied), but only tracked jobs will display under each company. This means that if an applicant does not track any jobs from a specific company, it will appear as if the company has no jobs posted for it in the system. The tracking allows the applicant to mark only those jobs that are relevant to them and easily search for their tracked or "marked" jobs.
+&nbsp;
+<br><br>
+![TrackingFilter](https://github.com/prempreetbrar/ApliTrack/assets/89614923/cf141544-2fac-4dc1-a469-00fe0fe277c8)
 
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
