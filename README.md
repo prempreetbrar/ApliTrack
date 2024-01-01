@@ -107,7 +107,7 @@ Note that jobs can only be added to existing companies. If a company does not ex
 ![UpdatingCompany](https://github.com/prempreetbrar/ApliTrack/assets/89614923/41446f19-beb3-439c-9041-e67fc84ea54a)
 &nbsp;
 
-### Deleting Company (Admin with Delete Permissions Only)
+### Deleting Company or Job (Admin with Delete Permissions Only)
 
 Note that regular applicants cannot delete companies as these are shared across all users; only admins have the permission to delete companies. These routes are protected on the backend (by checking the permission flag on the user) and on the frontend (by not showing the delete button unless the user is an admin). 
 &nbsp;
@@ -164,6 +164,36 @@ With applicants needing to handle tens or even hundreds of applications, they ca
 &nbsp;
 <br><br>
 ![ApplicationSearch](https://github.com/prempreetbrar/ApliTrack/assets/89614923/8e5c0750-5a37-4998-8d8e-36cd1c658d68)
+
+## Contacts
+
+Upon first loading the Contacts page, applicants will typically encounter previously populated Contact entries, as these are shared across all applicants. Applicants can add or update contacts.
+&nbsp;
+<br><br>
+![Contact](https://github.com/prempreetbrar/ApliTrack/assets/89614923/3b9e3b76-a839-4727-951b-f55c8175178c)
+
+### Contact Works At
+
+Next, applicants can also specify which companies each contact works at using the Works At field, which contains a dropdown showing existing companies in the database. Applicants are able to choose a company and specify the specific role that the contact holds at that company, as shown below, and then add the entry by pressing the + icon on the right. 
+&nbsp;
+<br><br>
+![WorksAt](https://github.com/prempreetbrar/ApliTrack/assets/89614923/a8c673dd-9ac8-45d1-8e69-edc75afe18e7)
+
+### Contact is Known
+
+With many contacts in the system, applicants can further specify whether they personally know a particular contact by selecting the ‘I know this person!’ checkbox, which will then provide additional fields for the applicant to fill in. This is extremely beneficial because it allows an applicant to sift through the thousands of contacts (hypothetically) in the system and mark which ones they know personally. They can then filter to only show contacts they know using a switch at the top of the page. 
+&nbsp;
+<br><br>
+![Know](https://github.com/prempreetbrar/ApliTrack/assets/89614923/96c6d785-60c9-4b2f-8cb0-7a210fe99210)
+
+### Referrals
+
+Finally, applicants are also able to specify whether the contacts they know have provided any referrals, and if so, then for which existing job in the system. This can be done by filling in the fields and selecting the right Job under Referral(s), as shown below. Once added, a referral appears and can be edited by editing any of the fields and pressing the Update button. Additionally, the referral can be deleted by pressing the Bin icon, but only after confirming the deletion in a pop-up, as shown below.
+&nbsp;
+<br><br>
+![Referrals](https://github.com/prempreetbrar/ApliTrack/assets/89614923/4562212c-18f7-4a75-80bc-d0ebf9597c88)
+
+
 
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
