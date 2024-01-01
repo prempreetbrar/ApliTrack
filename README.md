@@ -22,6 +22,7 @@ To create ApliTrack, the group followed the database design and implementation p
 ## Signup
 Users will be warned if passwords do not match or if a user already exists with the provided username. Note that a welcome email is sent upon registration.
 &nbsp;
+<br><br>
 ![Signup](https://github.com/prempreetbrar/ApliTrack/assets/89614923/e14a5168-e093-40a1-8291-d16f6f4b3017)
 
 ## Login
@@ -32,11 +33,13 @@ Users will be warned if passwords do not match or if a user already exists with 
 ### Account Info
 Applicants can update personal information or their password by pressing the corresponding Update button on the right.
 &nbsp;
+<br><br>
 ![AccountInfo](https://github.com/prempreetbrar/ApliTrack/assets/89614923/6be50c57-0589-46ac-a3d3-1dbd7c1c63a3)
 
 ### Career Info
 Applicants can then add Experiences, Projects, Certifications, Skills, and Competitions by populating the corresponding empty fields in the Profile page. 
 &nbsp;
+<br><br>
 ![AddCareerInfo](https://github.com/prempreetbrar/ApliTrack/assets/89614923/02a82f75-cc8c-4584-94b0-d7791b2b83e9)
 &nbsp;
 
@@ -49,9 +52,38 @@ after which a pop-up will appear.
 &nbsp;
 Applicants can also delete any entries by clicking the Bin icon for Experiences and Projects, or clicking the X for Certifications, Skills, and Competitions. For Experiences and Projects, a confirmation box will pop up, while Certifications, Skills, and Competitions entries will be deleted right away, as they are simple entries. 
 &nbsp;
+<br><br>
 ![DeleteCareerInfo](https://github.com/prempreetbrar/ApliTrack/assets/89614923/4fbe84bd-af33-42c8-8b8c-d396bbe07cef)
 
+## Documents
 
+### Add Document
+Upon first loading the Documents page, applicants will encounter none of their Documents stored in the system. The page allows applicants to upload documents, provide a Document Type and Description, and upload the file itself. 
+&nbsp;
+<br><br>
+![AddDocument](https://github.com/prempreetbrar/ApliTrack/assets/89614923/3c38176f-e171-4d85-a676-33994f4ecb97)
+&nbsp;
+
+### Edit Document
+Upon adding a document, each will appear. Applicants are also able to update each document by updating the necessary fields and then pressing the Update button. 
+&nbsp;
+<br><br>
+![EditDocument](https://github.com/prempreetbrar/ApliTrack/assets/89614923/a0a245b6-ee14-4f7e-8a65-dad512b91327)
+&nbsp;
+
+### Delete Document
+To delete a document, applicants can press the Bin icon, which will create a confirmation pop-up.
+&nbsp;
+<br><br>
+![DeleteDocument](https://github.com/prempreetbrar/ApliTrack/assets/89614923/a14eeae3-8304-4056-a16d-a303d3e78cf6)
+&nbsp;
+
+### Searching and Sorting Documents
+Applicants can search for document file names. For example, an applicant may search for all file names containing the string “Resume". Applicants can also enhance the search by specifying the sorting order in which to display results. Upon selecting the sorting method, the Search icon on the right must be pressed to execute the search and show the results.
+&nbsp;
+<br><br>
+![SortAndSearchDocuments](https://github.com/prempreetbrar/ApliTrack/assets/89614923/5170b8ed-be0d-495a-a55c-0352430bb586)
+&nbsp;
 
 ## Downloading node and npm
 Using this website https://nodejs.org/en/download/ get the installer and install node along with npm
