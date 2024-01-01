@@ -28,6 +28,13 @@ Users will be warned if passwords do not match or if a user already exists with 
 ## Login
 ![Login](https://github.com/prempreetbrar/ApliTrack/assets/89614923/0d6a9582-072c-48a0-a845-929e0a39d2e1)
 
+## Forgot Password
+Users will be warned if passwords do not match or if a user already exists with the provided username. Note that a welcome email is sent upon registration.
+&nbsp;
+<br><br>
+![Signup](https://github.com/prempreetbrar/ApliTrack/assets/89614923/e14a5168-e093-40a1-8291-d16f6f4b3017)
+
+
 ## Profile
 
 ### Account Info
@@ -138,6 +145,9 @@ Applicants that may wish to track certain jobs have the option to do so by simpl
 ### Searching Companies and Jobs
 
 Applicants are able to search the Companies page by Company Names and/or the application deadlines, as shown below. For example, searching for Amazon will bring up the Amazon company and its corresponding jobs. Alternatively, applicants can enter just the application deadline dates to search by jobs that match the date(s) criteria. This is useful if you are looking for jobs by a certain company and/or want to see all jobs that fall within a certain deadline.
+&nbsp;
+<br><br>
+https://github.com/prempreetbrar/ApliTrack/assets/89614923/9968bd3d-dcfb-44fa-9a80-abc9069264dd
 
 ### Tracking Filter
 
